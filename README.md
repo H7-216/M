@@ -1,1 +1,1 @@
-# e.g., my-online-shop
+#my-online-shop
