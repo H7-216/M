@@ -1,1 +1,1 @@
-# M
+# e.g., my-online-shop
