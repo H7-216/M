@@ -2,14 +2,18 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    box-sizing: border-box;
 }
 
 header {
-    background: #333;
-    color: #fff;
-    padding: 10px 0;
+    background-color: #333;
+    color: white;
+    padding: 1em 0;
     text-align: center;
+}
+
+header h1 {
+    margin: 0;
 }
 
 nav ul {
@@ -19,27 +23,31 @@ nav ul {
 
 nav ul li {
     display: inline;
-    margin: 0 10px;
+    margin: 0 1em;
 }
 
 nav ul li a {
-    color: #fff;
+    color: white;
     text-decoration: none;
 }
 
 #hero {
-    background: #e2e2e2;
-    padding: 50px 20px;
     text-align: center;
+    padding: 2em 0;
+    background-color: #f4f4f4;
+}
+
+#hero h2 {
+    margin: 0;
 }
 
 .btn {
     display: inline-block;
-    padding: 10px 20px;
-    background: #333;
-    color: #fff;
+    padding: 0.5em 1em;
+    color: white;
+    background-color: #333;
     text-decoration: none;
-    margin-top: 20px;
+    margin-top: 1em;
 }
 
 .product-list {
@@ -49,20 +57,37 @@ nav ul li a {
 }
 
 .product {
-    background: #fff;
-    border: 1px solid #ccc;
-    padding: 20px;
-    margin: 10px;
+    border: 1px solid #ddd;
+    margin: 1em;
+    padding: 1em;
     width: 30%;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    text-align: center;
 }
 
 footer {
-    background: #333;
-    color: #fff;
     text-align: center;
-    padding: 10px 0;
-    position: fixed;
-    bottom: 0;
+    padding: 1em 0;
+    background-color: #333;
+    color: white;
+}
+
+form label {
+    display: block;
+    margin-top: 1em;
+}
+
+form input, form textarea {
     width: 100%;
+    padding: 0.5em;
+    margin-top: 0.5em;
+}
+
+form button {
+    display: block;
+    padding: 0.5em 1em;
+    margin-top: 1em;
+    background-color: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
 }
