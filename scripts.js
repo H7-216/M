@@ -1,4 +1,6 @@
-document.addEventListener("DOMContentLoaded", function() {
-    console.log("Document is ready");
-    // Add any JavaScript functionality here
+// scripts.js
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("Document is ready!");
+    // Ajoutez ici tout code JavaScript supplémentaire si nécessaire
 });
