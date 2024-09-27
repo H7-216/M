@@ -4,46 +4,153 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>h7bot</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="favicon.JPG" href="favicon.ico">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+</head>
+<body>
+    <header>
+        <img src="TN.jpg" alt="h7bot Logo" class="logo">
+        <nav>
+            <ul>
+                <li><a href="#chat">Chat</a></li>
+                <li><a href="#games">Games</a></li>
+                <li><a href="#music">Music</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="chat">
+            <h1>Chat</h1>
+            <div id="chat-container">
+                <div id="messages">
+                    <!-- Messages will appear here -->
+                </div>
+                <input type="text" id="chat-input" placeholder="Type your message here...">
+                <button id="send-button">Send</button>
+            </div>
+        </section>
+        <section id="games">
+            <h1>Games</h1>
+            <div id="games-container">
+                <h2>Flappy Bird</h2>
+                <iframe src="https://flappybird.io/" width="375" height="512"></iframe>
+                <h2>Snake</h2>
+                <iframe src="https://playsnake.org/" width="400" height="400"></iframe>
+            </div>
+        </section>
+        <section id="music">
+            <h1>Music</h1>
+            <div id="music-container">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/7s8mkAIFq78" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </section>
+        <section id="contact">
+            <h1>Contact</h1>
+            <form id="contact-form">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" required></textarea>
+                <button type="submit">Send</button>
+            </form>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 h7bot. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCOxijsaTHe2A3QCrii-jyinBadVajujQE",
+            authDomain: "h7bot-f93c1.firebaseapp.com",
+            projectId: "h7bot-f93c1",
+            storageBucket: "h7bot-f93c1.appspot.com",
+            messagingSenderId: "862820598720",
+            appId: "1:862820598720:web:4583e298e24b12efb27e25",
+            measurementId: "G-BZ3FNXH952"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const analytics = firebase.analytics();
+        const database = firebase.database();
+
+        // Chat functionality
+        const chatInput = document.getElementById('chat-input');
+        const sendButton = document.getElementById('send-button');
+        const messagesContainer = document.getElementById('messages');
+
+        sendButton.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        function sendMessage() {
+            const messageText = chatInput.value.trim();
+            if (messageText !== '') {
+                firebase.database().ref('messages').push().set({
+                    "message": messageText
+                });
+                chatInput.value = '';
+            }
+        }
+
+        // Listen for new messages
+        firebase.database().ref('messages').on('child_added', function(snapshot) {
+            const message = snapshot.val().message;
+            const messageElement = document.createElement('div');
+            messageElement.textContent = message;
+            messagesContainer.appendChild(messageElement);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        });
+
+        // Contact form submission
+        document.getElementById('contact-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+
+            firebase.database().ref('contacts').push().set({
+                name: name,
+                email: email,
+                message: message
+            });
+
+            alert('Message sent!');
+        });
+    </script>
+
     <style>
-        /* Global CSS */
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
             margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
             color: #333;
         }
 
-        h1 {
-            color: #007BFF;
-            text-align: center;
-        }
-
-        section {
-            padding: 20px;
-            margin-bottom: 40px;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        footer {
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            padding: 15px;
-        }
-
-        /* Header */
         header {
             background-color: #333;
             color: #fff;
-            padding: 20px 0;
+            padding: 10px 0;
             text-align: center;
         }
 
         .logo {
-            height: 100px;
+            height: 50px;
             display: block;
             margin: 0 auto;
         }
@@ -51,53 +158,57 @@
         nav ul {
             list-style: none;
             padding: 0;
+            text-align: center;
         }
 
         nav ul li {
-            display: inline;
-            margin: 0 15px;
+            display: inline-block;
+            margin: 0 10px;
         }
 
         nav ul li a {
             color: #fff;
             text-decoration: none;
-            font-size: 18px;
         }
 
-        nav ul li a:hover {
-            text-decoration: underline;
-        }
-
-        /* Forms */
-        form {
-            border: 2px solid #007BFF;
+        main {
             padding: 20px;
-            background-color: #f0f8ff;
-            border-radius: 8px;
+        }
+
+        section {
+            margin-bottom: 40px;
+        }
+
+        form label {
+            display: block;
+            margin: 10px 0 5px;
         }
 
         form input, form textarea {
             width: 100%;
             padding: 10px;
             margin-bottom: 10px;
-            border: 1px solid #007BFF;
-            border-radius: 4px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
 
-        form button {
-            background-color: #007BFF;
+        form input:focus, form textarea:focus {
+            border: 2px solid blue;
+        }
+
+        button[type="submit"] {
+            padding: 10px 20px;
+            background-color: blue;
             color: #fff;
-            padding: 10px 15px;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
         }
 
-        form button:hover {
-            background-color: #0056b3;
+        button[type="submit"]:hover {
+            background-color: darkblue;
         }
 
-        /* Chat styling */
         #chat-container {
             border: 1px solid #ccc;
             padding: 10px;
@@ -122,156 +233,13 @@
             width: 50px;
             padding: 10px;
         }
-    </style>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-</head>
-<body>
 
-    <header>
-        <img src="TN.jpg" alt="h7bot Logo" class="logo">
-        <nav>
-            <ul>
-                <li><a href="#chat">Chat</a></li>
-                <li><a href="#games">Games</a></li>
-                <li><a href="#music">Music</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <main>
-        <!-- Chat Section -->
-        <section id="chat">
-            <h1>Chat</h1>
-            <div id="chat-container">
-                <div id="messages"></div>
-                <input type="text" id="chat-input" placeholder="Type your message here...">
-                <button id="send-button">Send</button>
-            </div>
-        </section>
-
-        <!-- Games Section -->
-        <section id="games">
-            <h1>Games</h1>
-            <div id="games-container">
-                <h2>Flappy Bird</h2>
-                <iframe src="https://flappybird.io/" width="375" height="512"></iframe>
-                <h2>Snake</h2>
-                <iframe src="https://playsnake.org/" width="400" height="400"></iframe>
-            </div>
-        </section>
-
-        <!-- Music Section -->
-        <section id="music">
-            <h1>Music</h1>
-            <div id="music-container">
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/7s8mkAIFq78" 
-                    frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-                </iframe>
-            </div>
-        </section>
-
-        <!-- Contact Section -->
-        <section id="contact">
-            <h1>Contact</h1>
-            <form id="contact-form">
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name" required>
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-                <label for="message">Message:</label>
-                <textarea id="message" name="message" required></textarea>
-                <button type="submit">Send</button>
-            </form>
-        </section>
-    </main>
-
-    <footer>
-        <p>&copy; 2024 h7bot. All rights reserved.</p>
-    </footer>
-
-    <script>
-        // Firebase Configuration
-        var firebaseConfig = {
-            apiKey: "AIzaSyCl2tmy-LU8KHs2s1BjG2CdmvaOr4E3fvY",
-            authDomain: "saaa-7b92d.firebaseapp.com",
-            projectId: "saaa-7b92d",
-            storageBucket: "saaa-7b92d.appspot.com",
-            messagingSenderId: "464310225000",
-            appId: "464310225000:web:2728c6f3911bdd2cfd53dd"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        var database = firebase.database();
-
-        // Chat Functionality
-        const chatInput = document.getElementById('chat-input');
-        const sendButton = document.getElementById('send-button');
-        const messagesContainer = document.getElementById('messages');
-
-        sendButton.addEventListener('click', sendMessage);
-        chatInput.addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
-        });
-
-        function sendMessage() {
-            const messageText = chatInput.value.trim();
-            if (messageText !== '') {
-                sendButton.disabled = true;
-                sendButton.textContent = 'Sending...';
-                
-                firebase.database().ref('messages').push().set({
-                    "message": messageText
-                }).then(function() {
-                    sendButton.disabled = false;
-                    sendButton.textContent = 'Send';
-                    chatInput.value = '';
-                }).catch(function(error) {
-                    console.error("Erreur lors de l'envoi du message:", error);
-                    alert('Un problème est survenu lors de l\'envoi du message. Veuillez réessayer.');
-                });
-            }
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
         }
-
-        // Load new messages
-        firebase.database().ref('messages').on('child_added', function(snapshot) {
-            const message = snapshot.val().message;
-            const messageElement = document.createElement('div');
-            messageElement.textContent = message;
-            messagesContainer.appendChild(messageElement);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        });
-
-        // Contact Form Submission
-        document.getElementById('contact-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            
-            const name = document.getElementById('name').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const message = document.getElementById('message').value.trim();
-
-            if (name === '' || email === '' || message === '') {
-                alert('Veuillez remplir tous les champs.');
-                return;
-            }
-
-            firebase.database().ref('contacts').push().set({
-                name: name,
-                email: email,
-                message: message
-            }).then(function() {
-                alert('Message envoyé avec succès !');
-                document.getElementById('contact-form').reset();
-            }).catch(function(error) {
-                console.error("Erreur lors de l'envoi du message:", error);
-                alert('Un problème est survenu. Veuillez réessayer.');
-            });
-        });
-    </script>
-
+    </style>
 </body>
 </html>
