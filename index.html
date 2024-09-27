@@ -223,10 +223,13 @@
             if (messageText !== '') {
                 sendButton.disabled = true;
                 sendButton.textContent = 'Sending...';
-                
+
+                // Send user message to Firebase
                 firebase.database().ref('messages').push().set({
                     "message": messageText
                 }).then(function() {
+                    messagesContainer.appendChild(createMessageElement("Vous: " + messageText));
+                    respondToMessage(messageText);
                     sendButton.disabled = false;
                     sendButton.textContent = 'Send';
                     chatInput.value = '';
@@ -237,41 +240,33 @@
             }
         }
 
-        // Load new messages
+        // Listen for new messages
         firebase.database().ref('messages').on('child_added', function(snapshot) {
             const message = snapshot.val().message;
-            const messageElement = document.createElement('div');
-            messageElement.textContent = message;
-            messagesContainer.appendChild(messageElement);
+            messagesContainer.appendChild(createMessageElement(message));
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         });
 
-        // Contact Form Submission
-        document.getElementById('contact-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            
-            const name = document.getElementById('name').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const message = document.getElementById('message').value.trim();
+        // Function to create message element
+        function createMessageElement(message) {
+            const messageElement = document.createElement('div');
+            messageElement.textContent = message;
+            return messageElement;
+        }
 
-            if (name === '' || email === '' || message === '') {
-                alert('Veuillez remplir tous les champs.');
-                return;
+        // AI response function
+        function respondToMessage(userMessage) {
+            let response = '';
+            if (userMessage.toLowerCase().includes('bonjour')) {
+                response = 'Bonjour! Comment puis-je vous aider aujourd\'hui?';
+            } else if (userMessage.toLowerCase().includes('aide')) {
+                response = 'Bien sûr! Que puis-je faire pour vous?';
+            } else if (userMessage.toLowerCase().includes('merci')) {
+                response = 'De rien! Si vous avez d\'autres questions, n\'hésitez pas.';
+            } else {
+                response = 'Désolé, je ne comprends pas votre question.';
             }
 
-            firebase.database().ref('contacts').push().set({
-                name: name,
-                email: email,
-                message: message
-            }).then(function() {
-                alert('Message envoyé avec succès !');
-                document.getElementById('contact-form').reset();
-            }).catch(function(error) {
-                console.error("Erreur lors de l'envoi du message:", error);
-                alert('Un problème est survenu. Veuillez réessayer.');
-            });
-        });
-    </script>
-
-</body>
-</html>
+            // Simulate a delay for the AI response
+            setTimeout(function() {
+                messages
