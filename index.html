@@ -4,12 +4,130 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>h7bot</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="favicon.JPG" href="favicon.ico">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <style>
+        /* Global CSS */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            color: #333;
+        }
+
+        h1 {
+            color: #007BFF;
+            text-align: center;
+        }
+
+        section {
+            padding: 20px;
+            margin-bottom: 40px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 15px;
+        }
+
+        /* Header */
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .logo {
+            height: 100px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Forms */
+        form {
+            border: 2px solid #007BFF;
+            padding: 20px;
+            background-color: #f0f8ff;
+            border-radius: 8px;
+        }
+
+        form input, form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #007BFF;
+            border-radius: 4px;
+        }
+
+        form button {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Chat styling */
+        #chat-container {
+            border: 1px solid #ccc;
+            padding: 10px;
+            background: #fff;
+        }
+
+        #messages {
+            height: 200px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            padding: 5px;
+            background: #f9f9f9;
+            margin-bottom: 10px;
+        }
+
+        #chat-input {
+            width: calc(100% - 60px);
+            padding: 10px;
+        }
+
+        #send-button {
+            width: 50px;
+            padding: 10px;
+        }
+    </style>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </head>
 <body>
+
     <header>
         <img src="TN.jpg" alt="h7bot Logo" class="logo">
         <nav>
@@ -21,33 +139,40 @@
             </ul>
         </nav>
     </header>
+
     <main>
+        <!-- Chat Section -->
         <section id="chat">
             <h1>Chat</h1>
             <div id="chat-container">
-                <div id="messages">
-                    <!-- Messages will appear here -->
-                </div>
+                <div id="messages"></div>
                 <input type="text" id="chat-input" placeholder="Type your message here...">
                 <button id="send-button">Send</button>
             </div>
         </section>
+
+        <!-- Games Section -->
         <section id="games">
             <h1>Games</h1>
             <div id="games-container">
                 <h2>Flappy Bird</h2>
                 <iframe src="https://flappybird.io/" width="375" height="512"></iframe>
-                <h2>Tetris</h2>
-                <iframe src="https://tetris.com/play-tetris" width="400" height="600"></iframe>
+                <h2>Snake</h2>
+                <iframe src="https://playsnake.org/" width="400" height="400"></iframe>
             </div>
         </section>
+
+        <!-- Music Section -->
         <section id="music">
             <h1>Music</h1>
             <div id="music-container">
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/7s8mkAIFq78"
-                frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/7s8mkAIFq78" 
+                    frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+                </iframe>
             </div>
         </section>
+
+        <!-- Contact Section -->
         <section id="contact">
             <h1>Contact</h1>
             <form id="contact-form">
@@ -61,9 +186,92 @@
             </form>
         </section>
     </main>
+
     <footer>
         <p>&copy; 2024 h7bot. All rights reserved.</p>
     </footer>
-    <script src="script.js"></script>
+
+    <script>
+        // Firebase Configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyCl2tmy-LU8KHs2s1BjG2CdmvaOr4E3fvY",
+            authDomain: "saaa-7b92d.firebaseapp.com",
+            projectId: "saaa-7b92d",
+            storageBucket: "saaa-7b92d.appspot.com",
+            messagingSenderId: "464310225000",
+            appId: "464310225000:web:2728c6f3911bdd2cfd53dd"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        var database = firebase.database();
+
+        // Chat Functionality
+        const chatInput = document.getElementById('chat-input');
+        const sendButton = document.getElementById('send-button');
+        const messagesContainer = document.getElementById('messages');
+
+        sendButton.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        function sendMessage() {
+            const messageText = chatInput.value.trim();
+            if (messageText !== '') {
+                sendButton.disabled = true;
+                sendButton.textContent = 'Sending...';
+                
+                firebase.database().ref('messages').push().set({
+                    "message": messageText
+                }).then(function() {
+                    sendButton.disabled = false;
+                    sendButton.textContent = 'Send';
+                    chatInput.value = '';
+                }).catch(function(error) {
+                    console.error("Erreur lors de l'envoi du message:", error);
+                    alert('Un problème est survenu lors de l\'envoi du message. Veuillez réessayer.');
+                });
+            }
+        }
+
+        // Load new messages
+        firebase.database().ref('messages').on('child_added', function(snapshot) {
+            const message = snapshot.val().message;
+            const messageElement = document.createElement('div');
+            messageElement.textContent = message;
+            messagesContainer.appendChild(messageElement);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        });
+
+        // Contact Form Submission
+        document.getElementById('contact-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const message = document.getElementById('message').value.trim();
+
+            if (name === '' || email === '' || message === '') {
+                alert('Veuillez remplir tous les champs.');
+                return;
+            }
+
+            firebase.database().ref('contacts').push().set({
+                name: name,
+                email: email,
+                message: message
+            }).then(function() {
+                alert('Message envoyé avec succès !');
+                document.getElementById('contact-form').reset();
+            }).catch(function(error) {
+                console.error("Erreur lors de l'envoi du message:", error);
+                alert('Un problème est survenu. Veuillez réessayer.');
+            });
+        });
+    </script>
+
 </body>
 </html>
