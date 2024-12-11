@@ -1,72 +1,165 @@
-/* Header Styling */
+/* Global Styles */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  background-color: #f7f7f7;
+}
+
+h1, h2, h3 {
+  margin: 0;
+  color: #333;
+}
+
+a {
+  text-decoration: none;
+  color: #007bff;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Header Styles */
 header {
   background: #007bff;
   color: white;
-  padding: 10px;
+  padding: 15px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.header-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-#user-info {
+header nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
-  align-items: center;
+  gap: 15px;
+}
+
+header nav ul li {
+  display: inline;
+}
+
+/* Hero Section */
+#hero {
+  background: linear-gradient(to right, #007bff, #0056b3);
+  color: white;
+  text-align: center;
+  padding: 50px 20px;
+}
+
+#hero h2 {
+  font-size: 2.5em;
+}
+
+#hero p {
+  font-size: 1.2em;
+  margin: 15px 0;
+}
+
+.btn-primary {
+  display: inline-block;
+  background: #ff5733;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.btn-primary:hover {
+  background: #ff6e54;
+}
+
+/* Features Section */
+#features {
+  padding: 50px 20px;
+  background: #fff;
+  text-align: center;
+}
+
+.features-container {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.feature-item {
+  background: #f9f9f9;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  width: 30%;
+}
+
+/* Chat Section */
+#chat {
+  padding: 50px 20px;
+  background: #f7f7f7;
+  text-align: center;
+}
+
+#chat-container {
+  max-width: 600px;
+  margin: 0 auto;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#message-container {
+  height: 300px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+#message-form {
+  display: flex;
   gap: 10px;
 }
 
-#logout-btn {
-  padding: 5px 10px;
-  background: #ff4d4d;
-  color: white;
+#message-input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+#message-form button {
+  padding: 10px 15px;
   border: none;
+  background: #007bff;
+  color: white;
   border-radius: 5px;
   cursor: pointer;
 }
 
-/* Footer Styling */
-footer {
-  background: #f0f0f0;
-  padding: 10px;
+/* About Section */
+#about {
+  padding: 50px 20px;
+  background: #fff;
   text-align: center;
-  border-top: 1px solid #ccc;
+}
+
+/* Footer Styles */
+footer {
+  background: #333;
+  color: white;
+  text-align: center;
+  padding: 10px 20px;
   font-size: 0.9em;
 }
 
-/* Chat Area Extras */
-#extras {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 10px;
-}
-
-.custom-file-upload {
-  background: #007bff;
-  color: white;
-  padding: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  text-align: center;
-}
-
-#file-upload {
-  display: none;
-}
-
-#emoji-btn {
-  background: #ffc107;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-#emoji-picker {
-  display: flex;
-  gap: 5px;
-  margin-top: 10px;
-}
-
-.hidden {
-  display: none;
+footer a {
+  color: #007bff;
 }
