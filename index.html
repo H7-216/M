@@ -7,13 +7,57 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div id="chat-container">
-    <div id="message-container"></div>
-    <form id="message-form">
-      <input type="text" id="message-input" placeholder="Type your message..." required>
-      <button type="submit">Send</button>
-    </form>
+  <div id="app">
+    <!-- Header -->
+    <header>
+      <h1>Chat App</h1>
+      <div id="user-info">
+        <span>Welcome, <strong id="username-display"></strong></span>
+        <button id="logout-btn">Logout</button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <div id="chat-container">
+      <!-- Sidebar -->
+      <aside id="users-list">
+        <h2>Online Users</h2>
+        <ul id="users"></ul>
+      </aside>
+
+      <!-- Chat Area -->
+      <main>
+        <!-- Message Display -->
+        <div id="message-container"></div>
+
+        <!-- Form for Sending Messages -->
+        <form id="message-form">
+          <input type="text" id="message-input" placeholder="Type your message..." required>
+          <button type="submit">Send</button>
+        </form>
+
+        <!-- Additional Features -->
+        <div id="extras">
+          <label for="file-upload" class="custom-file-upload">
+            Upload Image/Video
+          </label>
+          <input type="file" id="file-upload" accept="image/*,video/*">
+          <button id="emoji-btn">😀</button>
+          <div id="emoji-picker" class="hidden">
+            <button>😀</button><button>😂</button><button>😍</button>
+            <button>😭</button><button>😎</button><button>😡</button>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>&copy; 2024 Chat App | Built with ❤️</p>
+      <p><a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms of Service</a></p>
+    </footer>
   </div>
+
   <script src="/socket.io/socket.io.js"></script>
   <script src="script.js"></script>
 </body>
