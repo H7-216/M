@@ -3,37 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Chat Assistant</title>
+  <title>ChatGPT Interface</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header>
-    <div class="header-container">
-      <h1>AI Chat Assistant</h1>
-      <button id="theme-toggle">Toggle Dark Mode</button>
-    </div>
+    <h1>ChatGPT Clone</h1>
+    <button id="theme-toggle">Toggle Dark Mode</button>
   </header>
-
-  <section id="chat">
-    <h2>Chat with AI</h2>
+  <main>
     <div id="chat-container">
       <div id="message-container"></div>
       <form id="message-form">
-        <input type="text" id="message-input" placeholder="Type your message here..." required>
+        <input type="text" id="message-input" placeholder="Type your message..." required>
         <button type="submit">Send</button>
       </form>
-      <div id="suggestions">
-        <button class="suggestion">Tell me a joke</button>
-        <button class="suggestion">What is the weather today?</button>
-        <button class="suggestion">Who are you?</button>
-      </div>
     </div>
-  </section>
-
+  </main>
   <footer>
-    <p>&copy; 2024 AI Chat Assistant | Built with ❤️</p>
+    <p>&copy; 2024 ChatGPT Clone | Powered by OpenAI</p>
   </footer>
-
   <script src="script.js"></script>
 </body>
 </html>
