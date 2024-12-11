@@ -2,36 +2,24 @@ const messageContainer = document.getElementById('message-container');
 const messageForm = document.getElementById('message-form');
 const messageInput = document.getElementById('message-input');
 const themeToggle = document.getElementById('theme-toggle');
-const suggestions = document.querySelectorAll('.suggestion');
 
-// Fonction pour ajouter un message dans le chat
+// Ajouter un message au chat
 function appendMessage(text, isAI = false) {
   const message = document.createElement('div');
   message.classList.add('message', isAI ? 'ai' : 'user');
-
-  const avatar = document.createElement('img');
-  avatar.src = isAI
-    ? 'https://via.placeholder.com/40?text=AI' // Avatar de l'IA
-    : 'https://via.placeholder.com/40?text=U'; // Avatar utilisateur
-
-  const messageText = document.createElement('div');
-  messageText.classList.add('text');
-  messageText.textContent = text;
-
-  message.appendChild(isAI ? avatar : messageText);
-  message.appendChild(isAI ? messageText : avatar);
+  message.textContent = text;
   messageContainer.appendChild(message);
-  messageContainer.scrollTop = messageContainer.scrollHeight;
+  messageContainer.scrollTop = messageContainer.scrollHeight; // Scroll auto
 }
 
-// Gérer l'envoi du message
+// Envoyer un message
 messageForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const userMessage = messageInput.value;
   appendMessage(userMessage);
   messageInput.value = '';
 
-  // Appeler le serveur pour la réponse de l'IA
+  // Envoyer le message au serveur
   const response = await fetch('http://localhost:3000/api/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -40,14 +28,6 @@ messageForm.addEventListener('submit', async (e) => {
 
   const data = await response.json();
   appendMessage(data.reply, true);
-});
-
-// Suggestions automatiques
-suggestions.forEach((button) => {
-  button.addEventListener('click', () => {
-    messageInput.value = button.textContent;
-    messageForm.dispatchEvent(new Event('submit'));
-  });
 });
 
 // Mode sombre
