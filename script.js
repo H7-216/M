@@ -1,34 +1,29 @@
-// Afficher le nom d'utilisateur
-const username = prompt('Enter your name:');
-document.getElementById('username-display').textContent = username;
-socket.emit('new-user', username);
+// Simule une réponse d'IA
+const messageContainer = document.getElementById('message-container');
+const messageForm = document.getElementById('message-form');
+const messageInput = document.getElementById('message-input');
 
-// Déconnexion (Logout)
-document.getElementById('logout-btn').addEventListener('click', () => {
-  alert('You have been logged out.');
-  location.reload();
-});
+// Ajouter le message utilisateur et IA
+function appendMessage(message, isAI = false) {
+  const messageElement = document.createElement('div');
+  messageElement.textContent = message;
+  messageElement.style.textAlign = isAI ? 'left' : 'right';
+  messageElement.style.marginBottom = '10px';
+  messageElement.style.padding = '10px';
+  messageElement.style.background = isAI ? '#e0e0e0' : '#007bff';
+  messageElement.style.color = isAI ? '#000' : '#fff';
+  messageElement.style.borderRadius = '10px';
+  messageContainer.appendChild(messageElement);
+}
 
-// Gestion des emojis
-const emojiBtn = document.getElementById('emoji-btn');
-const emojiPicker = document.getElementById('emoji-picker');
-emojiBtn.addEventListener('click', () => {
-  emojiPicker.classList.toggle('hidden');
-});
-
-// Ajouter emoji au message
-emojiPicker.addEventListener('click', (e) => {
-  if (e.target.tagName === 'BUTTON') {
-    const emoji = e.target.textContent;
-    const messageInput = document.getElementById('message-input');
-    messageInput.value += emoji;
-  }
-});
-
-// Upload de fichiers
-document.getElementById('file-upload').addEventListener('change', (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    alert(`File "${file.name}" selected. This feature will upload soon.`);
-  }
+// Gérer l'envoi du message
+messageForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const message = messageInput.value;
+  appendMessage(`You: ${message}`);
+  messageInput.value = '';
+  // Simuler une réponse de l'IA
+  setTimeout(() => {
+    appendMessage(`AI: I'm here to help!`, true);
+  }, 1000);
 });
