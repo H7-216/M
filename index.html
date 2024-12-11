@@ -3,74 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chat with AI</title>
+  <title>AI Chat Assistant</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- En-tête -->
   <header>
     <div class="header-container">
       <h1>AI Chat Assistant</h1>
-      <nav>
-        <ul>
-          <li><a href="#features">Features</a></li>
-          <li><a href="#chat">Chat</a></li>
-          <li><a href="#about">About</a></li>
-        </ul>
-      </nav>
+      <button id="theme-toggle">Toggle Dark Mode</button>
     </div>
   </header>
 
-  <!-- Section Hero -->
-  <section id="hero">
-    <div class="hero-content">
-      <h2>Welcome to Your Personal AI Assistant</h2>
-      <p>Chat with an intelligent assistant that can help you with anything!</p>
-      <a href="#chat" class="btn-primary">Start Chatting</a>
-    </div>
-  </section>
-
-  <!-- Section Features -->
-  <section id="features">
-    <h2>Why Use Our AI Chat?</h2>
-    <div class="features-container">
-      <div class="feature-item">
-        <h3>Real-Time Responses</h3>
-        <p>Get instant answers to your questions.</p>
-      </div>
-      <div class="feature-item">
-        <h3>Personalized Assistance</h3>
-        <p>The AI learns and adapts to your preferences.</p>
-      </div>
-      <div class="feature-item">
-        <h3>Secure and Private</h3>
-        <p>Your conversations are safe with us.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Section Chat -->
   <section id="chat">
-    <h2>Chat with the AI</h2>
+    <h2>Chat with AI</h2>
     <div id="chat-container">
       <div id="message-container"></div>
       <form id="message-form">
         <input type="text" id="message-input" placeholder="Type your message here..." required>
         <button type="submit">Send</button>
       </form>
+      <div id="suggestions">
+        <button class="suggestion">Tell me a joke</button>
+        <button class="suggestion">What is the weather today?</button>
+        <button class="suggestion">Who are you?</button>
+      </div>
     </div>
   </section>
 
-  <!-- Section About -->
-  <section id="about">
-    <h2>About This Project</h2>
-    <p>This is a demo AI chat platform designed to showcase the capabilities of an intelligent assistant. Developed with cutting-edge technologies to deliver an exceptional experience.</p>
-  </section>
-
-  <!-- Pied de page -->
   <footer>
     <p>&copy; 2024 AI Chat Assistant | Built with ❤️</p>
-    <p><a href="#privacy">Privacy Policy</a> | <a href="#terms">Terms of Service</a></p>
   </footer>
 
   <script src="script.js"></script>
