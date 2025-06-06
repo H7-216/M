@@ -583,6 +583,12 @@
             justify-content: center;
             align-items: center;
             z-index: 10001;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        
+        .loader.hidden {
+            opacity: 0;
+            visibility: hidden;
         }
         
         .loader-content {
@@ -860,240 +866,236 @@
         let currentPlayerServers = [];
         let currentPlayerItem = null;
 
-// Fonction pour générer les cartes de contenu
-function generateContentCards(filter = 'all') {
-    const contentGrid = document.getElementById('contentGrid');
-    contentGrid.innerHTML = '';
+        // Fonction pour générer les cartes de contenu
+        function generateContentCards(filter = 'all') {
+            const contentGrid = document.getElementById('contentGrid');
+            contentGrid.innerHTML = '';
 
-    let filteredContent = contentDatabase;
-    
-    if (filter !== 'all') {
-        filteredContent = contentDatabase.filter(item => {
-            if (filter === 'trending') {
-                return item.rating >= 8.5;
-            }
-            return item.type === filter;
-        });
-    }
-
-    filteredContent.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'content-card fade-in';
-        card.onclick = () => openPlayer(item);
-        
-        card.innerHTML = `
-            <div class="card-poster" style="background: linear-gradient(135deg, #${Math.floor(Math.random()*16777215).toString(16)}, #${Math.floor(Math.random()*16777215).toString(16)})"></div>
-            <h3 class="card-title">${item.title}</h3>
-            <div class="card-meta">
-                <span class="meta-tag">${item.year}</span>
-                <span class="meta-tag">${item.genre}</span>
-                <span class="meta-tag">⭐ ${item.rating}/10</span>
-                <span class="meta-tag">${item.type === 'movie' ? '🎬 Film' : item.type === 'series' ? '📺 Série' : item.type === 'anime' ? '🎌 Animé' : '📚 Docu'}</span>
-            </div>
-            <p class="card-description">${item.description}</p>
-        `;
-        
-        contentGrid.appendChild(card);
-    });
-}
-
-// Fonction pour filtrer le contenu
-function filterContent(type) {
-    currentFilter = type;
-    generateContentCards(type);
-    
-    // Mettre à jour les boutons actifs
-    document.querySelectorAll('.category-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    document.querySelector(`.category-btn[onclick="filterContent('${type}')"]`).classList.add('active');
-}
-
-// Fonction pour ouvrir le lecteur
-function openPlayer(item) {
-    currentPlayerItem = item;
-    currentPlayerServers = item.servers;
-    
-    document.getElementById('playerTitle').textContent = item.title;
-    document.getElementById('playerFrame').src = currentPlayerServers[0];
-    document.getElementById('playerModal').style.display = 'flex';
-    
-    // Mettre à jour les onglets des serveurs
-    const serverTabs = document.querySelectorAll('.server-tab');
-    serverTabs.forEach((tab, index) => {
-        tab.classList.remove('active');
-        if (index === 0) tab.classList.add('active');
-    });
-    
-    document.body.style.overflow = 'hidden';
-}
-
-// Fonction pour fermer le lecteur
-function closePlayer() {
-    document.getElementById('playerModal').style.display = 'none';
-    document.getElementById('playerFrame').src = '';
-    document.body.style.overflow = 'auto';
-}
-
-// Fonction pour changer de serveur
-function switchPlayerServer(serverIndex) {
-    if (currentPlayerServers.length >= serverIndex) {
-        document.getElementById('playerFrame').src = currentPlayerServers[serverIndex - 1];
-        
-        // Mettre à jour l'onglet actif
-        document.querySelectorAll('.server-tab').forEach(tab => {
-            tab.classList.remove('active');
-        });
-        document.querySelector(`.server-tab:nth-child(${serverIndex})`).classList.add('active');
-    }
-}
-
-// Fonction de recherche
-function setupSearch() {
-    const searchInput = document.getElementById('searchInput');
-    const searchSuggestions = document.getElementById('searchSuggestions');
-    
-    searchInput.addEventListener('input', () => {
-        const query = searchInput.value.toLowerCase();
-        
-        if (query.length > 2) {
-            const results = contentDatabase.filter(item => 
-                item.title.toLowerCase().includes(query) || 
-                item.description.toLowerCase().includes(query)
-            );
+            let filteredContent = contentDatabase;
             
-            displaySearchResults(results);
-        } else {
-            searchSuggestions.style.display = 'none';
-        }
-    });
-    
-    // Fermer les suggestions quand on clique ailleurs
-    document.addEventListener('click', (e) => {
-        if (e.target !== searchInput) {
-            searchSuggestions.style.display = 'none';
-        }
-    });
-}
+            if (filter !== 'all') {
+                filteredContent = contentDatabase.filter(item => {
+                    if (filter === 'trending') {
+                        return item.rating >= 8.5;
+                    }
+                    return item.type === filter;
+                });
+            }
 
-function displaySearchResults(results) {
-    const searchSuggestions = document.getElementById('searchSuggestions');
-    searchSuggestions.innerHTML = '';
-    
-    if (results.length > 0) {
-        results.forEach(item => {
-            const suggestion = document.createElement('div');
-            suggestion.className = 'suggestion-item';
-            suggestion.innerHTML = `
-                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #${Math.floor(Math.random()*16777215).toString(16)}, #${Math.floor(Math.random()*16777215).toString(16)}); border-radius: 8px;"></div>
-                <div>
-                    <h4>${item.title}</h4>
-                    <small>${item.year} • ${item.type === 'movie' ? 'Film' : item.type === 'series' ? 'Série' : item.type === 'anime' ? 'Animé' : 'Documentaire'} • ⭐ ${item.rating}</small>
-                </div>
-            `;
-            suggestion.onclick = () => {
-                openPlayer(item);
-                searchSuggestions.style.display = 'none';
-            };
-            searchSuggestions.appendChild(suggestion);
+            filteredContent.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'content-card fade-in';
+                card.onclick = () => openPlayer(item);
+                
+                card.innerHTML = `
+                    <div class="card-poster" style="background: linear-gradient(135deg, #${Math.floor(Math.random()*16777215).toString(16)}, #${Math.floor(Math.random()*16777215).toString(16)})"></div>
+                    <h3 class="card-title">${item.title}</h3>
+                    <div class="card-meta">
+                        <span class="meta-tag">${item.year}</span>
+                        <span class="meta-tag">${item.genre}</span>
+                        <span class="meta-tag">⭐ ${item.rating}/10</span>
+                        <span class="meta-tag">${item.type === 'movie' ? '🎬 Film' : item.type === 'series' ? '📺 Série' : item.type === 'anime' ? '🎌 Animé' : '📚 Docu'}</span>
+                    </div>
+                    <p class="card-description">${item.description}</p>
+                `;
+                
+                contentGrid.appendChild(card);
+            });
+        }
+
+        // Fonction pour filtrer le contenu
+        function filterContent(type) {
+            currentFilter = type;
+            generateContentCards(type);
+            
+            // Mettre à jour les boutons actifs
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.category-btn[onclick="filterContent('${type}')"]`).classList.add('active');
+        }
+
+        // Fonction pour ouvrir le lecteur
+        function openPlayer(item) {
+            currentPlayerItem = item;
+            currentPlayerServers = item.servers;
+            
+            document.getElementById('playerTitle').textContent = item.title;
+            document.getElementById('playerFrame').src = currentPlayerServers[0];
+            document.getElementById('playerModal').style.display = 'flex';
+            
+            // Mettre à jour les onglets des serveurs
+            const serverTabs = document.querySelectorAll('.server-tab');
+            serverTabs.forEach((tab, index) => {
+                tab.classList.remove('active');
+                if (index === 0) tab.classList.add('active');
+            });
+            
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Fonction pour fermer le lecteur
+        function closePlayer() {
+            document.getElementById('playerModal').style.display = 'none';
+            document.getElementById('playerFrame').src = '';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Fonction pour changer de serveur
+        function switchPlayerServer(serverIndex) {
+            if (currentPlayerServers.length >= serverIndex) {
+                document.getElementById('playerFrame').src = currentPlayerServers[serverIndex - 1];
+                
+                // Mettre à jour l'onglet actif
+                document.querySelectorAll('.server-tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                document.querySelector(`.server-tab:nth-child(${serverIndex})`).classList.add('active');
+            }
+        }
+
+        // Fonction de recherche
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const searchSuggestions = document.getElementById('searchSuggestions');
+            
+            searchInput.addEventListener('input', () => {
+                const query = searchInput.value.toLowerCase();
+                
+                if (query.length > 2) {
+                    const results = contentDatabase.filter(item => 
+                        item.title.toLowerCase().includes(query) || 
+                        item.description.toLowerCase().includes(query)
+                    );
+                    
+                    displaySearchResults(results);
+                } else {
+                    searchSuggestions.style.display = 'none';
+                }
+            });
+            
+            // Fermer les suggestions quand on clique ailleurs
+            document.addEventListener('click', (e) => {
+                if (e.target !== searchInput) {
+                    searchSuggestions.style.display = 'none';
+                }
+            });
+        }
+
+        function displaySearchResults(results) {
+            const searchSuggestions = document.getElementById('searchSuggestions');
+            searchSuggestions.innerHTML = '';
+            
+            if (results.length > 0) {
+                results.forEach(item => {
+                    const suggestion = document.createElement('div');
+                    suggestion.className = 'suggestion-item';
+                    suggestion.innerHTML = `
+                        <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #${Math.floor(Math.random()*16777215).toString(16)}, #${Math.floor(Math.random()*16777215).toString(16)}); border-radius: 8px;"></div>
+                        <div>
+                            <h4>${item.title}</h4>
+                            <small>${item.year} • ${item.type === 'movie' ? 'Film' : item.type === 'series' ? 'Série' : item.type === 'anime' ? 'Animé' : 'Documentaire'} • ⭐ ${item.rating}</small>
+                        </div>
+                    `;
+                    suggestion.onclick = () => {
+                        openPlayer(item);
+                        searchSuggestions.style.display = 'none';
+                    };
+                    searchSuggestions.appendChild(suggestion);
+                });
+                searchSuggestions.style.display = 'block';
+            } else {
+                const noResults = document.createElement('div');
+                noResults.className = 'suggestion-item';
+                noResults.textContent = 'Aucun résultat trouvé';
+                searchSuggestions.appendChild(noResults);
+                searchSuggestions.style.display = 'block';
+            }
+        }
+
+        // Fonction pour créer des particules d'arrière-plan
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // Position aléatoire
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Taille aléatoire
+                const size = Math.random() * 3 + 1;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Opacité aléatoire
+                particle.style.opacity = Math.random() * 0.5 + 0.1;
+                
+                // Animation delay aléatoire
+                particle.style.animationDelay = `${Math.random() * 6}s`;
+                
+                // Durée d'animation aléatoire
+                particle.style.animationDuration = `${Math.random() * 3 + 3}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Barre de progression du scroll
+        function setupScrollProgress() {
+            window.addEventListener('scroll', () => {
+                const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const progress = (scrollTop / scrollHeight) * 100;
+                document.getElementById('scrollProgress').style.width = `${progress}%`;
+            });
+        }
+
+        // Chargement initial
+        window.addEventListener('load', () => {
+            // Masquer le loader après le chargement complet de la page
+            const loader = document.getElementById('loader');
+            loader.classList.add('hidden');
+            
+            // Initialiser les fonctions
+            generateContentCards();
+            setupSearch();
+            createParticles();
+            setupScrollProgress();
+            
+            // Animation d'entrée des sections
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            document.querySelectorAll('.section').forEach(section => {
+                observer.observe(section);
+            });
         });
-        searchSuggestions.style.display = 'block';
-    } else {
-        const noResults = document.createElement('div');
-        noResults.className = 'suggestion-item';
-        noResults.textContent = 'Aucun résultat trouvé';
-        searchSuggestions.appendChild(noResults);
-        searchSuggestions.style.display = 'block';
-    }
-}
 
-// Fonction pour créer des particules d'arrière-plan
-function createParticles() {
-    const particlesContainer = document.getElementById('particles');
-    const particleCount = 50;
-    
-    for (let i = 0; i < particleCount; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        
-        // Position aléatoire
-        particle.style.left = `${Math.random() * 100}%`;
-        particle.style.top = `${Math.random() * 100}%`;
-        
-        // Taille aléatoire
-        const size = Math.random() * 3 + 1;
-        particle.style.width = `${size}px`;
-        particle.style.height = `${size}px`;
-        
-        // Opacité aléatoire
-        particle.style.opacity = Math.random() * 0.5 + 0.1;
-        
-        // Animation delay aléatoire
-        particle.style.animationDelay = `${Math.random() * 6}s`;
-        
-        // Durée d'animation aléatoire
-        particle.style.animationDuration = `${Math.random() * 3 + 3}s`;
-        
-        particlesContainer.appendChild(particle);
-    }
-}
-
-// Barre de progression du scroll
-function setupScrollProgress() {
-    window.addEventListener('scroll', () => {
-        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-        const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        const progress = (scrollTop / scrollHeight) * 100;
-        document.getElementById('scrollProgress').style.width = `${progress}%`;
-    });
-}
-
-// Chargement initial
-window.addEventListener('DOMContentLoaded', () => {
-    // Simuler un chargement
-    setTimeout(() => {
-        document.getElementById('loader').style.opacity = '0';
-        setTimeout(() => {
-            document.getElementById('loader').style.display = 'none';
-        }, 500);
-    }, 1500);
-    
-    // Initialiser les fonctions
-    generateContentCards();
-    setupSearch();
-    createParticles();
-    setupScrollProgress();
-    
-    // Animation d'entrée des sections
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('fade-in');
+        // Gestion des raccourcis clavier
+        document.addEventListener('keydown', (e) => {
+            // Échap pour fermer le lecteur
+            if (e.key === 'Escape' && document.getElementById('playerModal').style.display === 'flex') {
+                closePlayer();
+            }
+            
+            // Barre espace pour pause/play (simplifié)
+            if (e.key === ' ' && document.getElementById('playerModal').style.display === 'flex') {
+                e.preventDefault();
+                const iframe = document.getElementById('playerFrame');
+                // Ceci est une simplification - en réalité, vous devriez communiquer avec l'API du player
+                console.log('Play/Pause - nécessite une intégration avec le player');
             }
         });
-    }, { threshold: 0.1 });
-    
-    document.querySelectorAll('.section').forEach(section => {
-        observer.observe(section);
-    });
-});
-
-// Gestion des raccourcis clavier
-document.addEventListener('keydown', (e) => {
-    // Échap pour fermer le lecteur
-    if (e.key === 'Escape' && document.getElementById('playerModal').style.display === 'flex') {
-        closePlayer();
-    }
-    
-    // Barre espace pour pause/play (simplifié)
-    if (e.key === ' ' && document.getElementById('playerModal').style.display === 'flex') {
-        e.preventDefault();
-        const iframe = document.getElementById('playerFrame');
-        // Ceci est une simplification - en réalité, vous devriez communiquer avec l'API du player
-        console.log('Play/Pause - nécessite une intégration avec le player');
-    }
-});
-</main>
+    </script>
 
     <!-- Footer -->
     <footer class="footer">
@@ -1213,81 +1215,5 @@ document.addEventListener('keydown', (e) => {
             }
         }
     </style>
-
-    <!-- Script pour les fonctionnalités avancées -->
-    <script>
-        // Fonction pour ajouter aux favoris
-        function addToFavorites(itemId) {
-            let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-            if (!favorites.includes(itemId)) {
-                favorites.push(itemId);
-                localStorage.setItem('favorites', JSON.stringify(favorites));
-                alert('Ajouté aux favoris !');
-            } else {
-                alert('Déjà dans vos favoris !');
-            }
-        }
-
-        // Fonction pour le mode sombre/clair
-        function toggleDarkMode() {
-            const body = document.body;
-            body.classList.toggle('light-mode');
-            localStorage.setItem('darkMode', body.classList.contains('light-mode') ? 'light' : 'dark');
-        }
-
-        // Vérifier le préférence de mode au chargement
-        if (localStorage.getItem('darkMode') === 'light') {
-            document.body.classList.add('light-mode');
-        }
-
-        // Styles pour le mode clair
-        const style = document.createElement('style');
-        style.textContent = `
-            .light-mode {
-                background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
-                color: #333;
-            }
-            
-            .light-mode .header,
-            .light-mode .footer,
-            .light-mode .content-card {
-                background: rgba(255, 255, 255, 0.9) !important;
-                color: #333 !important;
-                border-color: rgba(0, 0, 0, 0.1) !important;
-            }
-            
-            .light-mode .card-description,
-            .light-mode .hero-subtitle {
-                color: #555 !important;
-            }
-            
-            .light-mode .search-bar {
-                background: rgba(0, 0, 0, 0.05) !important;
-                color: #333 !important;
-                border-color: rgba(0, 0, 0, 0.2) !important;
-            }
-            
-            .light-mode .search-bar::placeholder {
-                color: rgba(0, 0, 0, 0.5) !important;
-            }
-        `;
-        document.head.appendChild(style);
-
-        // Continuer à regarder (historique)
-        function saveWatchProgress(itemId, progress) {
-            const history = JSON.parse(localStorage.getItem('watchHistory')) || {};
-            history[itemId] = progress;
-            localStorage.setItem('watchHistory', JSON.stringify(history));
-        }
-
-        // Au chargement de la page, vérifier l'historique
-        function checkWatchHistory() {
-            const history = JSON.parse(localStorage.getItem('watchHistory')) || {};
-            // Implémentez la logique pour afficher les contenus en cours
-        }
-
-        // Initialiser l'historique au chargement
-        window.addEventListener('DOMContentLoaded', checkWatchHistory);
-    </script>
 </body>
 </html>
