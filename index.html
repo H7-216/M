@@ -233,6 +233,33 @@
             transform: translateY(-2px);
         }
 
+        #content-page {
+            display: none;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .content-header {
+            margin-bottom: 2rem;
+        }
+
+        .content-header button {
+            background: #e50914;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 1rem;
+        }
+
+        .content-player {
+            background: rgba(0,0,0,0.7);
+            border-radius: 10px;
+            padding: 2rem;
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -409,6 +436,14 @@
             font-size: 2rem;
         }
 
+        .content-card .card-content [style*="Lien perso"] {
+            background: rgba(229, 9, 20, 0.2);
+            padding: 0.3rem 0.5rem;
+            border-radius: 4px;
+            display: inline-block;
+            border: 1px solid rgba(229, 9, 20, 0.5);
+        }
+
         @media (max-width: 768px) {
             .player-container {
                 flex-direction: column;
@@ -431,6 +466,27 @@
             
             .server-btn {
                 margin-bottom: 0.5rem;
+            }
+
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+            
+            .search-input {
+                width: 250px;
+            }
+            
+            .nav-links {
+                gap: 1rem;
+            }
+            
+            .category-nav {
+                gap: 0.5rem;
+            }
+            
+            .category-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
             }
         }
 
@@ -470,29 +526,6 @@
 
         .footer-section ul li a:hover {
             color: #ffd700;
-        }
-
-        @media (max-width: 768px) {
-            .hero-content h1 {
-                font-size: 2rem;
-            }
-            
-            .search-input {
-                width: 250px;
-            }
-            
-            .nav-links {
-                gap: 1rem;
-            }
-            
-            .category-nav {
-                gap: 0.5rem;
-            }
-            
-            .category-btn {
-                padding: 0.6rem 1rem;
-                font-size: 0.9rem;
-            }
         }
     </style>
 </head>
@@ -542,6 +575,9 @@
             </div>
         </section>
     </div>
+
+    <!-- Page de contenu -->
+    <div id="content-page"></div>
 
     <!-- Modal pour la lecture vidéo -->
     <div id="videoModal" class="modal">
@@ -742,6 +778,36 @@
                 poster: "House of the Dragon",
                 seasons: 2,
                 servers: ["seriesServer1", "seriesServer2", "seriesServer3"]
+            },
+            {
+                id: 9,
+                internalId: "movie_minecraft",
+                imdbId: "tt4043190",
+                tmdbId: "572802",
+                title: "Minecraft - Le Film",
+                type: "films",
+                category: "animation",
+                year: "2025",
+                rating: "—",
+                description: "L'adaptation cinématographique du célèbre jeu vidéo Minecraft.",
+                poster: "Minecraft - Le Film",
+                servers: ["server1", "server2", "server3"],
+                iframeLink: "https://xalaflix.io/movies/watch/minecraft-le-film/2407"
+            },
+            {
+                id: 10,
+                internalId: "movie_henry_danger",
+                imdbId: "tt3048456",
+                tmdbId: "1094557",
+                title: "Henry Danger - Le Film",
+                type: "films",
+                category: "action",
+                year: "2024",
+                rating: "—",
+                description: "L'aventure cinématographique de la série télévisée Henry Danger.",
+                poster: "Henry Danger - Le Film",
+                servers: ["server1", "server2", "server4"],
+                iframeLink: "https://xalaflix.io/movies/watch/henry-danger-le-film/2762"
             }
         ];
 
@@ -775,6 +841,7 @@
                         <button class="play-btn" onclick="openPlayerModal('${item.internalId}', '${item.title}', '${item.type}')">
                             ▶ Regarder maintenant
                         </button>
+                        ${item.iframeLink ? `<div style="margin-top: 0.5rem; font-size: 0.8rem; color: rgba(255,255,255,0.6);">Lien perso: ${item.iframeLink.split('/').pop()}</div>` : ''}
                     </div>
                 `;
                 grid.appendChild(card);
@@ -785,26 +852,68 @@
             currentContent = contentDatabase.find(item => item.internalId === internalId);
             if (!currentContent) return;
 
-            document.getElementById('modalTitle').textContent = title;
-            document.getElementById('videoModal').style.display = 'block';
-            document.body.style.overflow = 'hidden';
+            // Utiliser iframeLink si disponible pour l'URL
+            const slug = currentContent.iframeLink 
+                ? currentContent.iframeLink.split('/').slice(3, -1).join('/')
+                : title.toLowerCase().replace(/[^\w\s]/gi, '').replace(/\s+/g, '-');
+            
+            const url = currentContent.iframeLink 
+                ? currentContent.iframeLink.replace('https://xalaflix.io', '')
+                : `/${type}/watch/${slug}/${internalId}`;
+            
+            window.history.pushState({}, '', url);
+            loadContentPage(internalId, title, type);
+        }
 
-            // Configuration de la sidebar pour les séries
-            const sidebar = document.getElementById('playerSidebar');
-            if (type === 'series') {
-                sidebar.style.display = 'block';
-                setupSeriesPlayer();
-            } else {
-                sidebar.style.display = 'none';
-                setupMoviePlayer();
+        function loadContentPage(internalId, title, type) {
+            // Cacher la page d'accueil
+            document.querySelector('.container').style.display = 'none';
+            
+            // Créer ou afficher la page de contenu
+            let contentPage = document.getElementById('content-page');
+            if (!contentPage) {
+                contentPage = document.createElement('div');
+                contentPage.id = 'content-page';
+                document.body.appendChild(contentPage);
             }
+            
+            contentPage.style.display = 'block';
+            contentPage.innerHTML = `
+                <div class="content-header">
+                    <button onclick="goBack()">← Retour</button>
+                    <h1>${title}</h1>
+                </div>
+                <div class="content-player">
+                    <div class="video-container">
+                        <div class="loading-spinner" id="contentLoadingSpinner">⏳ Chargement...</div>
+                        <iframe class="video-frame" id="contentVideoFrame" src="" allowfullscreen style="display: none;"></iframe>
+                    </div>
+                </div>
+            `;
+            
+            // Initialiser le player
+            currentContent = contentDatabase.find(item => item.internalId === internalId);
+            if (!currentContent) return;
 
-            // Configuration des serveurs
-            setupServerButtons();
+            if (type === 'films') {
+                loadMovieVideo(true);
+            } else {
+                setupSeriesPlayer();
+                loadSeriesVideo(1, 1, true);
+            }
+        }
+
+        function goBack() {
+            // Revenir à la page d'accueil
+            document.getElementById('content-page').style.display = 'none';
+            document.querySelector('.container').style.display = 'block';
+            window.history.pushState({}, '', '/');
         }
 
         function setupServerButtons() {
             const serverContainer = document.getElementById('serverButtons');
+            if (!serverContainer) return;
+            
             serverContainer.innerHTML = '';
 
             currentContent.servers.forEach((serverKey, index) => {
@@ -836,6 +945,8 @@
         function setupSeriesPlayer() {
             // Configuration des saisons
             const seasonSelector = document.getElementById('seasonSelector');
+            if (!seasonSelector) return;
+            
             seasonSelector.innerHTML = '<span style="margin-right: 1rem; color: #fff;">Saisons:</span>';
 
             for (let i = 1; i <= currentContent.seasons; i++) {
@@ -871,6 +982,8 @@
 
         function generateEpisodes(season) {
             const episodeList = document.getElementById('episodeList');
+            if (!episodeList) return;
+            
             episodeList.innerHTML = '';
 
             // Génération d'épisodes fictifs (à adapter selon vos données)
@@ -920,26 +1033,32 @@
             }
         }
 
-        function loadMovieVideo() {
-            showLoading();
+        function loadMovieVideo(inContentPage = false) {
+            showLoading(inContentPage);
             
             let videoUrl = '';
-            const serverUrl = streamingServers[currentServer];
             
-            // Construction de l'URL selon le serveur
-            if (currentServer.includes('server1') || currentServer.includes('server2')) {
-                videoUrl = serverUrl + currentContent.tmdbId;
-            } else if (currentServer.includes('server4')) {
-                videoUrl = serverUrl + currentContent.imdbId;
+            // Utiliser iframeLink s'il existe
+            if (currentContent.iframeLink) {
+                videoUrl = currentContent.iframeLink;
             } else {
-                videoUrl = serverUrl + currentContent.tmdbId;
+                const serverUrl = streamingServers[currentServer];
+                
+                // Construction de l'URL selon le serveur
+                if (currentServer.includes('server1') || currentServer.includes('server2')) {
+                    videoUrl = serverUrl + currentContent.tmdbId;
+                } else if (currentServer.includes('server4')) {
+                    videoUrl = serverUrl + currentContent.imdbId;
+                } else {
+                    videoUrl = serverUrl + currentContent.tmdbId;
+                }
             }
 
-            loadVideo(videoUrl);
+            loadVideo(videoUrl, inContentPage);
         }
 
-        function loadSeriesVideo(season, episode) {
-            showLoading();
+        function loadSeriesVideo(season, episode, inContentPage = false) {
+            showLoading(inContentPage);
             
             let videoUrl = '';
             const serverUrl = streamingServers[currentServer];
@@ -949,61 +1068,48 @@
                 videoUrl = `${serverUrl}${currentContent.tmdbId}/${season}/${episode}`;
             }
 
-            loadVideo(videoUrl);
+            loadVideo(videoUrl, inContentPage);
         }
 
-        function loadVideo(url) {
-            const videoFrame = document.getElementById('videoFrame');
+        function loadVideo(url, inContentPage = false) {
+            const videoFrame = inContentPage 
+                ? document.getElementById('contentVideoFrame')
+                : document.getElementById('videoFrame');
             
             videoFrame.onload = function() {
-                hideLoading();
+                hideLoading(inContentPage);
             };
 
             videoFrame.onerror = function() {
-                hideLoading();
+                hideLoading(inContentPage);
                 alert('Erreur de chargement. Essayez un autre serveur.');
             };
 
             videoFrame.src = url;
         }
 
-        function showLoading() {
-            document.getElementById('loadingSpinner').style.display = 'block';
-            document.getElementById('videoFrame').style.display = 'none';
+        function showLoading(inContentPage = false) {
+            const spinner = inContentPage
+                ? document.getElementById('contentLoadingSpinner')
+                : document.getElementById('loadingSpinner');
+            const frame = inContentPage
+                ? document.getElementById('contentVideoFrame')
+                : document.getElementById('videoFrame');
+                
+            spinner.style.display = 'block';
+            frame.style.display = 'none';
         }
 
-        function hideLoading() {
-            document.getElementById('loadingSpinner').style.display = 'none';
-            document.getElementById('videoFrame').style.display = 'block';
-        }
-
-        function renderContent(content) {
-            const grid = document.getElementById('contentGrid');
-            grid.innerHTML = '';
-
-            content.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'content-card';
-                card.innerHTML = `
-                    <div class="card-image">
-                        <span>🎬 ${item.poster}</span>
-                    </div>
-                    <div class="card-content">
-                        <h3 class="card-title">${item.title}</h3>
-                        <div class="card-meta">
-                            <span>${item.year}</span>
-                            <span>⭐ ${item.rating}</span>
-                            <span>${item.type === 'films' ? '🎬 Film' : '📺 Série'}</span>
-                        </div>
-                        <p class="card-description">${item.description}</p>
-                        ${item.type === 'series' ? `<div style="margin-bottom: 1rem; color: rgba(255,255,255,0.8); font-size: 0.9rem;">📺 ${item.seasons} saison(s) disponible(s)</div>` : ''}
-                        <button class="play-btn" onclick="openPlayerModal('${item.internalId}', '${item.title}', '${item.type}')">
-                            ▶ Regarder maintenant
-                        </button>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
+        function hideLoading(inContentPage = false) {
+            const spinner = inContentPage
+                ? document.getElementById('contentLoadingSpinner')
+                : document.getElementById('loadingSpinner');
+            const frame = inContentPage
+                ? document.getElementById('contentVideoFrame')
+                : document.getElementById('videoFrame');
+                
+            spinner.style.display = 'none';
+            frame.style.display = 'block';
         }
 
         function showCategory(category) {
@@ -1078,9 +1184,30 @@
             }
         });
 
+        // Gestion du routage
+        window.addEventListener('popstate', function() {
+            const path = window.location.pathname.split('/');
+            if (path.length > 3 && (path[1] === 'movies' || path[1] === 'series')) {
+                const type = path[1];
+                const internalId = path[path.length - 1];
+                const title = path.slice(3, -1).join(' ');
+                loadContentPage(internalId, title, type);
+            } else {
+                goBack();
+            }
+        });
+
         // Initialisation
         document.addEventListener('DOMContentLoaded', function() {
-            renderContent(allContent);
+            const path = window.location.pathname.split('/');
+            if (path.length > 3 && (path[1] === 'movies' || path[1] === 'series')) {
+                const type = path[1];
+                const internalId = path[path.length - 1];
+                const title = path.slice(3, -1).join(' ');
+                loadContentPage(internalId, title, type);
+            } else {
+                renderContent(allContent);
+            }
         });
     </script>
 </body>
