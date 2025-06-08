@@ -127,32 +127,6 @@
             background: #b81d24;
         }
 
-        .search-options {
-            margin-top: 1rem;
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .search-option-btn {
-            padding: 0.5rem 1rem;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: #ffffff;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
-        }
-
-        .search-option-btn:hover,
-        .search-option-btn.active {
-            background: #ffd700;
-            color: #000;
-            border-color: #ffd700;
-        }
-
         .categories {
             margin: 3rem 0;
         }
@@ -259,69 +233,6 @@
             transform: translateY(-2px);
         }
 
-        /* Modal pour la recherche externe */
-        .search-modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.95);
-            backdrop-filter: blur(5px);
-        }
-
-        .search-modal-content {
-            position: relative;
-            margin: 1% auto;
-            width: 98%;
-            height: 98%;
-            background: #1a1a1a;
-            border-radius: 15px;
-            overflow: hidden;
-            border: 2px solid #e50914;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .search-modal-header {
-            background: #e50914;
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-shrink: 0;
-        }
-
-        .search-modal-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        .search-iframe-container {
-            flex: 1;
-            position: relative;
-            background: #000;
-        }
-
-        .search-iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        .iframe-loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #e50914;
-            font-size: 2rem;
-            z-index: 10;
-        }
-
-        /* Modal pour la lecture vidéo */
         .modal {
             display: none;
             position: fixed;
@@ -611,12 +522,7 @@
         <div class="search-container">
             <div class="search-box">
                 <input type="text" class="search-input" placeholder="Rechercher un film, une série..." id="searchInput">
-                <button class="search-btn" onclick="handleSearch()">🔍</button>
-            </div>
-            <div class="search-options">
-                <button class="search-option-btn active" onclick="setSearchMode('local')">Recherche Locale</button>
-                <button class="search-option-btn" onclick="setSearchMode('xalaflix')">Recherche XalaFlix.io</button>
-                <button class="search-option-btn" onclick="setSearchMode('both')">Les Deux</button>
+                <button class="search-btn" onclick="searchContent()">🔍</button>
             </div>
         </div>
 
@@ -636,20 +542,6 @@
                 <!-- Le contenu sera généré par JavaScript -->
             </div>
         </section>
-    </div>
-
-    <!-- Modal pour la recherche externe -->
-    <div id="searchModal" class="search-modal">
-        <div class="search-modal-content">
-            <div class="search-modal-header">
-                <span class="search-modal-title" id="searchModalTitle">Recherche sur XalaFlix.io</span>
-                <span class="close" onclick="closeSearchModal()">&times;</span>
-            </div>
-            <div class="search-iframe-container">
-                <div class="iframe-loading" id="searchIframeLoading">🔍 Chargement de la recherche...</div>
-                <iframe class="search-iframe" id="searchIframe" src="" style="display: none;"></iframe>
-            </div>
-        </div>
     </div>
 
     <!-- Modal pour la lecture vidéo -->
@@ -888,92 +780,293 @@
         let currentServer = null;
         let currentSeason = 1;
         let currentEpisode = 1;
-        let searchMode = 'local'; // 'local', 'xalaflix', 'both'
 
-        // Fonctions de recherche
-        function setSearchMode(mode) {
-            searchMode = mode;
-            
-            // Mise à jour des boutons de mode de recherche
-            document.querySelectorAll('.search-option-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`.search-option-btn[onclick="setSearchMode('${mode}')"]`).classList.add('active');
-            
-            // Mettre à jour le placeholder
-            const searchInput = document.getElementById('searchInput');
-            switch(mode) {
-                case 'local':
-                    searchInput.placeholder = "Rechercher dans le catalogue local...";
-                    break;
-                case 'xalaflix':
-                    searchInput.placeholder = "Rechercher sur XalaFlix.io...";
-                    break;
-                case 'both':
-                searchInput.placeholder = "Rechercher localement et sur XalaFlix.io...";
-                    break;
-            }
+        function renderContent(content) {
+            const grid = document.getElementById('contentGrid');
+            grid.innerHTML = '';
+
+            content.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'content-card';
+                card.innerHTML = `
+                    <div class="card-image">
+                        <span>🎬 ${item.poster}</span>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">${item.title}</h3>
+                        <div class="card-meta">
+                            <span>${item.year}</span>
+                            <span>⭐ ${item.rating}</span>
+                            <span>${item.type === 'films' ? '🎬 Film' : '📺 Série'}</span>
+                        </div>
+                        <p class="card-description">${item.description}</p>
+                        ${item.type === 'series' ? `<div style="margin-bottom: 1rem; color: rgba(255,255,255,0.8); font-size: 0.9rem;">📺 ${item.seasons} saison(s) disponible(s)</div>` : ''}
+                        <button class="play-btn" onclick="openPlayerModal('${item.internalId}', '${item.title}', '${item.type}')">
+                            ▶ Regarder maintenant
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
         }
 
-        function handleSearch() {
-            const searchTerm = document.getElementById('searchInput').value.trim();
-            
-            if (!searchTerm) {
-                showCategory(currentFilter);
+        function openPlayerModal(internalId, title, type) {
+            currentContent = contentDatabase.find(item => item.internalId === internalId);
+            if (!currentContent) return;
+
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('videoModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+
+            // Configuration de la sidebar pour les séries
+            const sidebar = document.getElementById('playerSidebar');
+            if (type === 'series') {
+                sidebar.style.display = 'block';
+                setupSeriesPlayer();
+            } else {
+                sidebar.style.display = 'none';
+                setupMoviePlayer();
+            }
+
+            // Configuration des serveurs
+            setupServerButtons();
+        }
+
+        function setupServerButtons() {
+            const serverContainer = document.getElementById('serverButtons');
+            serverContainer.innerHTML = '';
+
+            // Vérifier si c'est un contenu avec lien direct
+            if (currentContent.iframeLink) {
+                const button = document.createElement('button');
+                button.className = 'server-btn active';
+                button.textContent = 'Serveur Principal';
+                button.onclick = () => switchToDirectLink(button);
+                serverContainer.appendChild(button);
+                
+                // Charger directement le lien iframe
+                loadDirectVideo(currentContent.iframeLink);
                 return;
             }
-            
-            if (searchMode === 'xalaflix' || searchMode === 'both') {
-                // Ouvrir la modal pour la recherche externe
-                openSearchModal(searchTerm);
-            }
-            
-            if (searchMode === 'local' || searchMode === 'both') {
-                // Effectuer la recherche locale
-                const results = allContent.filter(item => 
-                    item.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                    (item.description && item.description.toLowerCase().includes(searchTerm.toLowerCase()))
-                );
+
+            // Configuration normale des serveurs
+            currentContent.servers.forEach((serverKey, index) => {
+                const button = document.createElement('button');
+                button.className = 'server-btn';
+                button.textContent = `Serveur ${index + 1}`;
+                button.onclick = () => switchServer(serverKey, button);
                 
-                displayContent(results);
+                if (index === 0) {
+                    button.classList.add('active');
+                    currentServer = serverKey;
+                }
+                
+                serverContainer.appendChild(button);
+            });
+
+            // Charger la première vidéo
+            if (currentContent.type === 'films') {
+                loadMovieVideo();
+            } else {
+                loadSeriesVideo(1, 1);
             }
         }
 
-        function openSearchModal(searchTerm) {
-            const modal = document.getElementById('searchModal');
-            const iframe = document.getElementById('searchIframe');
-            const loading = document.getElementById('searchIframeLoading');
-            const title = document.getElementById('searchModalTitle');
+        function switchToDirectLink(button) {
+            // Mise à jour des boutons serveurs
+            document.querySelectorAll('.server-btn').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
             
-            title.textContent = `Recherche: ${searchTerm}`;
-            loading.style.display = 'block';
-            iframe.style.display = 'none';
+            // Charger le lien direct
+            loadDirectVideo(currentContent.iframeLink);
+        }
+
+        function loadDirectVideo(url) {
+            showLoading();
             
-            // Encoder le terme de recherche pour l'URL
-            const encodedTerm = encodeURIComponent(searchTerm);
-            iframe.src = `https://xalaflix.io/search?q=${encodedTerm}`;
+            const videoFrame = document.getElementById('videoFrame');
             
-            modal.style.display = 'block';
-            
-            // Quand l'iframe est chargée
-            iframe.onload = function() {
-                loading.style.display = 'none';
-                iframe.style.display = 'block';
+            videoFrame.onload = function() {
+                hideLoading();
             };
+
+            videoFrame.onerror = function() {
+                hideLoading();
+                alert('Erreur de chargement du contenu.');
+            };
+
+            videoFrame.src = url;
         }
 
-        function closeSearchModal() {
-            document.getElementById('searchModal').style.display = 'none';
-            document.getElementById('searchIframe').src = '';
+        function setupMoviePlayer() {
+            // Pas besoin de sidebar pour les films
         }
 
-        // Fonctions pour filtrer et afficher le contenu
+        function setupSeriesPlayer() {
+            // Configuration des saisons
+            const seasonSelector = document.getElementById('seasonSelector');
+            seasonSelector.innerHTML = '<span style="margin-right: 1rem; color: #fff;">Saisons:</span>';
+
+            for (let i = 1; i <= currentContent.seasons; i++) {
+                const button = document.createElement('button');
+                button.className = 'season-btn';
+                button.textContent = i;
+                button.onclick = () => switchSeason(i, button);
+                
+                if (i === 1) {
+                    button.classList.add('active');
+                }
+                
+                seasonSelector.appendChild(button);
+            }
+
+            // Configuration des épisodes pour la première saison
+            updateEpisodeList(1);
+        }
+
+        function updateEpisodeList(season) {
+            const episodeList = document.getElementById('episodeList');
+            episodeList.innerHTML = '';
+            
+            // Génération de 10 épisodes par saison (simulation)
+            for (let i = 1; i <= 10; i++) {
+                const episodeItem = document.createElement('div');
+                episodeItem.className = 'episode-item';
+                if (i === 1 && season === 1) {
+                    episodeItem.classList.add('active');
+                }
+                episodeItem.innerHTML = `
+                    <div class="episode-title">Épisode ${i}</div>
+                    <div class="episode-info">S${season}E${i} - Titre de l'épisode</div>
+                `;
+                episodeItem.onclick = () => switchEpisode(i, episodeItem);
+                episodeList.appendChild(episodeItem);
+            }
+        }
+
+        function switchSeason(season, button) {
+            currentSeason = season;
+            currentEpisode = 1;
+            
+            // Mise à jour des boutons de saison
+            document.querySelectorAll('.season-btn').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            
+            // Mise à jour de la liste des épisodes
+            updateEpisodeList(season);
+            
+            // Chargement du premier épisode de la nouvelle saison
+            loadSeriesVideo(season, 1);
+        }
+
+        function switchEpisode(episode, element) {
+            currentEpisode = episode;
+            
+            // Mise à jour des boutons d'épisode
+            document.querySelectorAll('.episode-item').forEach(item => item.classList.remove('active'));
+            element.classList.add('active');
+            
+            // Chargement de l'épisode
+            loadSeriesVideo(currentSeason, episode);
+        }
+
+        function switchServer(serverKey, button) {
+            currentServer = serverKey;
+            
+            // Mise à jour des boutons serveur
+            document.querySelectorAll('.server-btn').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            
+            // Rechargement de la vidéo
+            if (currentContent.type === 'films') {
+                loadMovieVideo();
+            } else {
+                loadSeriesVideo(currentSeason, currentEpisode);
+            }
+        }
+
+        function loadMovieVideo() {
+            showLoading();
+            
+            const videoFrame = document.getElementById('videoFrame');
+            const serverUrl = streamingServers[currentServer];
+            
+            // Construction de l'URL en fonction des identifiants disponibles
+            let videoUrl = '';
+            if (currentContent.imdbId) {
+                videoUrl = `${serverUrl}${currentContent.imdbId}`;
+            } else if (currentContent.tmdbId) {
+                videoUrl = `${serverUrl}${currentContent.tmdbId}`;
+            } else {
+                videoUrl = `${serverUrl}${currentContent.internalId}`;
+            }
+            
+            videoFrame.onload = function() {
+                hideLoading();
+            };
+
+            videoFrame.onerror = function() {
+                hideLoading();
+                alert('Erreur de chargement du contenu. Essayez un autre serveur.');
+            };
+
+            videoFrame.src = videoUrl;
+        }
+
+        function loadSeriesVideo(season, episode) {
+            showLoading();
+            
+            const videoFrame = document.getElementById('videoFrame');
+            const serverUrl = streamingServers[currentServer];
+            
+            // Construction de l'URL pour les séries
+            let videoUrl = '';
+            if (currentContent.imdbId) {
+                videoUrl = `${serverUrl}${currentContent.imdbId}/${season}/${episode}`;
+            } else if (currentContent.tmdbId) {
+                videoUrl = `${serverUrl}${currentContent.tmdbId}/${season}/${episode}`;
+            } else {
+                videoUrl = `${serverUrl}${currentContent.internalId}/${season}/${episode}`;
+            }
+            
+            videoFrame.onload = function() {
+                hideLoading();
+            };
+
+            videoFrame.onerror = function() {
+                hideLoading();
+                alert('Erreur de chargement du contenu. Essayez un autre serveur.');
+            };
+
+            videoFrame.src = videoUrl;
+        }
+
+        function showLoading() {
+            document.getElementById('loadingSpinner').style.display = 'block';
+            document.getElementById('videoFrame').style.display = 'none';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingSpinner').style.display = 'none';
+            document.getElementById('videoFrame').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('videoModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            
+            // Réinitialiser le lecteur vidéo
+            document.getElementById('videoFrame').src = '';
+        }
+
         function showCategory(category) {
             currentFilter = category;
             
-            // Mettre à jour les boutons de catégorie actifs
+            // Mise à jour des boutons de catégorie
             document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll(`.category-btn[onclick="showCategory('${category}')"]`).forEach(btn => btn.classList.add('active'));
+            document.querySelector(`.category-btn[onclick="showCategory('${category}')"]`).classList.add('active');
             
-            // Filtrer le contenu
+            // Filtrage du contenu
             let filteredContent;
             if (category === 'all') {
                 filteredContent = allContent;
@@ -983,216 +1076,39 @@
                 );
             }
             
-            displayContent(filteredContent);
+            renderContent(filteredContent);
         }
 
-        function displayContent(content) {
-            const grid = document.getElementById('contentGrid');
-            grid.innerHTML = '';
+        function searchContent() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             
-            if (content.length === 0) {
-                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: rgba(255,255,255,0.7);">Aucun contenu trouvé.</p>';
+            if (searchTerm.trim() === '') {
+                showCategory(currentFilter);
                 return;
             }
             
-            content.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'content-card';
-                
-                card.innerHTML = `
-                    <div class="card-image">
-                        ${item.poster}
-                    </div>
-                    <div class="card-content">
-                        <h3 class="card-title">${item.title}</h3>
-                        <div class="card-meta">
-                            <span>${item.year}</span>
-                            <span>⭐ ${item.rating}</span>
-                        </div>
-                        <p class="card-description">${item.description}</p>
-                        <button class="play-btn" onclick="openVideoModal(${item.id})">
-                            ${item.type === 'series' ? 'Voir les épisodes' : 'Regarder'}
-                        </button>
-                    </div>
-                `;
-                
-                grid.appendChild(card);
-            });
-        }
-
-        // Fonctions pour la modal vidéo
-        function openVideoModal(contentId) {
-            currentContent = allContent.find(item => item.id === contentId);
-            if (!currentContent) return;
+            const filteredContent = allContent.filter(item => 
+                item.title.toLowerCase().includes(searchTerm) || 
+                item.description.toLowerCase().includes(searchTerm)
+            );
             
-            const modal = document.getElementById('videoModal');
-            const title = document.getElementById('modalTitle');
-            const videoFrame = document.getElementById('videoFrame');
-            const loading = document.getElementById('loadingSpinner');
-            
-            title.textContent = currentContent.title;
-            videoFrame.style.display = 'none';
-            loading.style.display = 'block';
-            
-            // Configurer les serveurs
-            setupServerButtons();
-            
-            // Configurer les saisons et épisodes si c'est une série
-            if (currentContent.type === 'series') {
-                setupSeasonsAndEpisodes();
-            } else {
-                document.getElementById('playerSidebar').style.display = 'none';
-            }
-            
-            modal.style.display = 'block';
-            
-            // Charger le premier serveur par défaut
-            if (currentContent.servers.length > 0) {
-                currentServer = currentContent.servers[0];
-                loadVideo();
-            }
-        }
-
-        function setupServerButtons() {
-            const container = document.getElementById('serverButtons');
-            container.innerHTML = '';
-            
-            currentContent.servers.forEach(serverKey => {
-                const btn = document.createElement('button');
-                btn.className = 'server-btn';
-                if (serverKey === currentServer) btn.classList.add('active');
-                
-                btn.textContent = `Serveur ${serverKey.replace('server', '').replace('seriesServer', '')}`;
-                btn.onclick = () => {
-                    currentServer = serverKey;
-                    document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    loadVideo();
-                };
-                
-                container.appendChild(btn);
-            });
-        }
-
-        function setupSeasonsAndEpisodes() {
-            document.getElementById('playerSidebar').style.display = 'block';
-            
-            // Configurer les saisons
-            const seasonSelector = document.getElementById('seasonSelector');
-            seasonSelector.innerHTML = '<span style="color: #fff; font-weight: bold;">Saison:</span>';
-            
-            for (let i = 1; i <= currentContent.seasons; i++) {
-                const btn = document.createElement('button');
-                btn.className = 'season-btn';
-                if (i === currentSeason) btn.classList.add('active');
-                
-                btn.textContent = i;
-                btn.onclick = () => {
-                    currentSeason = i;
-                    currentEpisode = 1;
-                    document.querySelectorAll('.season-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    updateEpisodesList();
-                    loadVideo();
-                };
-                
-                seasonSelector.appendChild(btn);
-            }
-            
-            // Configurer la liste des épisodes
-            updateEpisodesList();
-        }
-
-        function updateEpisodesList() {
-            const episodeList = document.getElementById('episodeList');
-            episodeList.innerHTML = '';
-            
-            // Générer 10 épisodes par saison (simplifié)
-            for (let i = 1; i <= 10; i++) {
-                const episode = document.createElement('div');
-                episode.className = 'episode-item';
-                if (i === currentEpisode && currentSeason === currentSeason) episode.classList.add('active');
-                
-                episode.innerHTML = `
-                    <div class="episode-title">Épisode ${i}</div>
-                    <div class="episode-info">Saison ${currentSeason}</div>
-                `;
-                
-                episode.onclick = () => {
-                    currentEpisode = i;
-                    document.querySelectorAll('.episode-item').forEach(e => e.classList.remove('active'));
-                    episode.classList.add('active');
-                    loadVideo();
-                };
-                
-                episodeList.appendChild(episode);
-            }
-        }
-
-        function loadVideo() {
-            const videoFrame = document.getElementById('videoFrame');
-            const loading = document.getElementById('loadingSpinner');
-            
-            videoFrame.style.display = 'none';
-            loading.style.display = 'block';
-            
-            let videoUrl = '';
-            
-            if (currentContent.iframeLink && currentServer === 'direct') {
-                // Utiliser le lien direct s'il existe
-                videoUrl = currentContent.iframeLink;
-            } else {
-                // Construire l'URL en fonction du serveur et du type de contenu
-                const serverUrl = streamingServers[currentServer];
-                
-                if (currentContent.type === 'films') {
-                    // Pour les films, utiliser l'ID IMDB ou TMDB selon le serveur
-                    if (currentServer === 'server4') {
-                        videoUrl = `${serverUrl}${currentContent.imdbId}`;
-                    } else {
-                        videoUrl = `${serverUrl}${currentContent.tmdbId}`;
-                    }
-                } else {
-                    // Pour les séries, inclure la saison et l'épisode
-                    videoUrl = `${serverUrl}${currentContent.tmdbId}/${currentSeason}/${currentEpisode}`;
-                }
-            }
-            
-            videoFrame.src = videoUrl;
-            
-            videoFrame.onload = function() {
-                loading.style.display = 'none';
-                videoFrame.style.display = 'block';
-            };
-        }
-
-        function closeModal() {
-            document.getElementById('videoModal').style.display = 'none';
-            document.getElementById('videoFrame').src = '';
-            currentContent = null;
-            currentServer = null;
+            renderContent(filteredContent);
         }
 
         // Initialisation
         document.addEventListener('DOMContentLoaded', function() {
-            showCategory('all');
+            renderContent(allContent);
             
-            // Permettre la recherche avec la touche Entrée
+            // Gestion de la touche Entrée dans la recherche
             document.getElementById('searchInput').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
-                    handleSearch();
+                    searchContent();
                 }
             });
             
-            // Fermer les modales en cliquant à l'extérieur
-            window.addEventListener('click', function(event) {
-                const searchModal = document.getElementById('searchModal');
-                if (event.target === searchModal) {
-                    closeSearchModal();
-                }
-                
-                const videoModal = document.getElementById('videoModal');
-                if (event.target === videoModal) {
+            // Fermeture du modal avec la touche Échap
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
                     closeModal();
                 }
             });
