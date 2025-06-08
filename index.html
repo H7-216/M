@@ -3,30 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XalaFlix - Streaming HD</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>XalaFlix - Streaming Premium</title>
     <style>
-        /* Reset CSS */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #0f0f0f;
             color: #ffffff;
-            line-height: 1.6;
         }
         
-        /* Header */
         .header {
             background: linear-gradient(90deg, #e50914 0%, #b20710 100%);
             padding: 1rem 0;
             position: sticky;
             top: 0;
-            z-index: 1000;
+            z-index: 100;
             box-shadow: 0 4px 20px rgba(229, 9, 20, 0.4);
         }
         
@@ -47,101 +43,27 @@
             font-weight: 800;
             color: #ffffff;
             text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
         
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 1.5rem;
-        }
-        
-        .nav-links a {
-            color: #ffffff;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-        }
-        
-        .nav-links a:hover, .nav-links a.active {
-            background: rgba(0, 0, 0, 0.3);
-        }
-        
-        /* Hero Section */
-        .hero {
-            height: 70vh;
-            min-height: 500px;
-            display: flex;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-            background-size: cover;
-            background-position: center;
-        }
-        
-        .hero::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 100%);
-        }
-        
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            max-width: 800px;
-        }
-        
-        .hero-content h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(45deg, #ffd700, #ff6b35);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            line-height: 1.2;
-        }
-        
-        .hero-content p {
-            font-size: 1.3rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-        }
-        
-        /* Search Bar */
         .search-container {
-            margin: 3rem 0;
+            margin: 2rem 0;
         }
         
         .search-box {
             display: flex;
-            max-width: 800px;
-            margin: 0 auto;
             background: rgba(255,255,255,0.15);
             border-radius: 50px;
             overflow: hidden;
             border: 1px solid rgba(255,255,255,0.2);
-            transition: all 0.3s ease;
-        }
-        
-        .search-box:focus-within {
-            box-shadow: 0 0 20px rgba(229, 9, 20, 0.5);
-            border-color: #e50914;
         }
         
         .search-input {
             flex: 1;
-            padding: 1.2rem 2rem;
+            padding: 1rem 2rem;
             border: none;
             background: transparent;
             color: #ffffff;
-            font-size: 1.1rem;
+            font-size: 1rem;
             outline: none;
         }
         
@@ -151,387 +73,216 @@
             border: none;
             color: #ffffff;
             cursor: pointer;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            font-size: 1rem;
         }
         
-        /* Content Grid */
         .content-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 2rem;
             margin: 2rem 0;
         }
         
         .content-card {
             background: rgba(255,255,255,0.05);
-            border-radius: 15px;
+            border-radius: 10px;
             overflow: hidden;
             transition: all 0.3s ease;
-            border: 1px solid rgba(255,255,255,0.1);
-            position: relative;
+            cursor: pointer;
         }
         
         .content-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-            border-color: #e50914;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
         
         .card-image {
-            height: 400px;
+            height: 450px;
             background-size: cover;
             background-position: center;
-            position: relative;
         }
         
         .card-content {
-            padding: 1.5rem;
+            padding: 1rem;
         }
         
         .card-title {
-            font-size: 1.4rem;
-            margin-bottom: 0.8rem;
-            color: #ffffff;
-            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
         }
         
-        .card-meta {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-            color: rgba(255,255,255,0.8);
-            font-size: 0.9rem;
-        }
-        
-        .card-rating {
-            color: #ffd700;
-            font-weight: bold;
-        }
-        
-        /* Modal */
-        .modal {
+        .player-container {
+            width: 100%;
+            height: 650px;
+            margin: 2rem 0;
             display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 2000;
-            overflow-y: auto;
         }
         
-        .modal-content {
-            background: #141414;
-            max-width: 1200px;
-            margin: 2rem auto;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 0 30px rgba(0,0,0,0.8);
-            position: relative;
+        .player-container.active {
+            display: block;
         }
         
-        .modal-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(0,0,0,0.7);
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            cursor: pointer;
-            z-index: 10;
-            transition: all 0.3s ease;
-        }
-        
-        .modal-header {
-            position: relative;
-            height: 500px;
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            align-items: flex-end;
-        }
-        
-        .modal-header::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to top, #141414 0%, rgba(20,20,20,0) 100%);
-        }
-        
-        .modal-header-content {
-            position: relative;
-            z-index: 2;
-            padding: 3rem;
-            width: 100%;
-            background: linear-gradient(to top, rgba(20,20,20,1) 0%, rgba(20,20,20,0) 100%);
-        }
-        
-        /* Responsive */
         @media (max-width: 768px) {
-            .hero-content h1 {
-                font-size: 2.5rem;
-            }
-            
             .content-grid {
                 grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             }
             
-            .modal-header {
-                height: 300px;
-            }
-        }
-        
-        @media (max-width: 576px) {
-            .hero-content h1 {
-                font-size: 2rem;
-            }
-            
-            .content-grid {
-                grid-template-columns: 1fr;
+            .player-container {
+                height: 400px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
     <header class="header">
         <div class="container">
             <nav class="nav">
                 <a href="#" class="logo">XalaFlix</a>
-                <ul class="nav-links">
-                    <li><a href="#" class="active">Accueil</a></li>
-                    <li><a href="#">Films</a></li>
-                    <li><a href="#">Séries</a></li>
-                    <li><a href="#">TV Live</a></li>
-                </ul>
+                <div class="search-box">
+                    <input type="text" class="search-input" placeholder="Rechercher un film, série...">
+                    <button class="search-btn">Rechercher</button>
+                </div>
             </nav>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero" style="background-image: url('https://image.tmdb.org/t/p/w1280/v5Xsg4NGS4mJ3DpwuN5kUnZxhL3.jpg')">
-        <div class="container">
-            <div class="hero-content">
-                <h1>Streaming HD Sans Limites</h1>
-                <p>Découvrez des milliers de films, séries et chaînes TV en qualité HD. Tout votre divertissement en un seul endroit.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Main Content -->
     <main class="container">
-        <!-- Search Section -->
         <div class="search-container">
             <div class="search-box">
-                <input type="text" class="search-input" placeholder="Rechercher un film, série...">
-                <button class="search-btn">
-                    <i class="fas fa-search"></i> Rechercher
-                </button>
+                <input type="text" class="search-input" placeholder="Rechercher un film, série..." id="searchInput">
+                <button class="search-btn" id="searchBtn">Rechercher</button>
             </div>
         </div>
 
-        <!-- Movies Section -->
-        <section>
-            <h2 class="section-title">Films Populaires</h2>
-            <div class="content-grid" id="moviesGrid">
-                <!-- Movies will be loaded here -->
-            </div>
-        </section>
+        <div class="content-grid" id="contentGrid">
+            <!-- Films et séries seront chargés ici -->
+        </div>
 
-        <!-- TV Shows Section -->
-        <section>
-            <h2 class="section-title">Séries Tendances</h2>
-            <div class="content-grid" id="showsGrid">
-                <!-- TV Shows will be loaded here -->
-            </div>
-        </section>
+        <!-- Lecteur vidéo -->
+        <div class="player-container" id="playerContainer">
+            <!-- Le lecteur sera chargé ici dynamiquement -->
+        </div>
     </main>
 
-    <!-- Video Modal -->
-    <div id="videoModal" class="modal">
-        <div class="modal-content">
-            <span class="modal-close" onclick="closeModal()">&times;</span>
-            <div class="modal-header" id="modalHeader">
-                <div class="modal-header-content">
-                    <h1 class="modal-title" id="modalTitle">Titre du Film</h1>
-                    <div class="modal-meta">
-                        <span class="modal-year">2023</span>
-                        <span class="modal-rating">⭐ 8.5/10</span>
-                    </div>
-                    <p class="modal-description" id="modalDescription">Description du film...</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
-        // Sample data - in a real app you would fetch this from your API
-        const movies = [
+        // Données des films/séries avec les iframes correspondantes
+        const contentData = [
             {
-                id: 1,
-                title: "Dune: Partie Deux",
-                year: "2024",
-                rating: "8.7",
-                description: "Paul Atreides s'allie avec Chani et les Fremen pour se venger de ceux qui ont détruit sa famille.",
-                image: "https://image.tmdb.org/t/p/w300/vWoa8QSoNwIHMBKLLv82btw2S5L.jpg"
-            },
-            {
-                id: 2,
-                title: "The Batman",
-                year: "2022",
-                rating: "7.8",
-                description: "Batman enquête sur la corruption à Gotham City et affronte le Riddler, un tueur en série ciblant l'élite de Gotham.",
-                image: "https://image.tmdb.org/t/p/w300/xycusHgMwmHNt7t3d9daD6zmJJ7.jpg"
-            },
-            {
-                id: 3,
-                title: "Avatar 2",
-                year: "2022",
-                rating: "7.6",
-                description: "Jake Sully et Ney'tiri forment une famille mais doivent quitter leur foyer et explorer les régions de Pandora.",
-                image: "https://image.tmdb.org/t/p/w300/8ajzjwKjHQKTicaGGM0t0tpco1j.jpg"
-            },
-            {
-                id: 4,
-                title: "Oppenheimer",
+                id: "le-livre-de-clarence",
+                title: "Le Livre de Clarence",
                 year: "2023",
-                rating: "8.4",
-                description: "L'histoire du physicien J. Robert Oppenheimer et son rôle dans le développement de la bombe atomique.",
-                image: "https://image.tmdb.org/t/p/w300/lIbDpn02LwUeHx8Wwp6zKtQhzNE.jpg"
+                type: "film",
+                image: "https://image.tmdb.org/t/p/w300/v5Xsg4NGS4mJ3DpwuN5kUnZxhL3.jpg",
+                iframe: '<iframe src="https://h7-216.github.io/M/10007-le-livre-de-clarence?url=https%3A%2F%2Ffrench-stream.gratis%2Ffilms%2F10007-le-livre-de-clarence-streaming-complet.html" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>'
+            },
+            {
+                id: "power-book-iii",
+                title: "Power Book III: Raising Kanan",
+                year: "2021",
+                type: "série",
+                image: "https://image.tmdb.org/t/p/w300/lIBtgpfiB92xNoB3Wa2ZtRtcyYP.jpg",
+                iframe: '<iframe src="https://h7-216.github.io/M/1006-power-book-iii-raising-kanan?url=https%3A%2F%2Ffrench-stream.gratis%2Ffilms%2F1006-power-book-iii-raising-kanan-streaming-complet.html" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>'
+            },
+            {
+                id: "sex-lives-college-girls",
+                title: "The Sex Lives of College Girls",
+                year: "2021",
+                type: "série",
+                image: "https://image.tmdb.org/t/p/w300/rt5emaY1f6koXNUbOessY12731J.jpg",
+                iframe: '<iframe src="https://h7-216.github.io/M/10065-the-sex-lives-of-college-girls?url=https%3A%2F%2Ffrench-stream.gratis%2Ffilms%2F10065-the-sex-lives-of-college-girls-streaming-complet.html" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>'
+            },
+            {
+                id: "knokke-off",
+                title: "Knokke Off: Jeunesse Dorée",
+                year: "2023",
+                type: "série",
+                image: "https://image.tmdb.org/t/p/w300/vGE8xUqiCQnihllRMl5tqYlKz6B.jpg",
+                iframe: '<iframe src="https://h7-216.github.io/M/1009-knokke-off-jeunesse-doree?url=https%3A%2F%2Ffrench-stream.gratis%2Ffilms%2F1009-knokke-off-jeunesse-doree-streaming-complet.html" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>'
+            },
+            {
+                id: "sous-les-jupes",
+                title: "Sous les jupes des filles",
+                year: "2014",
+                type: "film",
+                image: "https://image.tmdb.org/t/p/w300/jUCjuO3BpOBv84nRmTJJaA1pUld.jpg",
+                iframe: '<iframe src="https://h7-216.github.io/M/10139-sous-les-jupes-des-filles?url=https%3A%2F%2Ffrench-stream.gratis%2Ffilms%2F10139-sous-les-jupes-des-filles-streaming-complet.html" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>'
+            },
+            {
+                id: "so-help-me-todd",
+                title: "So Help Me Todd",
+                year: "2022",
+                type: "série",
+                image: "https://image.tmdb.org/t/p/w300/ifh5NNMzUEqErsHmeKjjGblbOav.jpg",
+                iframe: '<iframe src="https://h7-216.github.io/M/1017-so-help-me-todd?url=https%3A%2F%2Ffrench-stream.gratis%2Ffilms%2F1017-so-help-me-todd-streaming-complet.html" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>'
             }
         ];
 
-        const tvShows = [
-            {
-                id: 101,
-                title: "Stranger Things",
-                year: "2016",
-                rating: "8.7",
-                description: "Quand un jeune garçon disparaît, une petite ville découvre un mystère impliquant des expériences secrètes.",
-                image: "https://image.tmdb.org/t/p/w300/49WJfeN0moxb9IPfGn8AIqMGskD.jpg"
-            },
-            {
-                id: 102,
-                title: "The Last of Us",
-                year: "2023",
-                rating: "8.8",
-                description: "Vingt ans après la destruction de la civilisation moderne, Joel est embauché pour faire sortir Ellie d'une zone de quarantaine oppressive.",
-                image: "https://image.tmdb.org/t/p/w300/uKvVjHNqB5VmOrdxqAt2F7J78ED.jpg"
-            },
-            {
-                id: 103,
-                title: "The Mandalorian",
-                year: "2019",
-                rating: "8.5",
-                description: "Les voyages d'un chasseur de primes mandalorien solitaire à travers les confins de la galaxie.",
-                image: "https://image.tmdb.org/t/p/w300/sWgBv7LV2PRoQgkxwlibdGXKz1S.jpg"
-            },
-            {
-                id: 104,
-                title: "House of the Dragon",
-                year: "2022",
-                rating: "8.5",
-                description: "L'histoire de la maison Targaryen, 200 ans avant les événements de Game of Thrones.",
-                image: "https://image.tmdb.org/t/p/w300/1Np511QIqSs0s3iDpWXPbuY4o5o.jpg"
-            }
-        ];
-
-        // Initialize the app
+        // Initialisation de l'application
         document.addEventListener('DOMContentLoaded', function() {
-            renderMovies();
-            renderTVShows();
-            setupModal();
+            renderContent(contentData);
+            setupEventListeners();
         });
 
-        // Render movies
-        function renderMovies() {
-            const grid = document.getElementById('moviesGrid');
+        // Afficher le contenu dans la grille
+        function renderContent(content) {
+            const grid = document.getElementById('contentGrid');
             grid.innerHTML = '';
             
-            movies.forEach(movie => {
+            content.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'content-card';
+                card.dataset.id = item.id;
+                
                 card.innerHTML = `
-                    <div class="card-image" style="background-image: url('${movie.image}')"></div>
+                    <div class="card-image" style="background-image: url('${item.image}')"></div>
                     <div class="card-content">
-                        <h3 class="card-title">${movie.title}</h3>
-                        <div class="card-meta">
-                            <span>${movie.year}</span>
-                            <span class="card-rating">⭐ ${movie.rating}</span>
-                        </div>
+                        <h3 class="card-title">${item.title}</h3>
+                        <p>${item.year} • ${item.type}</p>
                     </div>
                 `;
-                card.addEventListener('click', () => openModal(movie));
+                
+                card.addEventListener('click', () => playContent(item));
                 grid.appendChild(card);
             });
         }
 
-        // Render TV shows
-        function renderTVShows() {
-            const grid = document.getElementById('showsGrid');
-            grid.innerHTML = '';
+        // Jouer le contenu sélectionné
+        function playContent(content) {
+            const playerContainer = document.getElementById('playerContainer');
+            playerContainer.innerHTML = content.iframe;
+            playerContainer.classList.add('active');
             
-            tvShows.forEach(show => {
-                const card = document.createElement('div');
-                card.className = 'content-card';
-                card.innerHTML = `
-                    <div class="card-image" style="background-image: url('${show.image}')"></div>
-                    <div class="card-content">
-                        <h3 class="card-title">${show.title}</h3>
-                        <div class="card-meta">
-                            <span>${show.year}</span>
-                            <span class="card-rating">⭐ ${show.rating}</span>
-                        </div>
-                    </div>
-                `;
-                card.addEventListener('click', () => openModal(show));
-                grid.appendChild(card);
-            });
+            // Faire défiler jusqu'au lecteur
+            playerContainer.scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Setup modal functionality
-        function setupModal() {
-            window.onclick = function(event) {
-                const modal = document.getElementById('videoModal');
-                if (event.target === modal) {
-                    closeModal();
+        // Configurer les écouteurs d'événements
+        function setupEventListeners() {
+            document.getElementById('searchBtn').addEventListener('click', searchContent);
+            
+            document.getElementById('searchInput').addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    searchContent();
                 }
-            };
+            });
         }
 
-        // Open modal with content
-        function openModal(content) {
-            const modal = document.getElementById('videoModal');
-            const header = document.getElementById('modalHeader');
-            const title = document.getElementById('modalTitle');
-            const description = document.getElementById('modalDescription');
+        // Fonction de recherche
+        function searchContent() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             
-            header.style.backgroundImage = `url('${content.image.replace('w300', 'w1280')}')`;
-            title.textContent = content.title;
-            description.textContent = content.description;
+            if (searchTerm === '') {
+                renderContent(contentData);
+                return;
+            }
             
-            modal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-        }
-
-        // Close modal
-        function closeModal() {
-            document.getElementById('videoModal').style.display = 'none';
-            document.body.style.overflow = 'auto';
+            const filteredContent = contentData.filter(item => 
+                item.title.toLowerCase().includes(searchTerm) ||
+                item.year.includes(searchTerm) ||
+                item.type.includes(searchTerm)
+            );
+            
+            renderContent(filteredContent);
         }
     </script>
 </body>
