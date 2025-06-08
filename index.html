@@ -188,6 +188,8 @@
             color: #888;
             font-size: 1.2rem;
             position: relative;
+            background-size: cover;
+            background-position: center;
         }
 
         .card-content {
@@ -330,64 +332,6 @@
             border-color: #e50914;
         }
 
-        .season-selector {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-        }
-
-        .season-btn {
-            padding: 0.4rem 0.8rem;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: #ffffff;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.8rem;
-        }
-
-        .season-btn:hover,
-        .season-btn.active {
-            background: #ffd700;
-            color: #000;
-            border-color: #ffd700;
-        }
-
-        .episode-list {
-            margin-top: 1rem;
-        }
-
-        .episode-item {
-            padding: 0.8rem;
-            background: rgba(255,255,255,0.05);
-            margin-bottom: 0.5rem;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1px solid transparent;
-        }
-
-        .episode-item:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: #e50914;
-        }
-
-        .episode-item.active {
-            background: #e50914;
-            border-color: #e50914;
-        }
-
-        .episode-title {
-            font-weight: bold;
-            margin-bottom: 0.3rem;
-        }
-
-        .episode-info {
-            font-size: 0.8rem;
-            color: rgba(255,255,255,0.7);
-        }
-
         .video-container {
             flex: 1;
             position: relative;
@@ -410,6 +354,22 @@
         }
 
         @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+            
+            .search-input {
+                width: 250px;
+            }
+            
+            .nav-links {
+                gap: 1rem;
+            }
+            
+            .category-nav {
+                gap: 0.5rem;
+            }
+            
             .player-container {
                 flex-direction: column;
             }
@@ -417,20 +377,6 @@
             .player-sidebar {
                 width: 100%;
                 max-height: 200px;
-                order: 2;
-            }
-            
-            .player-main {
-                order: 1;
-            }
-            
-            .player-controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .server-btn {
-                margin-bottom: 0.5rem;
             }
         }
 
@@ -470,29 +416,6 @@
 
         .footer-section ul li a:hover {
             color: #ffd700;
-        }
-
-        @media (max-width: 768px) {
-            .hero-content h1 {
-                font-size: 2rem;
-            }
-            
-            .search-input {
-                width: 250px;
-            }
-            
-            .nav-links {
-                gap: 1rem;
-            }
-            
-            .category-nav {
-                gap: 0.5rem;
-            }
-            
-            .category-btn {
-                padding: 0.6rem 1rem;
-                font-size: 0.9rem;
-            }
         }
     </style>
 </head>
@@ -535,7 +458,6 @@
                 <button class="category-btn" onclick="showCategory('comedie')">Comédie</button>
                 <button class="category-btn" onclick="showCategory('drame')">Drame</button>
                 <button class="category-btn" onclick="showCategory('sci-fi')">Sci-Fi</button>
-                <button class="category-btn" onclick="showCategory('animation')">Animation</button>
             </div>
 
             <div class="content-grid" id="contentGrid">
@@ -552,14 +474,8 @@
                 <span class="close" onclick="closeModal()">&times;</span>
             </div>
             <div class="player-container">
-                <div class="player-sidebar" id="playerSidebar">
-                    <h3 style="margin-bottom: 1rem; color: #e50914;">Episodes</h3>
-                    <div class="season-selector" id="seasonSelector">
-                        <!-- Les saisons seront ajoutées ici -->
-                    </div>
-                    <div class="episode-list" id="episodeList">
-                        <!-- Les épisodes seront ajoutés ici -->
-                    </div>
+                <div class="player-sidebar" id="playerSidebar" style="display:none;">
+                    <!-- Sidebar cachée car on utilise le player intégré de XalaFlix -->
                 </div>
                 <div class="player-main">
                     <div class="player-controls">
@@ -606,7 +522,6 @@
                         <li><a href="#">Centre d'aide</a></li>
                         <li><a href="#">Contact</a></li>
                         <li><a href="#">Signaler un problème</a></li>
-                        <li><a href="#">FAQ</a></li>
                     </ul>
                 </div>
             </div>
@@ -615,182 +530,130 @@
     </footer>
 
     <script>
-        // Configuration des serveurs de streaming
-        const streamingServers = {
-            server1: "https://vidsrc.to/embed/movie/",
-            server2: "https://vidsrc.me/embed/movie/",
-            server3: "https://2embed.org/embed/movie/",
-            server4: "https://www.2embed.ru/embed/imdb/movie/",
-            seriesServer1: "https://vidsrc.to/embed/tv/",
-            seriesServer2: "https://vidsrc.me/embed/tv/",
-            seriesServer3: "https://2embed.org/embed/tv/"
-        };
-
-        // Base de données de contenu avec identifiants internes
-        const contentDatabase = [
-            // Nouveaux films ajoutés
-            {
-                id: 9,
-                internalId: "movie_minecraft_film",
-                title: "Minecraft - Le Film",
-                type: "films",
-                category: "animation",
-                year: "2025",
-                rating: "—",
-                description: "L'adaptation tant attendue du célèbre jeu vidéo Minecraft au cinéma.",
-                poster: "Minecraft - Le Film",
-                iframeLink: "https://xalaflix.io/movies/watch/minecraft-le-film/2407",
-                servers: ["direct"]
-            },
-            {
-                id: 10,
-                internalId: "movie_henry_danger_film",
-                title: "Henry Danger - Le Film",
-                type: "films",
-                category: "action",
-                year: "2024",
-                rating: "—",
-                description: "Le héros adolescent Henry Danger revient dans une aventure cinématographique.",
-                poster: "Henry Danger - Le Film",
-                iframeLink: "https://xalaflix.io/movies/watch/henry-danger-le-film/2762",
-                servers: ["direct"]
-            },
-            // Films existants
-            {
-                id: 1,
-                internalId: "movie_avatar2",
-                imdbId: "tt1630029",
-                tmdbId: "76600",
-                title: "Avatar: La Voie de l'Eau",
-                type: "films",
-                category: "action",
-                year: "2022",
-                rating: "8.1",
-                description: "Suite épique des aventures de Jake Sully et Neytiri sur Pandora.",
-                poster: "Avatar 2",
-                servers: ["server1", "server2", "server3"]
-            },
-            {
-                id: 2,
-                internalId: "series_stranger_things",
-                imdbId: "tt4574334",
-                tmdbId: "66732",
-                title: "Stranger Things",
-                type: "series",
-                category: "sci-fi",
-                year: "2016-2022",
-                rating: "8.7",
-                description: "Des enfants découvrent des forces surnaturelles dans leur petite ville.",
-                poster: "Stranger Things",
-                seasons: 4,
-                servers: ["seriesServer1", "seriesServer2", "seriesServer3"]
-            },
-            {
-                id: 3,
-                internalId: "movie_topgun_maverick",
-                imdbId: "tt1745960",
-                tmdbId: "361743",
-                title: "Top Gun: Maverick",
-                type: "films",
-                category: "action",
-                year: "2022",
-                rating: "8.3",
-                description: "Pete 'Maverick' Mitchell revient pour une mission périlleuse.",
-                poster: "Top Gun Maverick",
-                servers: ["server1", "server2", "server4"]
-            },
-            {
-                id: 4,
-                internalId: "series_the_bear",
-                imdbId: "tt14452776",
-                tmdbId: "136315",
-                title: "The Bear",
-                type: "series",
-                category: "drame",
-                year: "2022",
-                rating: "8.5",
-                description: "Un chef cuisinier reprend un restaurant familial à Chicago.",
-                poster: "The Bear",
-                seasons: 3,
-                servers: ["seriesServer1", "seriesServer2"]
-            },
-            {
-                id: 5,
-                internalId: "movie_dune",
-                imdbId: "tt1160419",
-                tmdbId: "438631",
-                title: "Dune",
-                type: "films",
-                category: "sci-fi",
-                year: "2021",
-                rating: "8.0",
-                description: "L'épopée de Paul Atreides sur la planète désertique Arrakis.",
-                poster: "Dune",
-                servers: ["server1", "server3", "server4"]
-            },
-            {
-                id: 6,
-                internalId: "series_wednesday",
-                imdbId: "tt13443470",
-                tmdbId: "119051",
-                title: "Wednesday",
-                type: "series",
-                category: "comedie",
-                year: "2022",
-                rating: "8.1",
-                description: "Wednesday Addams enquête sur des mystères surnaturels.",
-                poster: "Wednesday",
-                seasons: 1,
-                servers: ["seriesServer1", "seriesServer3"]
-            },
-            {
-                id: 7,
-                internalId: "movie_spiderman_nwh",
-                imdbId: "tt10872600",
-                tmdbId: "634649",
-                title: "Spider-Man: No Way Home",
-                type: "films",
-                category: "action",
-                year: "2021",
-                rating: "8.4",
-                description: "Peter Parker affronte des méchants du multivers.",
-                poster: "Spider-Man No Way Home",
-                servers: ["server1", "server2", "server3"]
-            },
-            {
-                id: 8,
-                internalId: "series_hotd",
-                imdbId: "tt11198330",
-                tmdbId: "94997",
-                title: "House of the Dragon",
-                type: "series",
-                category: "drame",
-                year: "2022",
-                rating: "8.5",
-                description: "La guerre civile des Targaryen pour le Trône de Fer.",
-                poster: "House of the Dragon",
-                seasons: 2,
-                servers: ["seriesServer1", "seriesServer2", "seriesServer3"]
-            }
-        ];
-
+        // Configuration de base
         let currentFilter = 'all';
-        let allContent = [...contentDatabase];
         let currentContent = null;
-        let currentServer = null;
-        let currentSeason = 1;
-        let currentEpisode = 1;
 
-        function renderContent(content) {
+        // Fonction principale de recherche
+        async function searchContent() {
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            
+            if (searchTerm === '') {
+                alert("Veuillez entrer un terme de recherche");
+                return;
+            }
+
+            showLoading(true);
+            
+            try {
+                // 1. Essayer d'abord avec l'API de XalaFlix (si disponible)
+                const results = await searchXalaFlixAPI(searchTerm);
+                
+                if (results.length === 0) {
+                    // 2. Fallback: scraper la page de recherche de XalaFlix
+                    const scrapedResults = await scrapeXalaFlix(searchTerm);
+                    renderContent(scrapedResults);
+                } else {
+                    renderContent(results);
+                }
+            } catch (error) {
+                console.error("Erreur de recherche:", error);
+                alert("Erreur lors de la recherche. Essayez de rafraîchir la page.");
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Méthode 1: Utilisation de l'API XalaFlix (si disponible)
+        async function searchXalaFlixAPI(query) {
+            try {
+                // Remplacez cette URL par votre véritable endpoint API
+                const response = await fetch(`https://xalaflix.io/api/search?q=${encodeURIComponent(query)}`);
+                
+                if (!response.ok) {
+                    throw new Error("API non disponible");
+                }
+                
+                const data = await response.json();
+                
+                return data.map(item => ({
+                    id: item.id,
+                    title: item.title,
+                    type: item.type === 'movie' ? 'films' : 'series',
+                    year: item.year || 'N/A',
+                    rating: item.rating || '—',
+                    description: item.description || 'Description non disponible',
+                    image: item.poster || 'https://via.placeholder.com/300x450',
+                    slug: item.slug,
+                    iframeLink: `https://xalaflix.io/${item.type === 'movie' ? 'movies' : 'series'}/watch/${item.slug}`
+                }));
+            } catch (error) {
+                console.warn("API non disponible, passage au scraping");
+                return [];
+            }
+        }
+
+        // Méthode 2: Scraping de la page de recherche XalaFlix
+        async function scrapeXalaFlix(query) {
+            try {
+                // Utilisation d'un proxy CORS pour contourner les restrictions
+                const proxyUrl = 'https://api.allorigins.win/get?url=';
+                const targetUrl = `https://xalaflix.io/search?q=${encodeURIComponent(query)}`;
+                
+                const response = await fetch(proxyUrl + encodeURIComponent(targetUrl));
+                const data = await response.json();
+                
+                // Parse le HTML (structure à adapter selon votre ancien site)
+                const parser = new DOMParser();
+                const htmlDoc = parser.parseFromString(data.contents, 'text/html');
+                
+                const results = [];
+                
+                // Sélecteurs à adapter selon la structure HTML de XalaFlix.io
+                const items = htmlDoc.querySelectorAll('.movie-item, .series-item');
+                
+                items.forEach(item => {
+                    const title = item.querySelector('.title')?.textContent || 'Titre inconnu';
+                    const type = item.classList.contains('series-item') ? 'series' : 'films';
+                    const image = item.querySelector('img')?.src || 'https://via.placeholder.com/300x450';
+                    const slug = item.querySelector('a')?.href?.split('/').pop() || title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                    
+                    results.push({
+                        id: slug,
+                        title: title,
+                        type: type,
+                        year: 'N/A',
+                        rating: '—',
+                        description: 'Cliquez pour regarder',
+                        image: image,
+                        slug: slug,
+                        iframeLink: `https://xalaflix.io/${type === 'series' ? 'series' : 'movies'}/watch/${slug}`
+                    });
+                });
+                
+                return results;
+            } catch (error) {
+                console.error("Erreur de scraping:", error);
+                return [];
+            }
+        }
+
+        // Affichage des résultats
+        function renderContent(items) {
             const grid = document.getElementById('contentGrid');
             grid.innerHTML = '';
-
-            content.forEach(item => {
+            
+            if (items.length === 0) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #fff;">Aucun résultat trouvé</p>';
+                return;
+            }
+            
+            items.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'content-card';
                 card.innerHTML = `
-                    <div class="card-image">
-                        <span>🎬 ${item.poster}</span>
+                    <div class="card-image" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('${item.image}') no-repeat center/cover;">
+                        ${!item.image.includes('placeholder') ? '' : `<span>🎬 ${item.title}</span>`}
                     </div>
                     <div class="card-content">
                         <h3 class="card-title">${item.title}</h3>
@@ -800,8 +663,7 @@
                             <span>${item.type === 'films' ? '🎬 Film' : '📺 Série'}</span>
                         </div>
                         <p class="card-description">${item.description}</p>
-                        ${item.type === 'series' ? `<div style="margin-bottom: 1rem; color: rgba(255,255,255,0.8); font-size: 0.9rem;">📺 ${item.seasons} saison(s) disponible(s)</div>` : ''}
-                        <button class="play-btn" onclick="openPlayerModal('${item.internalId}', '${item.title}', '${item.type}')">
+                        <button class="play-btn" onclick="openPlayerModal('${item.slug}', '${item.title}', '${item.type}')">
                             ▶ Regarder maintenant
                         </button>
                     </div>
@@ -810,255 +672,72 @@
             });
         }
 
-        function openPlayerModal(internalId, title, type) {
-            currentContent = contentDatabase.find(item => item.internalId === internalId);
-            if (!currentContent) return;
-
+        // Ouverture du lecteur vidéo
+        function openPlayerModal(slug, title, type) {
             document.getElementById('modalTitle').textContent = title;
             document.getElementById('videoModal').style.display = 'block';
             document.body.style.overflow = 'hidden';
-
-            // Configuration de la sidebar pour les séries
-            const sidebar = document.getElementById('playerSidebar');
-            if (type === 'series') {
-                sidebar.style.display = 'block';
-                setupSeriesPlayer();
-            } else {
-                sidebar.style.display = 'none';
-                setupMoviePlayer();
-            }
-
-            // Configuration des serveurs
-            setupServerButtons();
-        }
-
-        function setupServerButtons() {
+            
+            // Configuration des serveurs (juste XalaFlix dans ce cas)
             const serverContainer = document.getElementById('serverButtons');
-            serverContainer.innerHTML = '';
-
-            // Vérifier si c'est un contenu avec lien direct
-            if (currentContent.iframeLink) {
-                const button = document.createElement('button');
-                button.className = 'server-btn active';
-                button.textContent = 'Serveur Principal';
-                button.onclick = () => switchToDirectLink(button);
-                serverContainer.appendChild(button);
-                
-                // Charger directement le lien iframe
-                loadDirectVideo(currentContent.iframeLink);
-                return;
-            }
-
-            // Configuration normale des serveurs
-            currentContent.servers.forEach((serverKey, index) => {
-                const button = document.createElement('button');
-                button.className = 'server-btn';
-                button.textContent = `Serveur ${index + 1}`;
-                button.onclick = () => switchServer(serverKey, button);
-                
-                if (index === 0) {
-                    button.classList.add('active');
-                    currentServer = serverKey;
-                }
-                
-                serverContainer.appendChild(button);
-            });
-
-            // Charger la première vidéo
-            if (currentContent.type === 'films') {
-                loadMovieVideo();
-            } else {
-                loadSeriesVideo(1, 1);
-            }
-        }
-
-        function switchToDirectLink(button) {
-            // Mise à jour des boutons serveurs
-            document.querySelectorAll('.server-btn').forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
+            serverContainer.innerHTML = `
+                <button class="server-btn active">
+                    Serveur XalaFlix
+                </button>
+            `;
             
-            // Charger le lien direct
-            loadDirectVideo(currentContent.iframeLink);
+            // Chargement de la vidéo
+            loadXalaFlixVideo(slug, type);
         }
 
-        function loadDirectVideo(url) {
-            showLoading();
+        // Chargement de la vidéo depuis XalaFlix
+        function loadXalaFlixVideo(slug, type) {
+            showLoading(true);
             
             const videoFrame = document.getElementById('videoFrame');
+            videoFrame.style.display = 'none';
+            videoFrame.src = '';
+            
+            const videoUrl = `https://xalaflix.io/${type === 'series' ? 'series' : 'movies'}/watch/${slug}?autoplay=1`;
             
             videoFrame.onload = function() {
-                hideLoading();
+                showLoading(false);
+                videoFrame.style.display = 'block';
             };
-
+            
             videoFrame.onerror = function() {
-                hideLoading();
-                alert('Erreur de chargement du contenu.');
+                showLoading(false);
+                alert('Erreur de chargement. Essayez de rafraîchir ou vérifiez votre connexion.');
             };
-
-            videoFrame.src = url;
-        }
-
-        function setupMoviePlayer() {
-            // Pas besoin de sidebar pour les films
-        }
-
-        function setupSeriesPlayer() {
-            // Configuration des saisons
-            const seasonSelector = document.getElementById('seasonSelector');
-            seasonSelector.innerHTML = '<span style="margin-right: 1rem; color: #fff;">Saisons:</span>';
-
-            for (let i = 1; i <= currentContent.seasons; i++) {
-                const button = document.createElement('button');
-                button.className = 'season-btn';
-                button.textContent = i;
-                button.onclick = () => switchSeason(i, button);
-                
-                if (i === 1) {
-                    button.classList.add('active');
-                }
-                
-                seasonSelector.appendChild(button);
-            }
-
-            // Configuration des épisodes pour la première saison
-            updateEpisodeList(1);
-        }
-
-        function updateEpisodeList(season) {
-            const episodeList = document.getElementById('episodeList');
-            episodeList.innerHTML = '';
             
-            // Génération de 10 épisodes par saison (simulation)
-            for (let i = 1; i <= 10; i++) {
-                const episodeItem = document.createElement('div');
-                episodeItem.className = 'episode-item';
-                if (i === 1 && season === 1) {
-                    episodeItem.classList.add('active');
-                }
-                episodeItem.innerHTML = `
-                    <div class="episode-title">Épisode ${i}</div>
-                    <div class="episode-info">S${season}E${i} - Titre de l'épisode</div>
-                `;
-                episodeItem.onclick = () => switchEpisode(i, episodeItem);
-                episodeList.appendChild(episodeItem);
-            }
-        }
-
-        function switchSeason(season, button) {
-            currentSeason = season;
-            currentEpisode = 1;
-            
-            // Mise à jour des boutons de saison
-            document.querySelectorAll('.season-btn').forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            
-            // Mise à jour de la liste des épisodes
-            updateEpisodeList(season);
-            
-            // Chargement du premier épisode de la nouvelle saison
-            loadSeriesVideo(season, 1);
-        }
-
-        function switchEpisode(episode, element) {
-            currentEpisode = episode;
-            
-            // Mise à jour des boutons d'épisode
-            document.querySelectorAll('.episode-item').forEach(item => item.classList.remove('active'));
-            element.classList.add('active');
-            
-            // Chargement de l'épisode
-            loadSeriesVideo(currentSeason, episode);
-        }
-
-        function switchServer(serverKey, button) {
-            currentServer = serverKey;
-            
-            // Mise à jour des boutons serveur
-            document.querySelectorAll('.server-btn').forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            
-            // Rechargement de la vidéo
-            if (currentContent.type === 'films') {
-                loadMovieVideo();
-            } else {
-                loadSeriesVideo(currentSeason, currentEpisode);
-            }
-        }
-
-        function loadMovieVideo() {
-            showLoading();
-            
-            const videoFrame = document.getElementById('videoFrame');
-            const serverUrl = streamingServers[currentServer];
-            
-            // Construction de l'URL en fonction des identifiants disponibles
-            let videoUrl = '';
-            if (currentContent.imdbId) {
-                videoUrl = `${serverUrl}${currentContent.imdbId}`;
-            } else if (currentContent.tmdbId) {
-                videoUrl = `${serverUrl}${currentContent.tmdbId}`;
-            } else {
-                videoUrl = `${serverUrl}${currentContent.internalId}`;
-            }
-            
-            videoFrame.onload = function() {
-                hideLoading();
-            };
-
-            videoFrame.onerror = function() {
-                hideLoading();
-                alert('Erreur de chargement du contenu. Essayez un autre serveur.');
-            };
-
             videoFrame.src = videoUrl;
         }
 
-        function loadSeriesVideo(season, episode) {
-            showLoading();
-            
+        // Gestion du chargement
+        function showLoading(show) {
+            const spinner = document.getElementById('loadingSpinner');
             const videoFrame = document.getElementById('videoFrame');
-            const serverUrl = streamingServers[currentServer];
             
-            // Construction de l'URL pour les séries
-            let videoUrl = '';
-            if (currentContent.imdbId) {
-                videoUrl = `${serverUrl}${currentContent.imdbId}/${season}/${episode}`;
-            } else if (currentContent.tmdbId) {
-                videoUrl = `${serverUrl}${currentContent.tmdbId}/${season}/${episode}`;
+            if (show) {
+                spinner.style.display = 'block';
+                videoFrame.style.display = 'none';
             } else {
-                videoUrl = `${serverUrl}${currentContent.internalId}/${season}/${episode}`;
+                spinner.style.display = 'none';
+                videoFrame.style.display = 'block';
             }
-            
-            videoFrame.onload = function() {
-                hideLoading();
-            };
-
-            videoFrame.onerror = function() {
-                hideLoading();
-                alert('Erreur de chargement du contenu. Essayez un autre serveur.');
-            };
-
-            videoFrame.src = videoUrl;
         }
 
-        function showLoading() {
-            document.getElementById('loadingSpinner').style.display = 'block';
-            document.getElementById('videoFrame').style.display = 'none';
-        }
-
-        function hideLoading() {
-            document.getElementById('loadingSpinner').style.display = 'none';
-            document.getElementById('videoFrame').style.display = 'block';
-        }
-
+        // Fermeture du modal
         function closeModal() {
             document.getElementById('videoModal').style.display = 'none';
             document.body.style.overflow = 'auto';
             
-            // Réinitialiser le lecteur vidéo
-            document.getElementById('videoFrame').src = '';
+            // Arrêter la vidéo
+            const videoFrame = document.getElementById('videoFrame');
+            videoFrame.src = '';
         }
 
+        // Filtrage par catégorie
         function showCategory(category) {
             currentFilter = category;
             
@@ -1066,38 +745,22 @@
             document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`.category-btn[onclick="showCategory('${category}')"]`).classList.add('active');
             
-            // Filtrage du contenu
-            let filteredContent;
-            if (category === 'all') {
-                filteredContent = allContent;
-            } else {
-                filteredContent = allContent.filter(item => 
-                    item.type === category || item.category === category
-                );
-            }
-            
-            renderContent(filteredContent);
-        }
-
-        function searchContent() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            
-            if (searchTerm.trim() === '') {
-                showCategory(currentFilter);
-                return;
-            }
-            
-            const filteredContent = allContent.filter(item => 
-                item.title.toLowerCase().includes(searchTerm) || 
-                item.description.toLowerCase().includes(searchTerm)
-            );
-            
-            renderContent(filteredContent);
+            // Pour une vraie implémentation, il faudrait charger les contenus par catégorie depuis XalaFlix
+            document.getElementById('contentGrid').innerHTML = `
+                <p style="grid-column: 1/-1; text-align: center; color: #fff;">
+                    Utilisez la recherche pour trouver des ${category === 'all' ? 'contenus' : category}
+                </p>
+            `;
         }
 
         // Initialisation
         document.addEventListener('DOMContentLoaded', function() {
-            renderContent(allContent);
+            // Message d'accueil
+            document.getElementById('contentGrid').innerHTML = `
+                <p style="grid-column: 1/-1; text-align: center; color: #fff;">
+                    Recherchez des films ou séries pour commencer
+                </p>
+            `;
             
             // Gestion de la touche Entrée dans la recherche
             document.getElementById('searchInput').addEventListener('keypress', function(e) {
