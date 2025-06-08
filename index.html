@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XalaFlix - Streaming Premium</title>
+    <title>XalaFlix - Plateforme de Streaming</title>
     <style>
         * {
             margin: 0;
@@ -11,279 +11,1754 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         body {
-            background-color: #0f0f0f;
+            background: #0f0f0f;
             color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
         }
-        
+
+        /* Header modernisé avec effet glassmorphism */
         .header {
-            background: linear-gradient(90deg, #e50914 0%, #b20710 100%);
+            background: rgba(229, 9, 20, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             padding: 1rem 0;
             position: sticky;
             top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 20px rgba(229, 9, 20, 0.4);
+            z-index: 1000;
+            box-shadow: 0 8px 32px rgba(229, 9, 20, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-        
+
         .container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 0 2rem;
         }
-        
+
         .nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        
+
         .logo {
-            font-size: 2rem;
+            font-size: 2.2rem;
             font-weight: 800;
             color: #ffffff;
             text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
         }
-        
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo::before {
+            content: "🎬";
+            font-size: 1.8rem;
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.8));
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-links a::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.5s ease;
+        }
+
+        .nav-links a:hover::before {
+            left: 100%;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-links a.active {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        /* Hero section avec parallax et particules */
+        .hero {
+            height: 80vh;
+            min-height: 600px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(0,0,0,0.7) 0%, rgba(229,9,20,0.4) 50%, rgba(0,0,0,0.7) 100%);
+            z-index: 1;
+        }
+
+        .hero-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-30px) rotate(120deg); }
+            66% { transform: translateY(15px) rotate(240deg); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            text-align: left;
+            animation: slideInFromLeft 1s ease-out;
+        }
+
+        @keyframes slideInFromLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, #ffd700, #ff6b35, #e50914);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+            animation: gradientShift 3s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .hero-content p {
+            font-size: 1.4rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .cta-btn {
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-primary {
+            background: linear-gradient(45deg, #e50914, #ff6b35);
+            color: white;
+            box-shadow: 0 10px 30px rgba(229, 9, 20, 0.4);
+        }
+
+        .cta-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(229, 9, 20, 0.6);
+        }
+
+        .cta-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .cta-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Search bar avec effets visuels avancés */
         .search-container {
-            margin: 2rem 0;
+            margin: 4rem 0;
+            position: relative;
         }
-        
+
         .search-box {
             display: flex;
-            background: rgba(255,255,255,0.15);
-            border-radius: 50px;
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 60px;
             overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.2);
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
         }
-        
+
+        .search-box:focus-within {
+            box-shadow: 0 0 40px rgba(229, 9, 20, 0.6);
+            border-color: #e50914;
+            transform: scale(1.02);
+        }
+
         .search-input {
             flex: 1;
-            padding: 1rem 2rem;
+            padding: 1.5rem 2rem;
             border: none;
             background: transparent;
             color: #ffffff;
-            font-size: 1rem;
+            font-size: 1.2rem;
             outline: none;
         }
-        
+
+        .search-input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+
         .search-btn {
-            padding: 0 2rem;
-            background: #e50914;
+            padding: 0 2.5rem;
+            background: linear-gradient(45deg, #e50914, #ff6b35);
             border: none;
             color: #ffffff;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
         }
-        
+
+        .search-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: all 0.5s ease;
+        }
+
+        .search-btn:hover::before {
+            left: 100%;
+        }
+
+        .search-btn:hover {
+            background: linear-gradient(45deg, #ff6b35, #e50914);
+        }
+
+        /* Section titles avec effets */
+        .section-title {
+            font-size: 2.2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            padding-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #e50914, #ffd700, #ff6b35);
+            border-radius: 2px;
+            animation: expandLine 0.8s ease-out forwards;
+        }
+
+        @keyframes expandLine {
+            to { width: 120px; }
+        }
+
+        /* Cartes de contenu avec effets 3D */
         .content-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2rem;
-            margin: 2rem 0;
+            gap: 2.5rem;
+            margin: 3rem 0;
         }
-        
+
         .content-card {
             background: rgba(255,255,255,0.05);
-            border-radius: 10px;
+            border-radius: 20px;
             overflow: hidden;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border: 2px solid rgba(255,255,255,0.1);
+            position: relative;
             cursor: pointer;
+            transform-style: preserve-3d;
         }
-        
+
+        .content-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(229,9,20,0.1), rgba(255,107,53,0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 20px;
+            z-index: 1;
+        }
+
+        .content-card:hover::before {
+            opacity: 1;
+        }
+
         .content-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            transform: translateY(-15px) rotateX(5deg);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            border-color: #e50914;
         }
-        
+
+        .card-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(45deg, rgba(0,0,0,0.8), rgba(229,9,20,0.8));
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 25px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 3;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
         .card-image {
             height: 450px;
             background-size: cover;
             background-position: center;
+            position: relative;
+            overflow: hidden;
         }
-        
-        .card-content {
-            padding: 1rem;
-        }
-        
-        .card-title {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .player-container {
+
+        .card-image::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
             width: 100%;
-            height: 650px;
-            margin: 2rem 0;
+            height: 70%;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
+        }
+
+        .card-content {
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #ffffff;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.95rem;
+        }
+
+        .card-rating {
+            color: #ffd700;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .card-description {
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 2rem;
+            font-size: 1rem;
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .play-btn {
+            background: linear-gradient(45deg, #e50914, #b20710);
+            color: white;
+            box-shadow: 0 5px 15px rgba(229, 9, 20, 0.4);
+        }
+
+        .play-btn:hover {
+            background: linear-gradient(45deg, #b20710, #e50914);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(229, 9, 20, 0.6);
+        }
+
+        .info-btn {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .info-btn:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Modal améliorée avec animations */
+        .modal {
             display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            overflow-y: auto;
+            animation: modalFadeIn 0.3s ease-out;
         }
-        
-        .player-container.active {
-            display: block;
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                backdrop-filter: blur(0px);
+            }
+            to {
+                opacity: 1;
+                backdrop-filter: blur(10px);
+            }
         }
-        
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            max-width: 1200px;
+            margin: 2rem auto;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            position: relative;
+            animation: modalSlideIn 0.4s ease-out;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px) scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .modal-close:hover {
+            background: #e50914;
+            transform: rotate(90deg) scale(1.1);
+            box-shadow: 0 0 20px rgba(229, 9, 20, 0.6);
+        }
+
+        .modal-header {
+            padding: 3rem;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .modal-header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, transparent 100%);
+            z-index: 1;
+        }
+
+        .modal-header-content {
+            position: relative;
+            z-index: 2;
+            max-width: 600px;
+        }
+
+        .modal-title {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .modal-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .modal-rating {
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .modal-description {
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .modal-btn {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: none;
+        }
+
+        .modal-btn-primary {
+            background: linear-gradient(45deg, #e50914, #b20710);
+            color: white;
+            box-shadow: 0 5px 15px rgba(229, 9, 20, 0.4);
+        }
+
+        .modal-btn-primary:hover {
+            background: linear-gradient(45deg, #b20710, #e50914);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(229, 9, 20, 0.6);
+        }
+
+        .modal-btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-btn-secondary:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-3px);
+        }
+
+        .modal-body {
+            padding: 2rem 3rem;
+        }
+
+        .modal-section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            position: relative;
+            padding-left: 1rem;
+        }
+
+        .modal-section-title::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: linear-gradient(to bottom, #e50914, #ff6b35);
+            border-radius: 2px;
+        }
+
+        .modal-cast {
+            display: flex;
+            gap: 1.5rem;
+            overflow-x: auto;
+            padding-bottom: 1rem;
+            scrollbar-width: thin;
+            scrollbar-color: #e50914 #333;
+        }
+
+        .modal-cast::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .modal-cast::-webkit-scrollbar-track {
+            background: #333;
+            border-radius: 3px;
+        }
+
+        .modal-cast::-webkit-scrollbar-thumb {
+            background: #e50914;
+            border-radius: 3px;
+        }
+
+        .cast-member {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 100px;
+        }
+
+        .cast-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            margin-bottom: 0.5rem;
+            border: 3px solid rgba(229, 9, 20, 0.5);
+        }
+
+        .cast-name {
+            font-weight: 600;
+            color: white;
+            text-align: center;
+        }
+
+        .cast-role {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.7);
+            text-align: center;
+        }
+
+        .modal-video {
+            width: 100%;
+            height: 500px;
+            background: #000;
+            margin: 2rem 0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .modal-recommendations {
+            margin-top: 3rem;
+        }
+
+        .recommendations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .recommendation-card {
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .recommendation-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+
+        .recommendation-img {
+            width: 100%;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Notification system */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: linear-gradient(45deg, #e50914, #ff6b35);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            z-index: 3000;
+            box-shadow: 0 10px 30px rgba(229, 9, 20, 0.4);
+            animation: notificationSlide 0.3s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        @keyframes notificationSlide {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .notification.error {
+            background: linear-gradient(45deg, #dc3545, #c82333);
+        }
+
+        .notification.success {
+            background: linear-gradient(45deg, #28a745, #20c997);
+        }
+
+        /* Loading animation améliorée */
+        .loader {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 150px;
+            gap: 20px;
+        }
+
+        .loader-dot {
+            width: 25px;
+            height: 25px;
+            background: linear-gradient(45deg, #e50914, #ff6b35);
+            border-radius: 50%;
+            animation: loaderBounce 0.8s infinite alternate;
+            box-shadow: 0 5px 15px rgba(229, 9, 20, 0.3);
+        }
+
+        .loader-dot:nth-child(2) {
+            animation-delay: 0.2s;
+            background: linear-gradient(45deg, #ff6b35, #ffd700);
+        }
+
+        .loader-dot:nth-child(3) {
+            animation-delay: 0.4s;
+            background: linear-gradient(45deg, #ffd700, #e50914);
+        }
+
+        @keyframes loaderBounce {
+            to {
+                transform: translateY(-30px) scale(1.2);
+                box-shadow: 0 10px 25px rgba(229, 9, 20, 0.5);
+            }
+        }
+
+        /* Footer amélioré */
+        .footer {
+            background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+            padding: 5rem 0 2rem;
+            margin-top: 5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+        }
+
+        .footer::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #e50914, #ff6b35, #ffd700);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: #ffd700;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .footer-column h3::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background: #e50914;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-links a:hover {
+            color: #e50914;
+            transform: translateX(5px);
+        }
+
+        .footer-links a::before {
+            content: "▶";
+            font-size: 0.6rem;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover::before {
+            opacity: 1;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.5);
+            font-size: 0.9rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: #e50914;
+            transform: translateY(-3px);
+        }
+
+        /* Responsive amélioré */
         @media (max-width: 768px) {
-            .content-grid {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            .hero-content h1 {
+                font-size: 2.5rem;
             }
             
-            .player-container {
-                height: 400px;
+            .hero-cta {
+                flex-direction: column;
             }
+            
+            .cta-btn {
+                justify-content: center;
+            }
+            
+            .search-box {
+                flex-direction: column;
+                border-radius: 15px;
+            }
+            
+            .modal-header {
+                padding: 2rem 1.5rem;
+            }
+            
+            .modal-title {
+                font-size: 2rem;
+            }
+            
+            .modal-body {
+                padding: 1.5rem;
+            }
+            
+            .modal-video {
+                height: 300px;
+            }
+        }
+
+        /* Accessibilité */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Focus visible pour l'accessibilité */
+        .action-btn:focus,
+        .cta-btn:focus,
+        .search-btn:focus,
+        .modal-btn:focus {
+            outline: 3px solid #ffd700;
+            outline-offset: 2px;
         }
     </style>
 </head>
 <body>
+    <!-- Header -->
     <header class="header">
         <div class="container">
             <nav class="nav">
                 <a href="#" class="logo">XalaFlix</a>
-                <div class="search-box">
-                    <input type="text" class="search-input" placeholder="Rechercher un film, série...">
-                    <button class="search-btn">Rechercher</button>
-                </div>
+                <ul class="nav-links">
+                    <li><a href="#" class="active" onclick="showCategory('all')">Accueil</a></li>
+                    <li><a href="#" onclick="showCategory('movies')">Films</a></li>
+                    <li><a href="#" onclick="showCategory('shows')">Séries</a></li>
+                    <li><a href="#" onclick="showCategory('livetv')">TV Live</a></li>
+                </ul>
             </nav>
         </div>
     </header>
 
-    <main class="container">
+    <!-- Hero Section -->
+    <section class="hero" id="heroSection">
+        <div class="hero-particles" id="heroParticles"></div>
+        <div class="hero-content container">
+            <h1>Streaming de qualité sans limites</h1>
+            <p>Découvrez notre vaste catalogue de films, séries et chaînes TV en direct. Tout ce que vous voulez, quand vous voulez.</p>
+            <div class="hero-cta">
+                <a href="#" class="cta-btn cta-primary" onclick="scrollToContent()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    Commencer à regarder
+                </a>
+                <a href="#" class="cta-btn cta-secondary" onclick="showInfo('about')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    En savoir plus
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content container">
+        <!-- Search Section -->
         <div class="search-container">
             <div class="search-box">
-                <input type="text" class="search-input" placeholder="Rechercher un film, série..." id="searchInput">
-                <button class="search-btn" id="searchBtn">Rechercher</button>
+                <input type="text" class="search-input" placeholder="Rechercher un film, série, émission..." id="searchInput" aria-label="Recherche de contenu">
+                <button class="search-btn" onclick="searchContent()" aria-label="Lancer la recherche">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    Rechercher
+                </button>
             </div>
         </div>
 
-        <div class="content-grid" id="contentGrid">
-            <!-- Films et séries seront chargés ici -->
-        </div>
+        <!-- Featured Content -->
+        <section>
+            <h2 class="section-title">Contenu en vedette</h2>
+            <div class="content-grid" id="featuredGrid">
+                <!-- Le contenu sera chargé dynamiquement -->
+            </div>
+        </section>
 
-        <!-- Lecteur vidéo -->
-        <div class="player-container" id="playerContainer">
-            <!-- Le lecteur sera chargé ici dynamiquement -->
-        </div>
+        <!-- Movies Section -->
+        <section>
+            <h2 class="section-title">Nouveaux films</h2>
+            <div class="content-grid" id="moviesGrid">
+                <!-- Le contenu sera chargé dynamiquement -->
+            </div>
+        </section>
+
+        <!-- TV Shows Section -->
+        <section>
+            <h2 class="section-title">Séries populaires</h2>
+            <div class="content-grid" id="showsGrid">
+                <!-- Le contenu sera chargé dynamiquement -->
+            </div>
+        </section>
+
+        <!-- Live TV Section -->
+        <section>
+            <h2 class="section-title">Chaînes en direct</h2>
+            <div class="content-grid" id="liveTvGrid">
+                <!-- Le contenu sera chargé dynamiquement -->
+            </div>
+        </section>
     </main>
 
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Navigation</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Accueil</a></li>
+                        <li><a href="#">Films</a></li>
+                        <li><a href="#">Séries</a></li>
+                        <li><a href="#">TV Live</a></li>
+                        <li><a href="#">Nouveautés</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Informations</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">À propos</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Politique de confidentialité</a></li>
+                        <li><a href="#">Conditions d'utilisation</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Compte</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Mon compte</a></li>
+                        <li><a href="#">Ma liste</a></li>
+                        <li><a href="#">Historique</a></li>
+                        <li><a href="#">Abonnements</a></li>
+                        <li><a href="#">Paramètres</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Réseaux sociaux</h3>
+                    <div class="social-links">
+                        <a href="#" class="social-link" aria-label="Facebook">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Twitter">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Instagram">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-link" aria-label="YouTube">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path>
+                                <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 XalaFlix. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Video Modal -->
+    <div id="videoModal" class="modal" role="dialog" aria-labelledby="modalTitle" aria-modal="true">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()" aria-label="Fermer la modal">&times;</button>
+            <div class="modal-header" id="modalHeader" style="background-image: url('https://image.tmdb.org/t/p/original/8Y43POKjjKDGI9MH89NW0NAzzp8.jpg')">
+                <div class="modal-header-content">
+                    <h1 class="modal-title" id="modalTitle">Titre du contenu</h1>
+                    <div class="modal-meta">
+                        <span class="modal-year" id="modalYear">2023</span>
+                        <span class="modal-rating" id="modalRating">⭐ 8.5/10</span>
+                        <span class="modal-duration" id="modalDuration">2h 15m</span>
+                    </div>
+                    <p class="modal-description" id="modalDescription">Description du contenu...</p>
+                    <div class="modal-actions">
+                        <button class="modal-btn modal-btn-primary" onclick="playContent()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                            </svg>
+                            Regarder maintenant
+                        </button>
+                        <button class="modal-btn modal-btn-secondary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                            Ma liste
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <h3 class="modal-section-title">Distribution</h3>
+                <div class="modal-cast" id="modalCast">
+                    <!-- Cast members will be loaded here -->
+                </div>
+                
+                <h3 class="modal-section-title">Bande-annonce</h3>
+                <div class="modal-video">
+                    <!-- Video player will be loaded here -->
+                    <iframe width="100%" height="100%" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                
+                <div class="modal-recommendations">
+                    <h3 class="modal-section-title">Recommandations</h3>
+                    <div class="recommendations-grid" id="recommendationsGrid">
+                        <!-- Recommendations will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Modal -->
+    <div id="aboutModal" class="modal" role="dialog" aria-labelledby="aboutModalTitle" aria-modal="true">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()" aria-label="Fermer la modal">&times;</button>
+            <div class="modal-header" style="background-image: linear-gradient(135deg, #e50914, #b20710)">
+                <div class="modal-header-content">
+                    <h1 class="modal-title">À propos de XalaFlix</h1>
+                    <p class="modal-description">Notre plateforme de streaming premium</p>
+                </div>
+            </div>
+            <div class="modal-body">
+                <h3 class="modal-section-title">Notre mission</h3>
+                <p>XalaFlix a pour mission de fournir un service de streaming de haute qualité avec une vaste bibliothèque de films, séries et chaînes TV en direct. Nous nous engageons à offrir une expérience utilisateur exceptionnelle avec des fonctionnalités innovantes.</p>
+                
+                <h3 class="modal-section-title">Nos avantages</h3>
+                <ul style="margin-left: 1.5rem; margin-bottom: 2rem; line-height: 1.8;">
+                    <li>Contenu exclusif et original</li>
+                    <li>Streaming en 4K HDR</li>
+                    <li>Téléchargement pour regarder hors ligne</li>
+                    <li>Pas de publicités</li>
+                    <li>Disponible sur tous vos appareils</li>
+                </ul>
+                
+                <h3 class="modal-section-title">Notre équipe</h3>
+                <p>Une équipe passionnée de cinéphiles et de technologues travaillant sans relâche pour vous offrir le meilleur service possible.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification" style="display: none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+        <span id="notificationText">Message de notification</span>
+    </div>
+
     <script>
-        // Données des films/séries avec les iframes correspondantes
-        const contentData = [
-            {
-                id: "le-livre-de-clarence",
-                title: "Le Livre de Clarence",
-                year: "2023",
-                type: "film",
-                image: "https://image.tmdb.org/t/p/w300/v5Xsg4NGS4mJ3DpwuN5kUnZxhL3.jpg",
-                iframe: '<iframe src="https://french-stream.gratis/films/10007-le-livre-de-clarence-streaming-complet.html" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>'
-            },
-            {
-                id: "power-book-iii",
-                title: "Power Book III: Raising Kanan",
-                year: "2021",
-                type: "série",
-                image: "https://image.tmdb.org/t/p/w300/lIBtgpfiB92xNoB3Wa2ZtRtcyYP.jpg",
-                iframe: '<iframe src="https://h7-216.github.io/M/1006-power-book-iii-raising-kanan?url=https%3A%2F%2Ffrench-stream.gratis%2Ffilms%2F1006-power-book-iii-raising-kanan-streaming-complet.html" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>'
-            },
-            {
-                id: "sex-lives-college-girls",
-                title: "The Sex Lives of College Girls",
-                year: "2021",
-                type: "série",
-                image: "https://image.tmdb.org/t/p/w300/rt5emaY1f6koXNUbOessY12731J.jpg",
-                iframe: '<iframe src="https://h7-216.github.io/M/10065-the-sex-lives-of-college-girls?url=https%3A%2F%2Ffrench-stream.gratis%2Ffilms%2F10065-the-sex-lives-of-college-girls-streaming-complet.html" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>'
-            },
-            {
-                id: "knokke-off",
-                title: "Knokke Off: Jeunesse Dorée",
-                year: "2023",
-                type: "série",
-                image: "https://image.tmdb.org/t/p/w300/vGE8xUqiCQnihllRMl5tqYlKz6B.jpg",
-                iframe: '<iframe src="https://h7-216.github.io/M/1009-knokke-off-jeunesse-doree?url=https%3A%2F%2Ffrench-stream.gratis%2Ffilms%2F1009-knokke-off-jeunesse-doree-streaming-complet.html" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>'
-            },
-            {
-                id: "sous-les-jupes",
-                title: "Sous les jupes des filles",
-                year: "2014",
-                type: "film",
-                image: "https://image.tmdb.org/t/p/w300/jUCjuO3BpOBv84nRmTJJaA1pUld.jpg",
-                iframe: '<iframe src="https://h7-216.github.io/M/10139-sous-les-jupes-des-filles?url=https%3A%2F%2Ffrench-stream.gratis%2Ffilms%2F10139-sous-les-jupes-des-filles-streaming-complet.html" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>'
-            },
-            {
-                id: "so-help-me-todd",
-                title: "So Help Me Todd",
-                year: "2022",
-                type: "série",
-                image: "https://image.tmdb.org/t/p/w300/ifh5NNMzUEqErsHmeKjjGblbOav.jpg",
-                iframe: '<iframe src="https://h7-216.github.io/M/1017-so-help-me-todd?url=https%3A%2F%2Ffrench-stream.gratis%2Ffilms%2F1017-so-help-me-todd-streaming-complet.html" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>'
-            }
+        // Données de contenu simulées (remplacées par une API réelle en production)
+        const contentData = {
+            featured: [
+                {
+                    id: 1,
+                    title: "L'Élite de la Nuit",
+                    year: 2023,
+                    rating: 8.7,
+                    duration: "2h 18m",
+                    description: "Un thriller d'action palpitant suivant un groupe de mercenaires d'élite chargés d'une mission impossible dans une ville contrôlée par des gangs.",
+                    image: "https://image.tmdb.org/t/p/original/8Y43POKjjKDGI9MH89NW0NAzzp8.jpg",
+                    type: "movie",
+                    badge: "Nouveau"
+                },
+                {
+                    id: 2,
+                    title: "Les Ombres du Passé",
+                    year: 2023,
+                    rating: 9.1,
+                    duration: "1 saison",
+                    description: "Une série dramatique captivante explorant les secrets de famille qui refont surface après 20 ans de silence.",
+                    image: "https://image.tmdb.org/t/p/original/qWQSnedj0LCUjWNp9fLcMtfgadp.jpg",
+                    type: "show",
+                    badge: "Tendance"
+                },
+                {
+                    id: 3,
+                    title: "Cosmic Frontier",
+                    year: 2023,
+                    rating: 7.9,
+                    duration: "1h 52m",
+                    description: "Une aventure spatiale épique alors qu'un équipage interstellaire découvre une menace extraterrestre inimaginable.",
+                    image: "https://image.tmdb.org/t/p/original/7bWxAsNPv9CXHOhZbJVlj2KxgfP.jpg",
+                    type: "movie",
+                    badge: "Exclusif"
+                },
+                {
+                    id: 4,
+                    title: "Chroniques Urbaines",
+                    year: 2022,
+                    rating: 8.3,
+                    duration: "3 saisons",
+                    description: "Une anthologie dramatique explorant les vies entrelacées de résidents d'une grande métropole à travers différentes époques.",
+                    image: "https://image.tmdb.org/t/p/original/dDlEmu3EZ0Pgg93K2SVNLCjCSvE.jpg",
+                    type: "show",
+                    badge: "Populaire"
+                }
+            ],
+            movies: [
+                {
+                    id: 5,
+                    title: "Le Dernier Rituel",
+                    year: 2023,
+                    rating: 7.5,
+                    duration: "1h 45m",
+                    description: "Un film d'horreur psychologique suivant un groupe d'amis qui réveille une ancienne malédiction lors d'un voyage en forêt.",
+                    image: "https://image.tmdb.org/t/p/original/7ZO9yoEU2fAHKhmJWfAc2QIPWJg.jpg",
+                    type: "movie"
+                },
+                {
+                    id: 6,
+                    title: "Rêves Électriques",
+                    year: 2023,
+                    rating: 8.2,
+                    duration: "2h 5m",
+                    description: "Un voyage sci-fi onirique explorant la nature de la réalité et de la conscience à travers les yeux d'un ingénieur en intelligence artificielle.",
+                    image: "https://image.tmdb.org/t/p/original/nLBRD7UPR6GjmWQp6ASAfCTaWKX.jpg",
+                    type: "movie"
+                },
+                {
+                    id: 7,
+                    title: "La Dernière Course",
+                    year: 2023,
+                    rating: 8.9,
+                    duration: "2h 12m",
+                    description: "Un drame sportif inspirant sur un coureur à pied vieillissant qui se prépare pour une dernière course malgré les obstacles physiques.",
+                    image: "https://image.tmdb.org/t/p/original/6SPF6NL2efLEWxXXXKqmZczPnZP.jpg",
+                    type: "movie"
+                },
+                {
+                    id: 8,
+                    title: "Silent Protocol",
+                    year: 2023,
+                    rating: 7.8,
+                    duration: "1h 58m",
+                    description: "Un thriller d'espionnage intense suivant une opération secrète qui tourne mal, forçant un agent à fuir tout en essayant de déjouer un complot.",
+                    image: "https://image.tmdb.org/t/p/original/9dHFRTHP7OAhDTKsmYeDUNAx7Bf.jpg",
+                    type: "movie"
+                }
+            ],
+            shows: [
+                {
+                    id: 9,
+                    title: "Échoes of Time",
+                    year: 2023,
+                    rating: 8.4,
+                    duration: "2 saisons",
+                    description: "Une série fantastique où les habitants d'une petite ville découvrent qu'ils peuvent communiquer avec leurs versions passées et futures.",
+                    image: "https://image.tmdb.org/t/p/original/9yxep7oJdkj3Pla9TD9gKflRApY.jpg",
+                    type: "show"
+                },
+                {
+                    id: 10,
+                    title: "Under the Bridge",
+                    year: 2023,
+                    rating: 8.7,
+                    duration: "1 saison",
+                    description: "Un drame criminel basé sur des événements réels, explorant le meurtre d'une adolescente et l'enquête qui a choqué une communauté.",
+                    image: "https://image.tmdb.org/t/p/original/jYtNUfMbU6DBbmdepKzs6F2qGMb.jpg",
+                    type: "show"
+                },
+                {
+                    id: 11,
+                    title: "Golden Years",
+                    year: 2022,
+                    rating: 9.0,
+                    duration: "3 saisons",
+                    description: "Une comédie dramatique chaleureuse sur un groupe de retraités qui décident de reprendre le contrôle de leurs vies et de vivre pleinement.",
+                    image: "https://image.tmdb.org/t/p/original/1X4h40fcB4WWUmIBK0auT4zRBAV.jpg",
+                    type: "show"
+                },
+                {
+                    id: 12,
+                    title: "The Last Frontier",
+                    year: 2023,
+                    rating: 8.6,
+                    duration: "1 saison",
+                    description: "Une série d'aventure historique suivant une expédition dangereuse dans les territoires inexplorés de l'Alaska au 19ème siècle.",
+                    image: "https://image.tmdb.org/t/p/original/uDgy6hyPd82kOHh6I95FLtLnj6p.jpg",
+                    type: "show"
+                }
+            ],
+            livetv: [
+                {
+                    id: 13,
+                    title: "Xala Sports",
+                    year: "En direct",
+                    rating: 4.5,
+                    duration: "24/7",
+                    description: "Chaîne sportive diffusant les meilleurs événements en direct : football, tennis, basket et plus encore.",
+                    image: "https://image.tmdb.org/t/p/original/2wgiXQwUQxSWtPB2vXjQOITw3Qh.jpg",
+                    type: "livetv"
+                },
+                {
+                    id: 14,
+                    title: "Xala News",
+                    year: "En direct",
+                    rating: 4.0,
+                    duration: "24/7",
+                    description: "Actualités en continu avec des reportages en direct du monde entier et des analyses approfondies.",
+                    image: "https://image.tmdb.org/t/p/original/9yBVqNruk6Ykrwc32qrK2TIE5xw.jpg",
+                    type: "livetv"
+                },
+                {
+                    id: 15,
+                    title: "Xala Cinema",
+                    year: "En direct",
+                    rating: 4.8,
+                    duration: "24/7",
+                    description: "Films primés et blockbusters diffusés en continu toute la journée sans interruption.",
+                    image: "https://image.tmdb.org/t/p/original/56v2KjBlU4XaOv9rVYEQypROD7P.jpg",
+                    type: "livetv"
+                },
+                {
+                    id: 16,
+                    title: "Xala Kids",
+                    year: "En direct",
+                    rating: 4.7,
+                    duration: "24/7",
+                    description: "Chaîne dédiée aux enfants avec des dessins animés éducatifs et des programmes familiaux.",
+                    image: "https://image.tmdb.org/t/p/original/7IRy0iHdaS0JI3ng4ZYlk5gLSFn.jpg",
+                    type: "livetv"
+                }
+            ]
+        };
+
+        // Données de casting simulées
+        const castData = [
+            { id: 1, name: "Jean Dujardin", role: "Alex Mercer", image: "https://image.tmdb.org/t/p/original/2EivVl6k8aNMvDdH2vZkQeJqU5j.jpg" },
+            { id: 2, name: "Léa Seydoux", role: "Sarah Connor", image: "https://image.tmdb.org/t/p/original/7ksg82ZZOP5OjuqFvp9TjQ6M3Ec.jpg" },
+            { id: 3, name: "Omar Sy", role: "Marcus Wright", image: "https://image.tmdb.org/t/p/original/jzJ8KaM5UgH6UQb9Q4e9LGRtEOu.jpg" },
+            { id: 4, name: "Marion Cotillard", role: "Dr. Emily Shaw", image: "https://image.tmdb.org/t/p/original/7XC0oT7VeCFDojKYXbHIl84VNaV.jpg" },
+            { id: 5, name: "Vincent Cassel", role: "Victor Kray", image: "https://image.tmdb.org/t/p/original/7rwSXluNWZAluYMOEWBxkPmckES.jpg" }
         ];
 
-        // Initialisation de l'application
+        // Données de recommandations simulées
+        const recommendationsData = [
+            { id: 17, title: "Midnight Run", image: "https://image.tmdb.org/t/p/original/5kAGbi9MFAobQTVfK4kWPnIfnP5.jpg" },
+            { id: 18, title: "Shadow Protocol", image: "https://image.tmdb.org/t/p/original/6SPF6NL2efLEWxXXXKqmZczPnZP.jpg" },
+            { id: 19, title: "Dark Waters", image: "https://image.tmdb.org/t/p/original/c9kE1g3Q5ODnOQEh1k6WxX3v6VZ.jpg" },
+            { id: 20, title: "The Last Stand", image: "https://image.tmdb.org/t/p/original/9dHFRTHP7OAhDTKsmYeDUNAx7Bf.jpg" },
+            { id: 21, title: "Silent Hill", image: "https://image.tmdb.org/t/p/original/7ZO9yoEU2fAHKhmJWfAc2QIPWJg.jpg" }
+        ];
+
+        // Initialisation de la page
         document.addEventListener('DOMContentLoaded', function() {
-            renderContent(contentData);
-            setupEventListeners();
-        });
-
-        // Afficher le contenu dans la grille
-        function renderContent(content) {
-            const grid = document.getElementById('contentGrid');
-            grid.innerHTML = '';
+            // Charger les particules pour l'effet hero
+            createParticles();
             
-            content.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'content-card';
-                card.dataset.id = item.id;
-                
-                card.innerHTML = `
-                    <div class="card-image" style="background-image: url('${item.image}')"></div>
-                    <div class="card-content">
-                        <h3 class="card-title">${item.title}</h3>
-                        <p>${item.year} • ${item.type}</p>
-                    </div>
-                `;
-                
-                card.addEventListener('click', () => playContent(item));
-                grid.appendChild(card);
-            });
-        }
-
-        // Jouer le contenu sélectionné
-        function playContent(content) {
-            const playerContainer = document.getElementById('playerContainer');
-            playerContainer.innerHTML = content.iframe;
-            playerContainer.classList.add('active');
+            // Charger le contenu initial
+            loadContent('featured', contentData.featured);
+            loadContent('movies', contentData.movies);
+            loadContent('shows', contentData.shows);
+            loadContent('livetv', contentData.livetv);
             
-            // Faire défiler jusqu'au lecteur
-            playerContainer.scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // Configurer les écouteurs d'événements
-        function setupEventListeners() {
-            document.getElementById('searchBtn').addEventListener('click', searchContent);
-            
-            document.getElementById('searchInput').addEventListener('keyup', function(e) {
+            // Configurer la recherche
+            document.getElementById('searchInput').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     searchContent();
                 }
             });
+        });
+
+        // Fonction pour créer des particules animées
+        function createParticles() {
+            const particlesContainer = document.getElementById('heroParticles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Position aléatoire
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Taille aléatoire
+                const size = Math.random() * 3 + 1;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Opacité aléatoire
+                particle.style.opacity = Math.random() * 0.5 + 0.3;
+                
+                // Délai d'animation aléatoire
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
         }
 
-        // Fonction de recherche
-        function searchContent() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        // Fonction pour charger le contenu dans une section
+        function loadContent(sectionId, contentArray) {
+            const section = document.getElementById(`${sectionId}Grid`);
             
-            if (searchTerm === '') {
-                renderContent(contentData);
+            // Effacer le loader
+            section.innerHTML = '';
+            
+            // Ajouter chaque élément de contenu
+            contentArray.forEach(item => {
+                const card = createContentCard(item);
+                section.appendChild(card);
+            });
+        }
+
+        // Fonction pour créer une carte de contenu
+        function createContentCard(item) {
+            const card = document.createElement('div');
+            card.className = 'content-card';
+            card.onclick = () => openModal(item);
+            
+            let badge = '';
+            if (item.badge) {
+                badge = `<div class="card-badge">${item.badge}</div>`;
+            }
+            
+            card.innerHTML = `
+                <div class="card-image" style="background-image: url('${item.image}')">
+                    ${badge}
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">${item.title}</h3>
+                    <div class="card-meta">
+                        <span>${item.year}</span>
+                        <span class="card-rating">⭐ ${item.rating}/10</span>
+                    </div>
+                    <p class="card-description">${item.description}</p>
+                    <div class="card-actions">
+                        <button class="action-btn play-btn" onclick="event.stopPropagation(); playContent(${item.id})">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                            </svg>
+                            Lecture
+                        </button>
+                        <button class="action-btn info-btn" onclick="event.stopPropagation(); openModal(${item.id})">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
+                            Détails
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Fonction pour afficher une catégorie spécifique
+        function showCategory(category) {
+            // Mettre à jour le menu actif
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Faire défiler jusqu'à la section appropriée
+            if (category === 'all') {
+                window.scrollTo({
+                    top: document.getElementById('heroSection').offsetHeight - 80,
+                    behavior: 'smooth'
+                });
+            } else {
+                const section = document.getElementById(`${category}Grid`).parentElement;
+                window.scrollTo({
+                    top: section.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            }
+        }
+
+        // Fonction pour faire défiler jusqu'au contenu
+        function scrollToContent() {
+            window.scrollTo({
+                top: document.getElementById('heroSection').offsetHeight - 80,
+                behavior: 'smooth'
+            });
+        }
+
+        // Fonction pour rechercher du contenu
+        function searchContent() {
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            
+            if (query === '') {
+                showNotification('Veuillez entrer un terme de recherche', 'error');
                 return;
             }
             
-            const filteredContent = contentData.filter(item => 
-                item.title.toLowerCase().includes(searchTerm) ||
-                item.year.includes(searchTerm) ||
-                item.type.includes(searchTerm)
+            // Simuler une recherche (en production, cela serait une requête API)
+            showNotification(`Recherche de "${query}" en cours...`, 'success');
+            
+            // Ici, vous feriez normalement une requête API
+            // Pour cet exemple, nous allons simplement filtrer nos données simulées
+            const allContent = [...contentData.featured, ...contentData.movies, ...contentData.shows, ...contentData.livetv];
+            const results = allContent.filter(item => 
+                item.title.toLowerCase().includes(query) || 
+                item.description.toLowerCase().includes(query)
             );
             
-            renderContent(filteredContent);
+            // Afficher les résultats
+            if (results.length > 0) {
+                const searchResultsGrid = document.createElement('div');
+                searchResultsGrid.className = 'content-grid';
+                searchResultsGrid.id = 'searchResultsGrid';
+                
+                results.forEach(item => {
+                    const card = createContentCard(item);
+                    searchResultsGrid.appendChild(card);
+                });
+                
+                // Créer une section pour les résultats
+                const searchSection = document.createElement('section');
+                searchSection.innerHTML = `
+                    <h2 class="section-title">Résultats pour "${query}"</h2>
+                `;
+                searchSection.appendChild(searchResultsGrid);
+                
+                // Insérer après la recherche
+                const searchContainer = document.querySelector('.search-container');
+                searchContainer.insertAdjacentElement('afterend', searchSection);
+                
+                // Faire défiler jusqu'aux résultats
+                window.scrollTo({
+                    top: searchSection.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            } else {
+                showNotification(`Aucun résultat trouvé pour "${query}"`, 'error');
+            }
         }
+
+        // Fonction pour ouvrir la modal avec les détails du contenu
+        function openModal(item) {
+            // Trouver l'élément complet dans nos données (si seulement l'ID a été passé)
+            if (typeof item === 'number') {
+                const allContent = [...contentData.featured, ...contentData.movies, ...contentData.shows, ...contentData.livetv];
+                item = allContent.find(content => content.id === item);
+            }
+            
+            // Mettre à jour le contenu de la modal
+            document.getElementById('modalTitle').textContent = item.title;
+            document.getElementById('modalYear').textContent = item.year;
+            document.getElementById('modalRating').textContent = `⭐ ${item.rating}/10`;
+            document.getElementById('modalDuration').textContent = item.duration;
+            document.getElementById('modalDescription').textContent = item.description;
+            
+            // Définir l'image d'arrière-plan de l'en-tête
+            document.getElementById('modalHeader').style.backgroundImage = `url('${item.image}')`;
+            
+            // Charger le casting
+            const castContainer = document.getElementById('modalCast');
+            castContainer.innerHTML = '';
+            castData.forEach(actor => {
+                const castMember = document.createElement('div');
+                castMember.className = 'cast-member';
+                castMember.innerHTML = `
+                    <div class="cast-avatar" style="background-image: url('${actor.image}')"></div>
+                    <div class="cast-name">${actor.name}</div>
+                    <div class="cast-role">${actor.role}</div>
+                `;
+                castContainer.appendChild(castMember);
+            });
+            
+            // Charger les recommandations
+            const recommendationsContainer = document.getElementById('recommendationsGrid');
+            recommendationsContainer.innerHTML = '';
+            recommendationsData.forEach(recommendation => {
+                const recCard = document.createElement('div');
+                recCard.className = 'recommendation-card';
+                recCard.onclick = () => {
+                    // Trouver l'élément complet dans nos données
+                    const allContent = [...contentData.featured, ...contentData.movies, ...contentData.shows, ...contentData.livetv];
+                    const fullItem = allContent.find(content => content.id === recommendation.id) || recommendation;
+                    openModal(fullItem);
+                };
+                recCard.innerHTML = `
+                    <div class="recommendation-img" style="background-image: url('${recommendation.image}')"></div>
+                `;
+                recommendationsContainer.appendChild(recCard);
+            });
+            
+            // Afficher la modal
+            document.getElementById('videoModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Fonction pour fermer la modal
+        function closeModal() {
+            document.getElementById('videoModal').style.display = 'none';
+            document.getElementById('aboutModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Fonction pour afficher la modal "À propos"
+        function showInfo(type) {
+            if (type === 'about') {
+                document.getElementById('aboutModal').style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        // Fonction pour lancer la lecture du contenu
+        function playContent(id) {
+            if (id) {
+                // Trouver l'élément dans nos données
+                const allContent = [...contentData.featured, ...contentData.movies, ...contentData.shows, ...contentData.livetv];
+                const item = allContent.find(content => content.id === id);
+                
+                showNotification(`Lecture de "${item.title}"`, 'success');
+            } else {
+                const title = document.getElementById('modalTitle').textContent;
+                showNotification(`Lecture de "${title}"`, 'success');
+            }
+            
+            closeModal();
+        }
+
+        // Fonction pour afficher une notification
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            
+            notificationText.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'flex';
+            
+            // Masquer après 3 secondes
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // Fermer la modal en cliquant à l'extérieur
+        window.onclick = function(event) {
+            const modal = document.getElementById('videoModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+            
+            const aboutModal = document.getElementById('aboutModal');
+            if (event.target === aboutModal) {
+                closeModal();
+            }
+        };
     </script>
 </body>
 </html>
