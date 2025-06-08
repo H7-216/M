@@ -85,6 +85,28 @@
             opacity: 0.9;
         }
 
+        .loading-message {
+            text-align: center;
+            padding: 2rem;
+            color: #ffd700;
+            font-size: 1.2rem;
+        }
+
+        .loading-message .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 215, 0, 0.3);
+            border-radius: 50%;
+            border-top-color: #ffd700;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         .search-container {
             margin: 2rem 0;
             text-align: center;
@@ -155,6 +177,13 @@
             background: #e50914;
             border-color: #e50914;
             transform: translateY(-2px);
+        }
+
+        .content-stats {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: rgba(255,255,255,0.7);
+            font-size: 1rem;
         }
 
         .content-grid {
@@ -231,6 +260,33 @@
         .play-btn:hover {
             background: linear-gradient(45deg, #b81d24, #e50914);
             transform: translateY(-2px);
+        }
+
+        .pagination {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .pagination button {
+            padding: 0.8rem 1.5rem;
+            margin: 0 0.5rem;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #ffffff;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pagination button:hover,
+        .pagination button.active {
+            background: #e50914;
+            border-color: #e50914;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .modal {
@@ -432,6 +488,27 @@
             .server-btn {
                 margin-bottom: 0.5rem;
             }
+
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+            
+            .search-input {
+                width: 250px;
+            }
+            
+            .nav-links {
+                gap: 1rem;
+            }
+            
+            .category-nav {
+                gap: 0.5rem;
+            }
+            
+            .category-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
         }
 
         .footer {
@@ -470,29 +547,6 @@
 
         .footer-section ul li a:hover {
             color: #ffd700;
-        }
-
-        @media (max-width: 768px) {
-            .hero-content h1 {
-                font-size: 2rem;
-            }
-            
-            .search-input {
-                width: 250px;
-            }
-            
-            .nav-links {
-                gap: 1rem;
-            }
-            
-            .category-nav {
-                gap: 0.5rem;
-            }
-            
-            .category-btn {
-                padding: 0.6rem 1rem;
-                font-size: 0.9rem;
-            }
         }
     </style>
 </head>
@@ -538,8 +592,19 @@
                 <button class="category-btn" onclick="showCategory('animation')">Animation</button>
             </div>
 
-            <div class="content-grid" id="contentGrid">
+            <div class="content-stats" id="contentStats"></div>
+            
+            <div id="loadingMessage" class="loading-message">
+                <div class="spinner"></div>
+                Chargement du contenu depuis le sitemap...
+            </div>
+
+            <div class="content-grid" id="contentGrid" style="display: none;">
                 <!-- Le contenu sera généré par JavaScript -->
+            </div>
+
+            <div class="pagination" id="pagination" style="display: none;">
+                <!-- La pagination sera générée par JavaScript -->
             </div>
         </section>
     </div>
@@ -626,36 +691,8 @@
             seriesServer3: "https://2embed.org/embed/tv/"
         };
 
-        // Base de données de contenu avec identifiants internes
-        const contentDatabase = [
-            // Nouveaux films ajoutés
-            {
-                id: 9,
-                internalId: "movie_minecraft_film",
-                title: "Minecraft - Le Film",
-                type: "films",
-                category: "animation",
-                year: "2025",
-                rating: "—",
-                description: "L'adaptation tant attendue du célèbre jeu vidéo Minecraft au cinéma.",
-                poster: "Minecraft - Le Film",
-                iframeLink: "https://xalaflix.io/movies/watch/minecraft-le-film/2407",
-                servers: ["direct"]
-            },
-            {
-                id: 10,
-                internalId: "movie_henry_danger_film",
-                title: "Henry Danger - Le Film",
-                type: "films",
-                category: "action",
-                year: "2024",
-                rating: "—",
-                description: "Le héros adolescent Henry Danger revient dans une aventure cinématographique.",
-                poster: "Henry Danger - Le Film",
-                iframeLink: "https://xalaflix.io/movies/watch/henry-danger-le-film/2762",
-                servers: ["direct"]
-            },
-            // Films existants
+        // Base de données de contenu de secours
+        const fallbackContentDatabase = [
             {
                 id: 1,
                 internalId: "movie_avatar2",
@@ -687,432 +724,604 @@
             },
             {
                 id: 3,
-                internalId: "movie_topgun_maverick",
-                imdbId: "tt1745960",
-                tmdbId: "361743",
-                title: "Top Gun: Maverick",
+                internalId: "movie_minecraft_film",
+                title: "Minecraft - Le Film",
                 type: "films",
-                category: "action",
-                year: "2022",
-                rating: "8.3",
-                description: "Pete 'Maverick' Mitchell revient pour une mission périlleuse.",
-                poster: "Top Gun Maverick",
-                servers: ["server1", "server2", "server4"]
-            },
-            {
-                id: 4,
-                internalId: "series_the_bear",
-                imdbId: "tt14452776",
-                tmdbId: "136315",
-                title: "The Bear",
-                type: "series",
-                category: "drame",
-                year: "2022",
-                rating: "8.5",
-                description: "Un chef cuisinier reprend un restaurant familial à Chicago.",
-                poster: "The Bear",
-                seasons: 3,
-                servers: ["seriesServer1", "seriesServer2"]
-            },
-            {
-                id: 5,
-                internalId: "movie_dune",
-                imdbId: "tt1160419",
-                tmdbId: "438631",
-                title: "Dune",
-                type: "films",
-                category: "sci-fi",
-                year: "2021",
-                rating: "8.0",
-                description: "L'épopée de Paul Atreides sur la planète désertique Arrakis.",
-                poster: "Dune",
-                servers: ["server1", "server3", "server4"]
-            },
-            {
-                id: 6,
-                internalId: "series_wednesday",
-                imdbId: "tt13443470",
-                tmdbId: "119051",
-                title: "Wednesday",
-                type: "series",
-                category: "comedie",
-                year: "2022",
-                rating: "8.1",
-                description: "Wednesday Addams enquête sur des mystères surnaturels.",
-                poster: "Wednesday",
-                seasons: 1,
-                servers: ["seriesServer1", "seriesServer3"]
-            },
-            {
-                id: 7,
-                internalId: "movie_spiderman_nwh",
-                imdbId: "tt10872600",
-                tmdbId: "634649",
-                title: "Spider-Man: No Way Home",
-                type: "films",
-                category: "action",
-                year: "2021",
-                rating: "8.4",
-                description: "Peter Parker affronte des méchants du multivers.",
-                poster: "Spider-Man No Way Home",
-                servers: ["server1", "server2", "server3"]
-            },
-            {
-                id: 8,
-                internalId: "series_hotd",
-                imdbId: "tt11198330",
-                tmdbId: "94997",
-                title: "House of the Dragon",
-                type: "series",
-                category: "drame",
-                year: "2022",
-                rating: "8.5",
-                description: "La guerre civile des Targaryen pour le Trône de Fer.",
-                poster: "House of the Dragon",
-                seasons: 2,
-                servers: ["seriesServer1", "seriesServer2", "seriesServer3"]
+                category: "animation",
+                year: "2025",
+                rating: "—",
+                description: "L'adaptation tant attendue du célèbre jeu vidéo Minecraft au cinéma.",
+                poster: "Minecraft - Le Film",
+                iframeLink: "https://xalaflix.io/movies/watch/minecraft-le-film/2407",
+                servers: ["direct"]
             }
         ];
 
+        // Variables globales
+        let allContent = [];
+        let filteredContent = [];
         let currentFilter = 'all';
-        let allContent = [...contentDatabase];
         let currentContent = null;
         let currentServer = null;
         let currentSeason = 1;
         let currentEpisode = 1;
+        let currentPage = 1;
+        let itemsPerPage = 12;
+        let totalPages = 0;
 
-        function renderContent(content) {
-            const grid = document.getElementById('contentGrid');
-            grid.innerHTML = '';
-
-            content.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'content-card';
-                card.innerHTML = `
-                    <div class="card-image">
-                        <span>🎬 ${item.poster}</span>
-                    </div>
-                    <div class="card-content">
-                        <h3 class="card-title">${item.title}</h3>
-                        <div class="card-meta">
-                            <span>${item.year}</span>
-                            <span>⭐ ${item.rating}</span>
-                            <span>${item.type === 'films' ? '🎬 Film' : '📺 Série'}</span>
-                        </div>
-                        <p class="card-description">${item.description}</p>
-                        ${item.type === 'series' ? `<div style="margin-bottom: 1rem; color: rgba(255,255,255,0.8); font-size: 0.9rem;">📺 ${item.seasons} saison(s) disponible(s)</div>` : ''}
-                        <button class="play-btn" onclick="openPlayerModal('${item.internalId}', '${item.title}', '${item.type}')">
-                            ▶ Regarder maintenant
-                        </button>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function openPlayerModal(internalId, title, type) {
-            currentContent = contentDatabase.find(item => item.internalId === internalId);
-            if (!currentContent) return;
-
-            document.getElementById('modalTitle').textContent = title;
-            document.getElementById('videoModal').style.display = 'block';
-            document.body.style.overflow = 'hidden';
-
-            // Configuration de la sidebar pour les séries
-            const sidebar = document.getElementById('playerSidebar');
-            if (type === 'series') {
-                sidebar.style.display = 'block';
-                setupSeriesPlayer();
-            } else {
-                sidebar.style.display = 'none';
-                setupMoviePlayer();
-            }
-
-            // Configuration des serveurs
-            setupServerButtons();
-        }
-
-        function setupServerButtons() {
-            const serverContainer = document.getElementById('serverButtons');
-            serverContainer.innerHTML = '';
-
-            // Vérifier si c'est un contenu avec lien direct
-            if (currentContent.iframeLink) {
-                const button = document.createElement('button');
-                button.className = 'server-btn active';
-                button.textContent = 'Serveur Principal';
-                button.onclick = () => switchToDirectLink(button);
-                serverContainer.appendChild(button);
+        // Chargement du contenu depuis le sitemap
+        async function loadContentFromSitemap() {
+            try {
+                console.log('Tentative de chargement du sitemap...');
                 
-                // Charger directement le lien iframe
-                loadDirectVideo(currentContent.iframeLink);
-                return;
-            }
-
-            // Configuration normale des serveurs
-            currentContent.servers.forEach((serverKey, index) => {
-                const button = document.createElement('button');
-                button.className = 'server-btn';
-                button.textContent = `Serveur ${index + 1}`;
-                button.onclick = () => switchServer(serverKey, button);
+                // Utilisation d'un proxy CORS pour éviter les erreurs
+                const proxyUrl = 'https://api.allorigins.win/raw?url=';
+                const targetUrl = encodeURIComponent('http://xalaflix.io/sitemap-movies.xml');
+                const response = await fetch(proxyUrl + targetUrl);
                 
-                if (index === 0) {
-                    button.classList.add('active');
-                    currentServer = serverKey;
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
-                serverContainer.appendChild(button);
-            });
-
-            // Charger la première vidéo
-            if (currentContent.type === 'films') {
-                loadMovieVideo();
-            } else {
-                loadSeriesVideo(1, 1);
-            }
-        }
-
-        function switchToDirectLink(button) {
-            // Mise à jour des boutons serveurs
-            document.querySelectorAll('.server-btn').forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            
-            // Charger le lien direct
-            loadDirectVideo(currentContent.iframeLink);
-        }
-
-        function loadDirectVideo(url) {
-            showLoading();
-            
-            const videoFrame = document.getElementById('videoFrame');
-            
-            videoFrame.onload = function() {
-                hideLoading();
-            };
-
-            videoFrame.onerror = function() {
-                hideLoading();
-                alert('Erreur de chargement du contenu.');
-            };
-
-            videoFrame.src = url;
-        }
-
-        function setupMoviePlayer() {
-            // Pas besoin de sidebar pour les films
-        }
-
-        function setupSeriesPlayer() {
-            // Configuration des saisons
-            const seasonSelector = document.getElementById('seasonSelector');
-            seasonSelector.innerHTML = '<span style="margin-right: 1rem; color: #fff;">Saisons:</span>';
-
-            for (let i = 1; i <= currentContent.seasons; i++) {
-                const button = document.createElement('button');
-                button.className = 'season-btn';
-                button.textContent = i;
-                button.onclick = () => switchSeason(i, button);
+                const xmlText = await response.text();
+                console.log('Sitemap chargé avec succès');
                 
-                if (i === 1) {
-                    button.classList.add('active');
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+                
+                // Vérifier s'il y a des erreurs de parsing
+                const parserError = xmlDoc.querySelector('parsererror');
+                if (parserError) {
+                    throw new Error('Erreur de parsing XML');
                 }
                 
-                seasonSelector.appendChild(button);
-            }
-
-            // Configuration des épisodes pour la première saison
-            updateEpisodeList(1);
-        }
-
-        function updateEpisodeList(season) {
-            const episodeList = document.getElementById('episodeList');
-            episodeList.innerHTML = '';
-            
-            // Génération de 10 épisodes par saison (simulation)
-            for (let i = 1; i <= 10; i++) {
-                const episodeItem = document.createElement('div');
-                episodeItem.className = 'episode-item';
-                if (i === 1 && season === 1) {
-                    episodeItem.classList.add('active');
+                const urls = xmlDoc.getElementsByTagName('url');
+                const loadedContent = [];
+                
+                console.log(`${urls.length} URLs trouvées dans le sitemap`);
+                
+                for (let i = 0; i < urls.length; i++) {
+                    const urlElement = urls[i];
+                    const loc = urlElement.querySelector('loc');
+                    const lastmod = urlElement.querySelector('lastmod');
+                    
+                    if (loc) {
+                        const url = loc.textContent;
+                        const movieData = parseMovieUrl(url);
+                        
+                        if (movieData) {
+                            movieData.id = i + 1;
+                            movieData.lastModified = lastmod ? new Date(lastmod.textContent) : new Date();
+                            loadedContent.push(movieData);
+                        }
+                    }
                 }
-                episodeItem.innerHTML = `
-                    <div class="episode-title">Épisode ${i}</div>
-                    <div class="episode-info">S${season}E${i} - Titre de l'épisode</div>
-                `;
-                episodeItem.onclick = () => switchEpisode(i, episodeItem);
-                episodeList.appendChild(episodeItem);
+                
+                console.log(`${loadedContent.length} films/séries extraits du sitemap`);
+                
+                if (loadedContent.length > 0) {
+                    allContent = loadedContent;
+                    console.log('Contenu chargé depuis le sitemap avec succès');
+                } else {
+                    throw new Error('Aucun contenu valide trouvé dans le sitemap');
+                }
+                
+            } catch (error) {
+                console.error('Erreur lors du chargement du sitemap:', error);
+                console.log('Utilisation du contenu de secours');
+                allContent = [...fallbackContentDatabase];
+            }
+            
+            // Initialiser l'affichage
+            initializeContent();
+        }
+
+        // Parser une URL de film depuis le sitemap
+        function parseMovieUrl(url) {
+            try {
+                // Exemples d'URLs attendues :
+                // http://xalaflix.io/movies/watch/avatar-2/123
+                // http://xalaflix.io/series/watch/stranger-things/456
+                
+                const urlParts = url.split('/');
+                const type = urlParts.includes('movies') ? 'films' : 
+                            urlParts.includes('series') ? 'series' : 'films';
+                
+                // Extraire le nom et l'ID
+                const watchIndex = urlParts.indexOf('watch');
+                if (watchIndex === -1 || watchIndex + 2 >= urlParts.length) {
+                    return null;
+                }
+                
+                const slug = urlParts[watchIndex + 1];
+                const id = urlParts[watchIndex + 2];
+                
+                // Convertir le slug en titre
+                const title = slug.split('-')
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ');
+                
+                // Déterminer la catégorie basée sur des mots-clés
+                let category = 'drame';
+                const lowerTitle = title.toLowerCase();
+                if (lowerTitle.includes('action') || lowerTitle.includes('fight') || lowerTitle.includes('war')) {
+                    category = 'action';
+                } else if (lowerTitle.includes('comedy') || lowerTitle.includes('funny') || lowerTitle.includes('comic')) {
+                    category = 'comedie';
+                } else if (lowerTitle.includes('sci') || lowerTitle.includes('space') || lowerTitle.includes('future')) {
+                    category = 'sci-fi';
+                } else if (lowerTitle.includes('cartoon') || lowerTitle.includes('animated') || lowerTitle.includes('anime')) {
+                    category = 'animation';
+                }
+                
+                return {
+                    internalId: `${type}_${slug}_${id}`,
+                    title: title,
+                    type: type,
+                    category: category,
+                    year: "2024",
+                    rating: "—",
+                    description: `Découvrez ${title}, un ${type === 'films' ? 'film' : 'série'} captivant disponible en streaming.`,
+                    poster: title,
+                    iframeLink: url,
+                    servers: ["direct"],
+                    seasons: type === 'series' ? Math.floor(Math.random() * 5) + 1 : undefined
+                };
+                
+            } catch (error) {
+                console.error('Erreur lors du parsing de l\'URL:', url, error);
+                return null;
             }
         }
 
-        function switchSeason(season, button) {
-            currentSeason = season;
-            currentEpisode = 1;
+        // Initialiser le contenu après chargement
+        function initializeContent() {
+            document.getElementById('loadingMessage').style.display = 'none';
+            document.getElementById('contentGrid').style.display = 'grid';
+            document.getElementById('pagination').style.display = 'block';
             
-            // Mise à jour des boutons de saison
-            document.querySelectorAll('.season-btn').forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            
-            // Mise à jour de la liste des épisodes
-            updateEpisodeList(season);
-            
-            // Chargement du premier épisode de la nouvelle saison
-            loadSeriesVideo(season, 1);
+            showCategory('all');
+            updateContentStats();
         }
 
-        function switchEpisode(episode, element) {
-            currentEpisode = episode;
+        // Mettre à jour les statistiques de contenu
+        function updateContentStats() {
+            const stats = document.getElementById('contentStats');
+            const totalMovies = allContent.filter(item => item.type === 'films').length;
+            const totalSeries = allContent.filter(item => item.type === 'series').length;
             
-            // Mise à jour des boutons d'épisode
-            document.querySelectorAll('.episode-item').forEach(item => item.classList.remove('active'));
-            element.classList.add('active');
-            
-            // Chargement de l'épisode
-            loadSeriesVideo(currentSeason, episode);
+            stats.innerHTML = `
+                📊 ${allContent.length} contenus disponibles 
+                (${totalMovies} films, ${totalSeries} séries)
+            `;
         }
 
-        function switchServer(serverKey, button) {
-            currentServer = serverKey;
-            
-            // Mise à jour des boutons serveur
-            document.querySelectorAll('.server-btn').forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            
-            // Rechargement de la vidéo
-            if (currentContent.type === 'films') {
-                loadMovieVideo();
-            } else {
-                loadSeriesVideo(currentSeason, currentEpisode);
-            }
+        // Afficher le contenu avec pagination
+function renderContent(content, page = 1) {
+    const grid = document.getElementById('contentGrid');
+    const pagination = document.getElementById('pagination');
+    
+    // Calculer la pagination
+    currentPage = page;
+    totalPages = Math.ceil(content.length / itemsPerPage);
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, content.length);
+    const paginatedContent = content.slice(startIndex, endIndex);
+    
+    // Vider la grille
+    grid.innerHTML = '';
+    
+    // Remplir avec le contenu paginé
+    paginatedContent.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'content-card';
+        card.dataset.id = item.internalId;
+        
+        // Créer une image de placeholder avec le titre comme arrière-plan
+        const posterText = item.poster || item.title;
+        const placeholderColor = getColorFromText(posterText);
+        
+        card.innerHTML = `
+            <div class="card-image" style="background: linear-gradient(45deg, ${placeholderColor}, #555);">
+                ${posterText}
+            </div>
+            <div class="card-content">
+                <h3 class="card-title">${item.title}</h3>
+                <p class="card-description">${item.description}</p>
+                <div class="card-meta">
+                    <span>${item.year}</span>
+                    <span>⭐ ${item.rating}</span>
+                </div>
+                <button class="play-btn" onclick="openModal('${item.internalId}')">
+                    ${item.type === 'series' ? 'Voir les épisodes' : 'Regarder'}
+                </button>
+            </div>
+        `;
+        
+        grid.appendChild(card);
+    });
+    
+    // Mettre à jour la pagination
+    updatePagination(content.length);
+}
+
+// Mettre à jour la pagination
+function updatePagination(totalItems) {
+    const pagination = document.getElementById('pagination');
+    pagination.innerHTML = '';
+    
+    // Bouton Précédent
+    const prevButton = document.createElement('button');
+    prevButton.textContent = 'Précédent';
+    prevButton.disabled = currentPage === 1;
+    prevButton.onclick = () => {
+        renderContent(filteredContent, currentPage - 1);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+    pagination.appendChild(prevButton);
+    
+    // Boutons de page
+    const maxVisiblePages = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+    
+    if (endPage - startPage + 1 < maxVisiblePages) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+    
+    if (startPage > 1) {
+        const firstPageButton = document.createElement('button');
+        firstPageButton.textContent = '1';
+        firstPageButton.onclick = () => {
+            renderContent(filteredContent, 1);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+        pagination.appendChild(firstPageButton);
+        
+        if (startPage > 2) {
+            const ellipsis = document.createElement('span');
+            ellipsis.textContent = '...';
+            pagination.appendChild(ellipsis);
         }
-
-        function loadMovieVideo() {
-            showLoading();
-            
-            const videoFrame = document.getElementById('videoFrame');
-            const serverUrl = streamingServers[currentServer];
-            
-            // Construction de l'URL en fonction des identifiants disponibles
-            let videoUrl = '';
-            if (currentContent.imdbId) {
-                videoUrl = `${serverUrl}${currentContent.imdbId}`;
-            } else if (currentContent.tmdbId) {
-                videoUrl = `${serverUrl}${currentContent.tmdbId}`;
-            } else {
-                videoUrl = `${serverUrl}${currentContent.internalId}`;
-            }
-            
-            videoFrame.onload = function() {
-                hideLoading();
-            };
-
-            videoFrame.onerror = function() {
-                hideLoading();
-                alert('Erreur de chargement du contenu. Essayez un autre serveur.');
-            };
-
-            videoFrame.src = videoUrl;
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+        const pageButton = document.createElement('button');
+        pageButton.textContent = i;
+        pageButton.className = i === currentPage ? 'active' : '';
+        pageButton.onclick = () => {
+            renderContent(filteredContent, i);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+        pagination.appendChild(pageButton);
+    }
+    
+    if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+            const ellipsis = document.createElement('span');
+            ellipsis.textContent = '...';
+            pagination.appendChild(ellipsis);
         }
+        
+        const lastPageButton = document.createElement('button');
+        lastPageButton.textContent = totalPages;
+        lastPageButton.onclick = () => {
+            renderContent(filteredContent, totalPages);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+        pagination.appendChild(lastPageButton);
+    }
+    
+    // Bouton Suivant
+    const nextButton = document.createElement('button');
+    nextButton.textContent = 'Suivant';
+    nextButton.disabled = currentPage === totalPages;
+    nextButton.onclick = () => {
+        renderContent(filteredContent, currentPage + 1);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+    pagination.appendChild(nextButton);
+}
 
-        function loadSeriesVideo(season, episode) {
-            showLoading();
-            
-            const videoFrame = document.getElementById('videoFrame');
-            const serverUrl = streamingServers[currentServer];
-            
-            // Construction de l'URL pour les séries
-            let videoUrl = '';
-            if (currentContent.imdbId) {
-                videoUrl = `${serverUrl}${currentContent.imdbId}/${season}/${episode}`;
-            } else if (currentContent.tmdbId) {
-                videoUrl = `${serverUrl}${currentContent.tmdbId}/${season}/${episode}`;
-            } else {
-                videoUrl = `${serverUrl}${currentContent.internalId}/${season}/${episode}`;
-            }
-            
-            videoFrame.onload = function() {
-                hideLoading();
-            };
+// Filtrer le contenu par catégorie
+function showCategory(category) {
+    currentFilter = category;
+    currentPage = 1;
+    
+    // Mettre à jour les boutons de catégorie actifs
+    document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent.toLowerCase() === category);
+    });
+    
+    // Filtrer le contenu
+    if (category === 'all') {
+        filteredContent = [...allContent];
+    } else {
+        filteredContent = allContent.filter(item => 
+            item.type === category || item.category === category
+        );
+    }
+    
+    // Afficher le contenu filtré
+    renderContent(filteredContent);
+    
+    // Mettre à jour les stats
+    updateContentStats();
+}
 
-            videoFrame.onerror = function() {
-                hideLoading();
-                alert('Erreur de chargement du contenu. Essayez un autre serveur.');
-            };
+// Rechercher du contenu
+function searchContent() {
+    const searchInput = document.getElementById('searchInput');
+    const query = searchInput.value.toLowerCase().trim();
+    
+    if (query === '') {
+        showCategory(currentFilter);
+        return;
+    }
+    
+    filteredContent = allContent.filter(item => 
+        item.title.toLowerCase().includes(query) || 
+        item.description.toLowerCase().includes(query)
+    );
+    
+    currentPage = 1;
+    renderContent(filteredContent);
+    
+    // Mettre à jour les stats
+    document.getElementById('contentStats').textContent = 
+        `🔍 ${filteredContent.length} résultats pour "${query}"`;
+}
 
-            videoFrame.src = videoUrl;
-        }
+// Ouvrir la modal de lecture
+function openModal(contentId) {
+    currentContent = allContent.find(item => item.internalId === contentId);
+    if (!currentContent) return;
+    
+    // Mettre à jour le titre de la modal
+    document.getElementById('modalTitle').textContent = currentContent.title;
+    
+    // Afficher la modal
+    const modal = document.getElementById('videoModal');
+    modal.style.display = 'block';
+    
+    // Configurer en fonction du type de contenu (film ou série)
+    if (currentContent.type === 'series') {
+        setupSeriesModal();
+    } else {
+        setupMovieModal();
+    }
+    
+    // Charger le premier serveur par défaut
+    if (currentContent.servers && currentContent.servers.length > 0) {
+        loadServer(currentContent.servers[0]);
+    }
+}
 
-        function showLoading() {
-            document.getElementById('loadingSpinner').style.display = 'block';
-            document.getElementById('videoFrame').style.display = 'none';
-        }
+// Configurer la modal pour les films
+function setupMovieModal() {
+    const sidebar = document.getElementById('playerSidebar');
+    sidebar.innerHTML = '<h3 style="margin-bottom: 1rem; color: #e50914;">Informations</h3>' +
+        `<p><strong>Titre:</strong> ${currentContent.title}</p>` +
+        `<p><strong>Année:</strong> ${currentContent.year}</p>` +
+        `<p><strong>Note:</strong> ${currentContent.rating}</p>` +
+        `<p><strong>Description:</strong> ${currentContent.description}</p>`;
+    
+    // Configurer les boutons serveurs
+    setupServerButtons();
+}
 
-        function hideLoading() {
-            document.getElementById('loadingSpinner').style.display = 'none';
-            document.getElementById('videoFrame').style.display = 'block';
-        }
-
-        function closeModal() {
-            document.getElementById('videoModal').style.display = 'none';
-            document.body.style.overflow = 'auto';
-            
-            // Réinitialiser le lecteur vidéo
-            document.getElementById('videoFrame').src = '';
-        }
-
-        function showCategory(category) {
-            currentFilter = category;
-            
-            // Mise à jour des boutons de catégorie
-            document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`.category-btn[onclick="showCategory('${category}')"]`).classList.add('active');
-            
-            // Filtrage du contenu
-            let filteredContent;
-            if (category === 'all') {
-                filteredContent = allContent;
-            } else {
-                filteredContent = allContent.filter(item => 
-                    item.type === category || item.category === category
-                );
-            }
-            
-            renderContent(filteredContent);
-        }
-
-        function searchContent() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            
-            if (searchTerm.trim() === '') {
-                showCategory(currentFilter);
-                return;
-            }
-            
-            const filteredContent = allContent.filter(item => 
-                item.title.toLowerCase().includes(searchTerm) || 
-                item.description.toLowerCase().includes(searchTerm)
+// Configurer la modal pour les séries
+function setupSeriesModal() {
+    const sidebar = document.getElementById('playerSidebar');
+    const seasonSelector = document.getElementById('seasonSelector');
+    const episodeList = document.getElementById('episodeList');
+    
+    // Afficher le sélecteur de saisons
+    seasonSelector.innerHTML = '<span style="color: #fff; font-weight: bold;">Saison:</span>';
+    for (let i = 1; i <= currentContent.seasons; i++) {
+        const seasonBtn = document.createElement('button');
+        seasonBtn.className = 'season-btn' + (i === currentSeason ? ' active' : '');
+        seasonBtn.textContent = i;
+        seasonBtn.onclick = () => {
+            currentSeason = i;
+            document.querySelectorAll('.season-btn').forEach(btn => 
+                btn.classList.remove('active')
             );
-            
-            renderContent(filteredContent);
-        }
+            seasonBtn.classList.add('active');
+            loadEpisodesForSeason(i);
+        };
+        seasonSelector.appendChild(seasonBtn);
+    }
+    
+    // Charger les épisodes de la première saison
+    loadEpisodesForSeason(1);
+    
+    // Configurer les boutons serveurs
+    setupServerButtons();
+}
 
-        // Initialisation
-        document.addEventListener('DOMContentLoaded', function() {
-            renderContent(allContent);
-            
-            // Gestion de la touche Entrée dans la recherche
-            document.getElementById('searchInput').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    searchContent();
-                }
-            });
-            
-            // Fermeture du modal avec la touche Échap
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    closeModal();
-                }
-            });
-        });
-    </script>
+// Charger les épisodes pour une saison donnée
+function loadEpisodesForSeason(season) {
+    const episodeList = document.getElementById('episodeList');
+    episodeList.innerHTML = '';
+    
+    // Générer des épisodes factices (10 par saison)
+    for (let i = 1; i <= 10; i++) {
+        const episodeItem = document.createElement('div');
+        episodeItem.className = 'episode-item' + (i === currentEpisode && season === currentSeason ? ' active' : '');
+        episodeItem.innerHTML = `
+            <div class="episode-title">Épisode ${i}</div>
+            <div class="episode-info">Titre de l'épisode ${i}</div>
+        `;
+        episodeItem.onclick = () => {
+            currentEpisode = i;
+            currentSeason = season;
+            document.querySelectorAll('.episode-item').forEach(item => 
+                item.classList.remove('active')
+            );
+            episodeItem.classList.add('active');
+            loadCurrentEpisode();
+        };
+        episodeList.appendChild(episodeItem);
+    }
+}
+
+// Configurer les boutons serveurs
+function setupServerButtons() {
+    const serverButtons = document.getElementById('serverButtons');
+    serverButtons.innerHTML = '';
+    
+    if (!currentContent.servers || currentContent.servers.length === 0) {
+        const noServerBtn = document.createElement('button');
+        noServerBtn.className = 'server-btn';
+        noServerBtn.textContent = 'Aucun serveur disponible';
+        noServerBtn.disabled = true;
+        serverButtons.appendChild(noServerBtn);
+        return;
+    }
+    
+    currentContent.servers.forEach(serverKey => {
+        const serverBtn = document.createElement('button');
+        serverBtn.className = 'server-btn';
+        serverBtn.textContent = `Serveur ${serverKey.replace('server', '').replace('Server', '')}`;
+        serverBtn.onclick = () => loadServer(serverKey);
+        serverButtons.appendChild(serverBtn);
+    });
+}
+
+// Charger un serveur spécifique
+function loadServer(serverKey) {
+    currentServer = serverKey;
+    
+    // Mettre à jour le bouton serveur actif
+    document.querySelectorAll('.server-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.textContent.includes(serverKey.replace('server', '').replace('Server', ''))) {
+            btn.classList.add('active');
+        }
+    });
+    
+    // Afficher le spinner de chargement
+    document.getElementById('loadingSpinner').style.display = 'block';
+    document.getElementById('videoFrame').style.display = 'none';
+    
+    // Simuler un délai de chargement
+    setTimeout(() => {
+        loadCurrentEpisode();
+    }, 1000);
+}
+
+// Charger l'épisode actuel (pour les séries) ou le film
+function loadCurrentEpisode() {
+    const videoFrame = document.getElementById('videoFrame');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    
+    if (currentContent.type === 'series') {
+        // Construire l'URL pour une série
+        const seriesId = currentContent.imdbId || currentContent.tmdbId || currentContent.internalId;
+        const serverUrl = streamingServers[currentServer];
+        
+        if (serverUrl && seriesId) {
+            videoFrame.src = `${serverUrl}${seriesId}/${currentSeason}/${currentEpisode}`;
+        } else if (currentContent.iframeLink) {
+            // Utiliser le lien direct s'il existe
+            videoFrame.src = currentContent.iframeLink;
+        } else {
+            // Fallback pour les démos
+            videoFrame.srcdoc = `
+                <html><body style="margin:0;background:#000;display:flex;justify-content:center;align-items:center;height:100%;color:#fff;">
+                <div style="text-align:center;">
+                    <h2>${currentContent.title}</h2>
+                    <p>Saison ${currentSeason} - Épisode ${currentEpisode}</p>
+                    <p>Lecture simulée - Serveur ${currentServer}</p>
+                </div>
+                </body></html>
+            `;
+        }
+    } else {
+        // Construire l'URL pour un film
+        const movieId = currentContent.imdbId || currentContent.tmdbId || currentContent.internalId;
+        const serverUrl = streamingServers[currentServer];
+        
+        if (serverUrl && movieId) {
+            videoFrame.src = `${serverUrl}${movieId}`;
+        } else if (currentContent.iframeLink) {
+            // Utiliser le lien direct s'il existe
+            videoFrame.src = currentContent.iframeLink;
+        } else {
+            // Fallback pour les démos
+            videoFrame.srcdoc = `
+                <html><body style="margin:0;background:#000;display:flex;justify-content:center;align-items:center;height:100%;color:#fff;">
+                <div style="text-align:center;">
+                    <h2>${currentContent.title}</h2>
+                    <p>Lecture simulée - Serveur ${currentServer}</p>
+                </div>
+                </body></html>
+            `;
+        }
+    }
+    
+    // Cacher le spinner et afficher la vidéo après un court délai
+    setTimeout(() => {
+        loadingSpinner.style.display = 'none';
+        videoFrame.style.display = 'block';
+    }, 1500);
+}
+
+// Fermer la modal
+function closeModal() {
+    const modal = document.getElementById('videoModal');
+    const videoFrame = document.getElementById('videoFrame');
+    
+    // Arrêter la vidéo
+    videoFrame.src = '';
+    videoFrame.srcdoc = '';
+    
+    // Cacher la modal
+    modal.style.display = 'none';
+}
+
+// Générer une couleur à partir d'un texte (pour les placeholders)
+function getColorFromText(text) {
+    const colors = [
+        '#3498db', '#e74c3c', '#2ecc71', '#f39c12', 
+        '#9b59b6', '#1abc9c', '#d35400', '#34495e'
+    ];
+    
+    let hash = 0;
+    for (let i = 0; i < text.length; i++) {
+        hash = text.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    
+    return colors[Math.abs(hash) % colors.length];
+}
+
+// Gérer la touche Entrée dans la recherche
+document.getElementById('searchInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        searchContent();
+    }
+});
+
+// Fermer la modal en cliquant à l'extérieur
+window.onclick = function(event) {
+    const modal = document.getElementById('videoModal');
+    if (event.target === modal) {
+        closeModal();
+    }
+};
+
+// Charger le contenu au démarrage
+document.addEventListener('DOMContentLoaded', function() {
+    loadContentFromSitemap();
+    
+    // Simuler un chargement plus long pour le démo
+    setTimeout(() => {
+        if (document.getElementById('loadingMessage').style.display !== 'none') {
+            initializeContent();
+        }
+    }, 3000);
+});
+</script>
 </body>
 </html>
