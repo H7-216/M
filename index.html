@@ -1771,22 +1771,23 @@
         // Fonction pour obtenir l'URL de streaming basée sur l'ID
         function getStreamingUrl(item) {
             // Mappage des IDs aux URLs de streaming exactes de votre sitemap
+            const baseUrl = "https://fsmirror77.lol";
             const streamingUrls = {
                 // Films
-                15120740: "/films/15120740-mr-wolff-2.html",
-                15121144: "/films/15121144-predator-killer-of-killers.html",
-                15121148: "/films/15121148-ko.html",
-                15121145: "/films/15121145-hurry-up-tomorrow.html",
-                15121150: "/films/15121150--bout.html",
-                15120841: "/films/15120841-wick-is-pain.html",
+                15120740: baseUrl + "/films/15120740-mr-wolff-2.html",
+                15121144: baseUrl + "/films/15121144-predator-killer-of-killers.html",
+                15121148: baseUrl + "/films/15121148-ko.html",
+                15121145: baseUrl + "/films/15121145-hurry-up-tomorrow.html",
+                15121150: baseUrl + "/films/15121150--bout.html",
+                15120841: baseUrl + "/films/15120841-wick-is-pain.html",
                 
                 // Séries
-                15120846: "/s-tv/15120846-le-ministre-du-temps-saison-4-2015.html",
-                15118541: "/s-tv/15118541-9-1-1-saison-8-2018.html",
-                15120857: "/s-tv/15120857-poker-face-saison-2-2023.html",
-                15120803: "/s-tv/15120803-the-walking-dead-dead-city-saison-2-2023.html",
-                15120426: "/s-tv/15120426-mobland-saison-1-2025.html",
-                15119247: "/s-tv/15119247-the-agency-saison-1-2024.html"
+                15120846: baseUrl + "/s-tv/15120846-le-ministre-du-temps-saison-4-2015.html",
+                15118541: baseUrl + "/s-tv/15118541-9-1-1-saison-8-2018.html",
+                15120857: baseUrl + "/s-tv/15120857-poker-face-saison-2-2023.html",
+                15120803: baseUrl + "/s-tv/15120803-the-walking-dead-dead-city-saison-2-2023.html",
+                15120426: baseUrl + "/s-tv/15120426-mobland-saison-1-2025.html",
+                15119247: baseUrl + "/s-tv/15119247-the-agency-saison-1-2024.html"
             };
             
             // Retourne l'URL correspondante ou une URL par défaut
