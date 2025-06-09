@@ -3,504 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XalaFlix - Plateforme de Streaming</title>
+    <title>Le Bit - Streaming Simple</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background: #0f0f0f;
-            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #fff;
             line-height: 1.6;
-            overflow-x: hidden;
+            min-height: 100vh;
         }
 
-        /* Header modernisé avec effet glassmorphism */
-        .header {
-            background: rgba(229, 9, 20, 0.9);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+        header {
+            background: rgba(0,0,0,0.8);
             padding: 1rem 0;
             position: sticky;
             top: 0;
-            z-index: 1000;
-            box-shadow: 0 8px 32px rgba(229, 9, 20, 0.3);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 100;
+            backdrop-filter: blur(10px);
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 0 2rem;
         }
 
-        .nav {
+        .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .logo {
-            font-size: 2.2rem;
-            font-weight: 800;
-            color: #ffffff;
-            text-decoration: none;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00d4ff;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        .search-bar {
             display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .logo:hover {
-            transform: scale(1.05);
-        }
-
-        .logo::before {
-            content: "🎬";
-            font-size: 1.8rem;
-            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.8));
-        }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 1.5rem;
-        }
-
-        .nav-links a {
-            color: #ffffff;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            padding: 0.5rem 1rem;
-            border-radius: 25px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .nav-links a::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: all 0.5s ease;
-        }
-
-        .nav-links a:hover::before {
-            left: 100%;
-        }
-
-        .nav-links a:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
-        }
-
-        .nav-links a.active {
-            background: rgba(0, 0, 0, 0.3);
-            border: 2px solid #ffd700;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-        }
-
-        /* Hero section avec parallax et particules */
-        .hero {
-            height: 80vh;
-            min-height: 600px;
-            display: flex;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .hero::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, rgba(0,0,0,0.7) 0%, rgba(229,9,20,0.4) 50%, rgba(0,0,0,0.7) 100%);
-            z-index: 1;
-        }
-
-        .hero-particles {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-        }
-
-        .particle {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 50%;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            33% { transform: translateY(-30px) rotate(120deg); }
-            66% { transform: translateY(15px) rotate(240deg); }
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            max-width: 800px;
-            text-align: left;
-            animation: slideInFromLeft 1s ease-out;
-        }
-
-        @keyframes slideInFromLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .hero-content h1 {
-            font-size: 4rem;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(45deg, #ffd700, #ff6b35, #e50914);
-            background-size: 200% 200%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            line-height: 1.2;
-            animation: gradientShift 3s ease-in-out infinite;
-        }
-
-        @keyframes gradientShift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-
-        .hero-content p {
-            font-size: 1.4rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .hero-cta {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
-        .cta-btn {
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            font-weight: 700;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .cta-primary {
-            background: linear-gradient(45deg, #e50914, #ff6b35);
-            color: white;
-            box-shadow: 0 10px 30px rgba(229, 9, 20, 0.4);
-        }
-
-        .cta-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(229, 9, 20, 0.6);
-        }
-
-        .cta-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(10px);
-        }
-
-        .cta-secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-3px);
-        }
-
-        /* Search bar avec effets visuels avancés */
-        .search-container {
-            margin: 4rem 0;
-            position: relative;
-        }
-
-        .search-box {
-            display: flex;
-            max-width: 900px;
-            margin: 0 auto;
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(20px);
-            border-radius: 60px;
-            overflow: hidden;
-            border: 2px solid rgba(255,255,255,0.2);
-            transition: all 0.4s ease;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-        }
-
-        .search-box:focus-within {
-            box-shadow: 0 0 40px rgba(229, 9, 20, 0.6);
-            border-color: #e50914;
-            transform: scale(1.02);
+            gap: 0.5rem;
+            flex: 1;
+            max-width: 400px;
         }
 
         .search-input {
             flex: 1;
-            padding: 1.5rem 2rem;
+            padding: 0.75rem;
             border: none;
-            background: transparent;
-            color: #ffffff;
-            font-size: 1.2rem;
+            border-radius: 25px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 1rem;
             outline: none;
+            backdrop-filter: blur(5px);
         }
 
         .search-input::placeholder {
-            color: rgba(255,255,255,0.7);
+            color: rgba(255,255,255,0.6);
         }
 
         .search-btn {
-            padding: 0 2.5rem;
-            background: linear-gradient(45deg, #e50914, #ff6b35);
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
             border: none;
-            color: #ffffff;
+            border-radius: 25px;
+            color: white;
             cursor: pointer;
-            font-size: 1.1rem;
-            font-weight: 600;
+            font-weight: bold;
             transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .search-btn::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: all 0.5s ease;
-        }
-
-        .search-btn:hover::before {
-            left: 100%;
         }
 
         .search-btn:hover {
-            background: linear-gradient(45deg, #ff6b35, #e50914);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
         }
 
-        /* Section titles avec effets */
-        .section-title {
-            font-size: 2.2rem;
-            margin-bottom: 2rem;
-            position: relative;
-            padding-bottom: 1rem;
-            display: inline-block;
-        }
-
-        .section-title::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #e50914, #ffd700, #ff6b35);
-            border-radius: 2px;
-            animation: expandLine 0.8s ease-out forwards;
-        }
-
-        @keyframes expandLine {
-            to { width: 120px; }
-        }
-
-        /* Cartes de contenu avec effets 3D */
-        .content-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2.5rem;
-            margin: 3rem 0;
-        }
-
-        .content-card {
-            background: rgba(255,255,255,0.05);
-            border-radius: 20px;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            border: 2px solid rgba(255,255,255,0.1);
-            position: relative;
-            cursor: pointer;
-            transform-style: preserve-3d;
-        }
-
-        .content-card::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, rgba(229,9,20,0.1), rgba(255,107,53,0.1));
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            border-radius: 20px;
-            z-index: 1;
-        }
-
-        .content-card:hover::before {
-            opacity: 1;
-        }
-
-        .content-card:hover {
-            transform: translateY(-15px) rotateX(5deg);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-            border-color: #e50914;
-        }
-
-        .card-badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: linear-gradient(45deg, rgba(0,0,0,0.8), rgba(229,9,20,0.8));
-            color: white;
-            padding: 0.4rem 1rem;
-            border-radius: 25px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            z-index: 3;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .card-image {
-            height: 450px;
-            background-size: cover;
-            background-position: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card-image::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 70%;
-            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
-        }
-
-        .card-content {
-            padding: 2rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .card-title {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: #ffffff;
-            font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .card-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            color: rgba(255,255,255,0.8);
-            font-size: 0.95rem;
-        }
-
-        .card-rating {
-            color: #ffd700;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .card-description {
-            color: rgba(255,255,255,0.8);
-            margin-bottom: 2rem;
-            font-size: 1rem;
-            line-height: 1.6;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .card-actions {
+        .nav-tabs {
             display: flex;
             gap: 1rem;
+            margin: 2rem 0;
+            overflow-x: auto;
+            padding: 0 1rem;
         }
 
-        .action-btn {
-            flex: 1;
-            padding: 1rem;
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: rgba(255,255,255,0.1);
             border: none;
-            border-radius: 12px;
+            border-radius: 25px;
+            color: #fff;
             cursor: pointer;
-            font-weight: 600;
+            white-space: nowrap;
             transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .tab:hover, .tab.active {
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            transform: translateY(-2px);
+        }
+
+        /* Structure inspirée du site original */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem 0;
+        }
+
+        .short {
+            position: relative;
+        }
+
+        .short-in {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            background: rgba(255,255,255,0.05);
+            transition: all 0.3s ease;
+            height: auto;
+        }
+
+        .short-in:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .film-version {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            z-index: 10;
+            background: rgba(0, 212, 255, 0.9);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .film-version a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .short-poster {
+            position: relative;
+            display: block;
+            width: 100%;
+            height: 240px;
+            overflow: hidden;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .short-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .short-in:hover .short-poster img {
+            transform: scale(1.1);
+        }
+
+        .vote-circle {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 35px;
+            height: 35px;
+            background: rgba(0,0,0,0.8);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            position: relative;
-            overflow: hidden;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #00d4ff;
+            border: 2px solid rgba(0, 212, 255, 0.5);
         }
 
-        .play-btn {
-            background: linear-gradient(45deg, #e50914, #b20710);
+        .short-mask {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .short-in:hover .short-mask {
+            opacity: 1;
+        }
+
+        .fa-play-circle3 {
+            font-size: 3rem;
+            color: #00d4ff;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.8);
+        }
+
+        .fa-play-circle3::before {
+            content: "▶";
+        }
+
+        .mli-eps {
+            position: absolute;
+            bottom: 35px;
+            right: 5px;
+            background: rgba(255, 165, 0, 0.9);
             color: white;
-            box-shadow: 0 5px 15px rgba(229, 9, 20, 0.4);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            font-weight: bold;
         }
 
-        .play-btn:hover {
-            background: linear-gradient(45deg, #b20710, #e50914);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(229, 9, 20, 0.6);
+        .short-title {
+            padding: 0.75rem;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #fff;
+            text-align: center;
+            background: rgba(0,0,0,0.3);
+            border-radius: 0 0 8px 8px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .info-btn {
-            background: rgba(255,255,255,0.1);
-            color: white;
-            border: 2px solid rgba(255,255,255,0.2);
-            backdrop-filter: blur(10px);
-        }
-
-        .info-btn:hover {
-            background: rgba(255,255,255,0.2);
-            transform: translateY(-3px);
-        }
-
-        /* Modal améliorée avec animations */
         .modal {
             display: none;
             position: fixed;
@@ -508,1257 +255,426 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.95);
-            backdrop-filter: blur(10px);
-            z-index: 2000;
-            overflow-y: auto;
-            animation: modalFadeIn 0.3s ease-out;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            padding: 2rem;
         }
 
-        @keyframes modalFadeIn {
-            from {
-                opacity: 0;
-                backdrop-filter: blur(0px);
-            }
-            to {
-                opacity: 1;
-                backdrop-filter: blur(10px);
-            }
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .modal-content {
-            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            background: #1a1a2e;
+            border-radius: 15px;
+            width: 95%;
             max-width: 1200px;
-            margin: 2rem auto;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
-            position: relative;
-            animation: modalSlideIn 0.4s ease-out;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        @keyframes modalSlideIn {
-            from {
-                transform: translateY(-50px) scale(0.9);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0) scale(1);
-                opacity: 1;
-            }
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
-            color: white;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
+            height: 90%;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            cursor: pointer;
-            z-index: 10;
-            transition: all 0.3s ease;
-            border: 2px solid rgba(255,255,255,0.2);
-        }
-
-        .modal-close:hover {
-            background: #e50914;
-            transform: rotate(90deg) scale(1.1);
-            box-shadow: 0 0 20px rgba(229, 9, 20, 0.6);
+            flex-direction: column;
+            overflow: hidden;
+            border: 2px solid rgba(0, 212, 255, 0.3);
         }
 
         .modal-header {
-            padding: 3rem;
-            background-size: cover;
-            background-position: center;
-            position: relative;
-        }
-
-        .modal-header::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to right, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, transparent 100%);
-            z-index: 1;
-        }
-
-        .modal-header-content {
-            position: relative;
-            z-index: 2;
-            max-width: 600px;
-        }
-
-        .modal-title {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-        }
-
-        .modal-meta {
+            padding: 1rem;
+            background: rgba(0,0,0,0.5);
             display: flex;
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
-            color: rgba(255,255,255,0.8);
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .modal-rating {
-            color: #ffd700;
+        .close-btn {
+            background: #ff4444;
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
             font-weight: bold;
         }
 
-        .modal-description {
-            color: rgba(255,255,255,0.9);
-            margin-bottom: 2rem;
-            line-height: 1.6;
-            font-size: 1.1rem;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .modal-btn {
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .modal-iframe {
+            flex: 1;
             border: none;
-        }
-
-        .modal-btn-primary {
-            background: linear-gradient(45deg, #e50914, #b20710);
-            color: white;
-            box-shadow: 0 5px 15px rgba(229, 9, 20, 0.4);
-        }
-
-        .modal-btn-primary:hover {
-            background: linear-gradient(45deg, #b20710, #e50914);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(229, 9, 20, 0.6);
-        }
-
-        .modal-btn-secondary {
-            background: rgba(255,255,255,0.1);
-            color: white;
-            border: 2px solid rgba(255,255,255,0.3);
-            backdrop-filter: blur(10px);
-        }
-
-        .modal-btn-secondary:hover {
-            background: rgba(255,255,255,0.2);
-            transform: translateY(-3px);
-        }
-
-        .modal-body {
-            padding: 2rem 3rem;
-        }
-
-        .modal-section-title {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            color: white;
-            position: relative;
-            padding-left: 1rem;
-        }
-
-        .modal-section-title::before {
-            content: "";
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: 4px;
-            background: linear-gradient(to bottom, #e50914, #ff6b35);
-            border-radius: 2px;
-        }
-
-        .modal-cast {
-            display: flex;
-            gap: 1.5rem;
-            overflow-x: auto;
-            padding-bottom: 1rem;
-            scrollbar-width: thin;
-            scrollbar-color: #e50914 #333;
-        }
-
-        .modal-cast::-webkit-scrollbar {
-            height: 6px;
-        }
-
-        .modal-cast::-webkit-scrollbar-track {
-            background: #333;
-            border-radius: 3px;
-        }
-
-        .modal-cast::-webkit-scrollbar-thumb {
-            background: #e50914;
-            border-radius: 3px;
-        }
-
-        .cast-member {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-width: 100px;
-        }
-
-        .cast-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background-size: cover;
-            background-position: center;
-            margin-bottom: 0.5rem;
-            border: 3px solid rgba(229, 9, 20, 0.5);
-        }
-
-        .cast-name {
-            font-weight: 600;
-            color: white;
-            text-align: center;
-        }
-
-        .cast-role {
-            font-size: 0.8rem;
-            color: rgba(255,255,255,0.7);
-            text-align: center;
-        }
-
-        .modal-video {
             width: 100%;
-            height: 500px;
-            background: #000;
-            margin: 2rem 0;
-            border-radius: 10px;
-            overflow: hidden;
         }
 
-        .modal-recommendations {
-            margin-top: 3rem;
-        }
-
-        .recommendations-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .recommendation-card {
-            border-radius: 10px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .recommendation-card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-        }
-
-        .recommendation-img {
-            width: 100%;
-            height: 200px;
-            background-size: cover;
-            background-position: center;
-        }
-
-        /* Notification system */
-        .notification {
-            position: fixed;
-            top: 100px;
-            right: 20px;
-            background: linear-gradient(45deg, #e50914, #ff6b35);
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            z-index: 3000;
-            box-shadow: 0 10px 30px rgba(229, 9, 20, 0.4);
-            animation: notificationSlide 0.3s ease-out;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        @keyframes notificationSlide {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        .notification.error {
-            background: linear-gradient(45deg, #dc3545, #c82333);
-        }
-
-        .notification.success {
-            background: linear-gradient(45deg, #28a745, #20c997);
-        }
-
-        /* Loading animation améliorée */
-        .loader {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 150px;
-            gap: 20px;
-        }
-
-        .loader-dot {
-            width: 25px;
-            height: 25px;
-            background: linear-gradient(45deg, #e50914, #ff6b35);
-            border-radius: 50%;
-            animation: loaderBounce 0.8s infinite alternate;
-            box-shadow: 0 5px 15px rgba(229, 9, 20, 0.3);
-        }
-
-        .loader-dot:nth-child(2) {
-            animation-delay: 0.2s;
-            background: linear-gradient(45deg, #ff6b35, #ffd700);
-        }
-
-        .loader-dot:nth-child(3) {
-            animation-delay: 0.4s;
-            background: linear-gradient(45deg, #ffd700, #e50914);
-        }
-
-        @keyframes loaderBounce {
-            to {
-                transform: translateY(-30px) scale(1.2);
-                box-shadow: 0 10px 25px rgba(229, 9, 20, 0.5);
-            }
-        }
-
-        /* Footer amélioré */
         .footer {
-            background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
-            padding: 5rem 0 2rem;
-            margin-top: 5rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            position: relative;
-        }
-
-        .footer::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, #e50914, #ff6b35, #ffd700);
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .footer-column h3 {
-            font-size: 1.2rem;
-            margin-bottom: 1.5rem;
-            color: #ffd700;
-            position: relative;
-            padding-bottom: 0.5rem;
-        }
-
-        .footer-column h3::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 50px;
-            height: 2px;
-            background: #e50914;
-        }
-
-        .footer-links {
-            list-style: none;
-        }
-
-        .footer-links li {
-            margin-bottom: 0.8rem;
-        }
-
-        .footer-links a {
-            color: rgba(255,255,255,0.7);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .footer-links a:hover {
-            color: #e50914;
-            transform: translateX(5px);
-        }
-
-        .footer-links a::before {
-            content: "▶";
-            font-size: 0.6rem;
-            opacity: 0;
-            transition: all 0.3s ease;
-        }
-
-        .footer-links a:hover::before {
-            opacity: 1;
-        }
-
-        .footer-bottom {
+            background: rgba(0,0,0,0.8);
+            padding: 2rem 0;
             text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            color: rgba(255,255,255,0.5);
+            margin-top: 4rem;
+        }
+
+        .footer p {
+            color: rgba(255,255,255,0.6);
             font-size: 0.9rem;
         }
 
-        .social-links {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-
-        .social-link {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .social-link:hover {
-            background: #e50914;
-            transform: translateY(-3px);
-        }
-
-        /* Responsive amélioré */
         @media (max-width: 768px) {
-            .hero-content h1 {
-                font-size: 2.5rem;
-            }
-            
-            .hero-cta {
+            .header-content {
                 flex-direction: column;
             }
             
-            .cta-btn {
-                justify-content: center;
+            .search-bar {
+                width: 100%;
+                max-width: none;
             }
             
-            .search-box {
-                flex-direction: column;
-                border-radius: 15px;
+            .content-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 1rem;
             }
             
-            .modal-header {
-                padding: 2rem 1.5rem;
+            .nav-tabs {
+                padding: 0;
             }
-            
-            .modal-title {
-                font-size: 2rem;
-            }
-            
-            .modal-body {
-                padding: 1.5rem;
-            }
-            
-            .modal-video {
-                height: 300px;
-            }
-        }
 
-        /* Accessibilité */
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
+            .short-poster {
+                height: 200px;
             }
-        }
-
-        /* Focus visible pour l'accessibilité */
-        .action-btn:focus,
-        .cta-btn:focus,
-        .search-btn:focus,
-        .modal-btn:focus {
-            outline: 3px solid #ffd700;
-            outline-offset: 2px;
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
+    <header>
         <div class="container">
-            <nav class="nav">
-                <a href="#" class="logo">XalaFlix</a>
-                <ul class="nav-links">
-                    <li><a href="#" class="active" onclick="showCategory('all')">Accueil</a></li>
-                    <li><a href="#" onclick="showCategory('movies')">Films</a></li>
-                    <li><a href="#" onclick="showCategory('shows')">Séries</a></li>
-                    <li><a href="#" onclick="showCategory('livetv')">TV Live</a></li>
-                </ul>
-            </nav>
+            <div class="header-content">
+                <div class="logo">🎬 Le Bit</div>
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="Rechercher un film, une série..." id="searchInput">
+                    <button class="search-btn" onclick="searchContent()">🔍</button>
+                </div>
+            </div>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero" id="heroSection">
-        <div class="hero-particles" id="heroParticles"></div>
-        <div class="hero-content container">
-            <h1>Streaming de qualité sans limites</h1>
-            <p>Découvrez notre vaste catalogue de films, séries et chaînes TV en direct. Tout ce que vous voulez, quand vous voulez.</p>
-            <div class="hero-cta">
-                <a href="#" class="cta-btn cta-primary" onclick="scrollToContent()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                    </svg>
-                    Commencer à regarder
-                </a>
-                <a href="#" class="cta-btn cta-secondary" onclick="showInfo('about')">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="16" x2="12" y2="12"></line>
-                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                    </svg>
-                    En savoir plus
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Main Content -->
-    <main class="main-content container">
-        <!-- Search Section -->
-        <div class="search-container">
-            <div class="search-box">
-                <input type="text" class="search-input" placeholder="Rechercher un film, série, émission..." id="searchInput" aria-label="Recherche de contenu">
-                <button class="search-btn" onclick="searchContent()" aria-label="Lancer la recherche">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                    Rechercher
-                </button>
-            </div>
+    <div class="container">
+        <div class="nav-tabs">
+            <button class="tab active" onclick="switchTab('films')">Films</button>
+            <button class="tab" onclick="switchTab('series')">Séries</button>
+            <button class="tab" onclick="switchTab('anime')">Animés</button>
+            <button class="tab" onclick="switchTab('documentaires')">Documentaires</button>
         </div>
 
-        <!-- Featured Content -->
-        <section>
-            <h2 class="section-title">Contenu en vedette</h2>
-            <div class="content-grid" id="featuredGrid">
-                <!-- Le contenu sera chargé dynamiquement -->
-            </div>
-        </section>
+        <div class="content-grid" id="contentGrid">
+            <!-- Le contenu sera généré par JavaScript -->
+        </div>
+    </div>
 
-        <!-- Movies Section -->
-        <section>
-            <h2 class="section-title">Nouveaux films</h2>
-            <div class="content-grid" id="moviesGrid">
-                <!-- Le contenu sera chargé dynamiquement -->
+    <div class="modal" id="playerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Lecture en cours</h3>
+                <button class="close-btn" onclick="closePlayer()">✖ Fermer</button>
             </div>
-        </section>
+            <iframe class="modal-iframe" id="playerIframe" allowfullscreen></iframe>
+        </div>
+    </div>
 
-        <!-- TV Shows Section -->
-        <section>
-            <h2 class="section-title">Séries populaires</h2>
-            <div class="content-grid" id="showsGrid">
-                <!-- Le contenu sera chargé dynamiquement -->
-            </div>
-        </section>
-
-        <!-- Live TV Section -->
-        <section>
-            <h2 class="section-title">Chaînes en direct</h2>
-            <div class="content-grid" id="liveTvGrid">
-                <!-- Le contenu sera chargé dynamiquement -->
-            </div>
-        </section>
-    </main>
-
-    <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <h3>Navigation</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">Accueil</a></li>
-                        <li><a href="#">Films</a></li>
-                        <li><a href="#">Séries</a></li>
-                        <li><a href="#">TV Live</a></li>
-                        <li><a href="#">Nouveautés</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Informations</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">À propos</a></li>
-                        <li><a href="#">Contact</a></li>
-                        <li><a href="#">Politique de confidentialité</a></li>
-                        <li><a href="#">Conditions d'utilisation</a></li>
-                        <li><a href="#">FAQ</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Compte</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">Mon compte</a></li>
-                        <li><a href="#">Ma liste</a></li>
-                        <li><a href="#">Historique</a></li>
-                        <li><a href="#">Abonnements</a></li>
-                        <li><a href="#">Paramètres</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Réseaux sociaux</h3>
-                    <div class="social-links">
-                        <a href="#" class="social-link" aria-label="Facebook">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                            </svg>
-                        </a>
-                        <a href="#" class="social-link" aria-label="Twitter">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
-                            </svg>
-                        </a>
-                        <a href="#" class="social-link" aria-label="Instagram">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                            </svg>
-                        </a>
-                        <a href="#" class="social-link" aria-label="YouTube">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path>
-                                <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2023 XalaFlix. Tous droits réservés.</p>
-            </div>
+            <p>Le Bit - Streaming simplifié sans publicités • Accès libre et gratuit</p>
         </div>
     </footer>
 
-    <!-- Video Modal -->
-    <div id="videoModal" class="modal" role="dialog" aria-labelledby="modalTitle" aria-modal="true">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal()" aria-label="Fermer la modal">&times;</button>
-            <div class="modal-header" id="modalHeader" style="background-image: url('https://image.tmdb.org/t/p/original/8Y43POKjjKDGI9MH89NW0NAzzp8.jpg')">
-                <div class="modal-header-content">
-                    <h1 class="modal-title" id="modalTitle">Titre du contenu</h1>
-                    <div class="modal-meta">
-                        <span class="modal-year" id="modalYear">2023</span>
-                        <span class="modal-rating" id="modalRating">⭐ 8.5/10</span>
-                        <span class="modal-duration" id="modalDuration">2h 15m</span>
-                    </div>
-                    <p class="modal-description" id="modalDescription">Description du contenu...</p>
-                    <div class="modal-actions">
-                        <button class="modal-btn modal-btn-primary" onclick="playContent()">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                            </svg>
-                            Regarder maintenant
-                        </button>
-                        <button class="modal-btn modal-btn-secondary">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                            </svg>
-                            Ma liste
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-body">
-                <h3 class="modal-section-title">Distribution</h3>
-                <div class="modal-cast" id="modalCast">
-                    <!-- Cast members will be loaded here -->
-                </div>
-                
-                <h3 class="modal-section-title">Bande-annonce</h3>
-                <div class="modal-video">
-                    <!-- Video player will be loaded here -->
-                    <iframe width="100%" height="100%" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                </div>
-                
-                <div class="modal-recommendations">
-                    <h3 class="modal-section-title">Recommandations</h3>
-                    <div class="recommendations-grid" id="recommendationsGrid">
-                        <!-- Recommendations will be loaded here -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- About Modal -->
-    <div id="aboutModal" class="modal" role="dialog" aria-labelledby="aboutModalTitle" aria-modal="true">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal()" aria-label="Fermer la modal">&times;</button>
-            <div class="modal-header" style="background-image: linear-gradient(135deg, #e50914, #b20710)">
-                <div class="modal-header-content">
-                    <h1 class="modal-title">À propos de XalaFlix</h1>
-                    <p class="modal-description">Notre plateforme de streaming premium</p>
-                </div>
-            </div>
-            <div class="modal-body">
-                <h3 class="modal-section-title">Notre mission</h3>
-                <p>XalaFlix a pour mission de fournir un service de streaming de haute qualité avec une vaste bibliothèque de films, séries et chaînes TV en direct. Nous nous engageons à offrir une expérience utilisateur exceptionnelle avec des fonctionnalités innovantes.</p>
-                
-                <h3 class="modal-section-title">Nos avantages</h3>
-                <ul style="margin-left: 1.5rem; margin-bottom: 2rem; line-height: 1.8;">
-                    <li>Contenu exclusif et original</li>
-                    <li>Streaming en 4K HDR</li>
-                    <li>Téléchargement pour regarder hors ligne</li>
-                    <li>Pas de publicités</li>
-                    <li>Disponible sur tous vos appareils</li>
-                </ul>
-                
-                <h3 class="modal-section-title">Notre équipe</h3>
-                <p>Une équipe passionnée de cinéphiles et de technologues travaillant sans relâche pour vous offrir le meilleur service possible.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Notification -->
-    <div id="notification" class="notification" style="display: none;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-        </svg>
-        <span id="notificationText">Message de notification</span>
-    </div>
-
     <script>
-        // Données de contenu simulées (remplacées par une API réelle en production)
-        const contentData = {
-            featured: [
+        // Base de données avec les vrais liens de streaming (structure du site original)
+        const baseUrl = "https://fsmirror77.lol";
+        
+        const mediaData = {
+            films: [
                 {
-                    id: 1,
-                    title: "L'Élite de la Nuit",
-                    year: 2023,
-                    rating: 8.7,
-                    duration: "2h 18m",
-                    description: "Un thriller d'action palpitant suivant un groupe de mercenaires d'élite chargés d'une mission impossible dans une ville contrôlée par des gangs.",
-                    image: "https://image.tmdb.org/t/p/original/8Y43POKjjKDGI9MH89NW0NAzzp8.jpg",
-                    type: "movie",
-                    badge: "Nouveau"
+                    title: "Conclave",
+                    year: "2024",
+                    genre: "Drame",
+                    description: "Thriller politique au Vatican",
+                    url: baseUrl + "/15119065-conclave.html",
+                    id: "15119065",
+                    poster: "https://image.tmdb.org/t/p/w500/pEjycIllA02mBzX2cAl4n8IhFdq.jpg",
+                    rating: "7.2",
+                    version: "VF"
                 },
                 {
-                    id: 2,
-                    title: "Les Ombres du Passé",
-                    year: 2023,
-                    rating: 9.1,
-                    duration: "1 saison",
-                    description: "Une série dramatique captivante explorant les secrets de famille qui refont surface après 20 ans de silence.",
-                    image: "https://image.tmdb.org/t/p/original/qWQSnedj0LCUjWNp9fLcMtfgadp.jpg",
-                    type: "show",
-                    badge: "Tendance"
+                    title: "Heretic",
+                    year: "2024",
+                    genre: "Horreur",
+                    description: "Thriller psychologique terrifiant",
+                    url: baseUrl + "/15119090-heretic.html",
+                    id: "15119090",
+                    poster: "https://image.tmdb.org/t/p/w500/8yBX5nlDLGUlUuZsBKX8UxOmGmG.jpg",
+                    rating: "6.8",
+                    version: "VOSTFR"
                 },
                 {
-                    id: 3,
-                    title: "Cosmic Frontier",
-                    year: 2023,
-                    rating: 7.9,
-                    duration: "1h 52m",
-                    description: "Une aventure spatiale épique alors qu'un équipage interstellaire découvre une menace extraterrestre inimaginable.",
-                    image: "https://image.tmdb.org/t/p/original/7bWxAsNPv9CXHOhZbJVlj2KxgfP.jpg",
-                    type: "movie",
-                    badge: "Exclusif"
+                    title: "Kraven the Hunter",
+                    year: "2024",
+                    genre: "Action",
+                    description: "L'origine du chasseur Spider-Man",
+                    url: baseUrl + "/15119394-kraven-the-hunter.html",
+                    id: "15119394",
+                    poster: "https://image.tmdb.org/t/p/w500/1GvBhYWiz6eBaApWXbHjgJWp8gx.jpg",
+                    rating: "5.9",
+                    version: "VF"
                 },
                 {
-                    id: 4,
-                    title: "Chroniques Urbaines",
-                    year: 2022,
-                    rating: 8.3,
-                    duration: "3 saisons",
-                    description: "Une anthologie dramatique explorant les vies entrelacées de résidents d'une grande métropole à travers différentes époques.",
-                    image: "https://image.tmdb.org/t/p/original/dDlEmu3EZ0Pgg93K2SVNLCjCSvE.jpg",
-                    type: "show",
-                    badge: "Populaire"
+                    title: "Captain America: Brave New World",
+                    year: "2025",
+                    genre: "Action",
+                    description: "Le nouveau Captain America",
+                    url: baseUrl + "/15119971-captain-america-brave-new-world.html",
+                    id: "15119971",
+                    poster: "https://image.tmdb.org/t/p/w500/lmTShNUIGlP8cLVF5zWZPEKYc0p.jpg",
+                    rating: "7.5",
+                    version: "VF"
+                },
+                {
+                    title: "Mickey 17",
+                    year: "2025",
+                    genre: "Science-Fiction",
+                    description: "Thriller SF de Bong Joon-ho",
+                    url: baseUrl + "/15120196-mickey-17.html",
+                    id: "15120196",
+                    poster: "https://image.tmdb.org/t/p/w500/8Og2NaIXFNzNP7xBc0vNHSgAR2l.jpg",
+                    rating: "8.1",
+                    version: "VOSTFR"
+                },
+                {
+                    title: "The Electric State",
+                    year: "2025",
+                    genre: "Adventure",
+                    description: "Aventure post-apocalyptique",
+                    url: baseUrl + "/15120236-the-electric-state.html",
+                    id: "15120236",
+                    poster: "https://image.tmdb.org/t/p/w500/d7HYLS5YdpH1w3hfgNYu42StUNA.jpg",
+                    rating: "7.3",
+                    version: "VF"
+                },
+                {
+                    title: "The Substance",
+                    year: "2024",
+                    genre: "Horreur",
+                    description: "Horreur corporelle de Coralie Fargeat",
+                    url: baseUrl + "/films/15118576-the-substance.html",
+                    id: "15118576",
+                    poster: "https://image.tmdb.org/t/p/w500/lqoMzCcZYEFK729d6qzt349fB4o.jpg",
+                    rating: "7.9",
+                    version: "VOSTFR"
+                },
+                {
+                    title: "Vaiana 2",
+                    year: "2024",
+                    genre: "Animation",
+                    description: "La suite de Vaiana",
+                    url: baseUrl + "/films/15119201-vaiana-2.html",
+                    id: "15119201",
+                    poster: "https://image.tmdb.org/t/p/w500/4YZpsylmjHbqeWzjKpUEF8gcLNW.jpg",
+                    rating: "7.1",
+                    version: "VF"
+                },
+                {
+                    title: "Mufasa: Le Roi Lion",
+                    year: "2024",
+                    genre: "Animation",
+                    description: "L'origine de Mufasa",
+                    url: baseUrl + "/films/15119442-mufasa-le-roi-lion.html",
+                    id: "15119442",
+                    poster: "https://image.tmdb.org/t/p/w500/lurEK87kukWNaHd0zYnsi3yzJrs.jpg",
+                    rating: "6.8",
+                    version: "VF"
+                },
+                {
+                    title: "Sinners",
+                    year: "2025",
+                    genre: "Horreur",
+                    description: "Film d'horreur de Ryan Coogler",
+                    url: baseUrl + "/films/15120610-sinners.html",
+                    id: "15120610",
+                    poster: "https://image.tmdb.org/t/p/w500/4L9SZWvNlmRsGJ4y2F0RJj8kKHF.jpg",
+                    rating: "7.6",
+                    version: "VOSTFR"
                 }
             ],
-            movies: [
+            series: [
                 {
-                    id: 5,
-                    title: "Le Dernier Rituel",
-                    year: 2023,
-                    rating: 7.5,
-                    duration: "1h 45m",
-                    description: "Un film d'horreur psychologique suivant un groupe d'amis qui réveille une ancienne malédiction lors d'un voyage en forêt.",
-                    image: "https://image.tmdb.org/t/p/original/7ZO9yoEU2fAHKhmJWfAc2QIPWJg.jpg",
-                    type: "movie"
+                    title: "Le Ministère du Temps - Saison 4",
+                    year: "2015",
+                    genre: "Sci-Fi",
+                    description: "Voyages dans l'histoire espagnole",
+                    url: baseUrl + "/s-tv/15120846-le-ministre-du-temps-saison-4-2015.html",
+                    id: "15120846",
+                    poster: "https://image.tmdb.org/t/p/w500/9WzmfZnNWlwmTYWjZ92uBJqjDpZ.jpg",
+                    rating: "7.0",
+                    version: "VF",
+                    episodes: "06"
                 },
                 {
-                    id: 6,
-                    title: "Rêves Électriques",
-                    year: 2023,
-                    rating: 8.2,
-                    duration: "2h 5m",
-                    description: "Un voyage sci-fi onirique explorant la nature de la réalité et de la conscience à travers les yeux d'un ingénieur en intelligence artificielle.",
-                    image: "https://image.tmdb.org/t/p/original/nLBRD7UPR6GjmWQp6ASAfCTaWKX.jpg",
-                    type: "movie"
+                    title: "Breaking Bad",
+                    year: "2008",
+                    genre: "Crime",
+                    description: "Série culte sur un prof devenu dealer",
+                    url: baseUrl + "/s-tv/breaking-bad.html",
+                    id: "breaking-bad",
+                    poster: "https://image.tmdb.org/t/p/w500/3xnWaLQjelJDDF7LT1WBo6f4BRe.jpg",
+                    rating: "9.5",
+                    version: "VOSTFR",
+                    episodes: "62"
                 },
                 {
-                    id: 7,
-                    title: "La Dernière Course",
-                    year: 2023,
-                    rating: 8.9,
-                    duration: "2h 12m",
-                    description: "Un drame sportif inspirant sur un coureur à pied vieillissant qui se prépare pour une dernière course malgré les obstacles physiques.",
-                    image: "https://image.tmdb.org/t/p/original/6SPF6NL2efLEWxXXXKqmZczPnZP.jpg",
-                    type: "movie"
-                },
-                {
-                    id: 8,
-                    title: "Silent Protocol",
-                    year: 2023,
-                    rating: 7.8,
-                    duration: "1h 58m",
-                    description: "Un thriller d'espionnage intense suivant une opération secrète qui tourne mal, forçant un agent à fuir tout en essayant de déjouer un complot.",
-                    image: "https://image.tmdb.org/t/p/original/9dHFRTHP7OAhDTKsmYeDUNAx7Bf.jpg",
-                    type: "movie"
+                    title: "Stranger Things",
+                    year: "2016",
+                    genre: "Science-Fiction",
+                    description: "Mystères surnaturels à Hawkins",
+                    url: baseUrl + "/s-tv/stranger-things.html",
+                    id: "stranger-things",
+                    poster: "https://image.tmdb.org/t/p/w500/49WJfeN0moxb9IPfGn8AIqMGskD.jpg",
+                    rating: "8.7",
+                    version: "VF",
+                    episodes: "42"
                 }
             ],
-            shows: [
+            anime: [
                 {
-                    id: 9,
-                    title: "Échoes of Time",
-                    year: 2023,
-                    rating: 8.4,
-                    duration: "2 saisons",
-                    description: "Une série fantastique où les habitants d'une petite ville découvrent qu'ils peuvent communiquer avec leurs versions passées et futures.",
-                    image: "https://image.tmdb.org/t/p/original/9yxep7oJdkj3Pla9TD9gKflRApY.jpg",
-                    type: "show"
+                    title: "Attack on Titan",
+                    year: "2013",
+                    genre: "Action",
+                    description: "Humanité vs Titans géants",
+                    url: baseUrl + "/anime/attack-on-titan.html",
+                    id: "attack-on-titan",
+                    poster: "https://image.tmdb.org/t/p/w500/hTP1DtLGFamjfu8WqjnuQdP1n4i.jpg",
+                    rating: "9.0",
+                    version: "VOSTFR",
+                    episodes: "87"
                 },
                 {
-                    id: 10,
-                    title: "Under the Bridge",
-                    year: 2023,
-                    rating: 8.7,
-                    duration: "1 saison",
-                    description: "Un drame criminel basé sur des événements réels, explorant le meurtre d'une adolescente et l'enquête qui a choqué une communauté.",
-                    image: "https://image.tmdb.org/t/p/original/jYtNUfMbU6DBbmdepKzs6F2qGMb.jpg",
-                    type: "show"
-                },
-                {
-                    id: 11,
-                    title: "Golden Years",
-                    year: 2022,
-                    rating: 9.0,
-                    duration: "3 saisons",
-                    description: "Une comédie dramatique chaleureuse sur un groupe de retraités qui décident de reprendre le contrôle de leurs vies et de vivre pleinement.",
-                    image: "https://image.tmdb.org/t/p/original/1X4h40fcB4WWUmIBK0auT4zRBAV.jpg",
-                    type: "show"
-                },
-                {
-                    id: 12,
-                    title: "The Last Frontier",
-                    year: 2023,
-                    rating: 8.6,
-                    duration: "1 saison",
-                    description: "Une série d'aventure historique suivant une expédition dangereuse dans les territoires inexplorés de l'Alaska au 19ème siècle.",
-                    image: "https://image.tmdb.org/t/p/original/uDgy6hyPd82kOHh6I95FLtLnj6p.jpg",
-                    type: "show"
+                    title: "Demon Slayer",
+                    year: "2019",
+                    genre: "Action",
+                    description: "Chasseur de démons au Japon",
+                    url: baseUrl + "/anime/demon-slayer.html",
+                    id: "demon-slayer",
+                    poster: "https://image.tmdb.org/t/p/w500/wrCVHCrFerWOSiZSpzgKHfkJo9Q.jpg",
+                    rating: "8.6",
+                    version: "VOSTFR",
+                    episodes: "32"
                 }
             ],
-            livetv: [
+            documentaires: [
                 {
-                    id: 13,
-                    title: "Xala Sports",
-                    year: "En direct",
-                    rating: 4.5,
-                    duration: "24/7",
-                    description: "Chaîne sportive diffusant les meilleurs événements en direct : football, tennis, basket et plus encore.",
-                    image: "https://image.tmdb.org/t/p/original/2wgiXQwUQxSWtPB2vXjQOITw3Qh.jpg",
-                    type: "livetv"
-                },
-                {
-                    id: 14,
-                    title: "Xala News",
-                    year: "En direct",
-                    rating: 4.0,
-                    duration: "24/7",
-                    description: "Actualités en continu avec des reportages en direct du monde entier et des analyses approfondies.",
-                    image: "https://image.tmdb.org/t/p/original/9yBVqNruk6Ykrwc32qrK2TIE5xw.jpg",
-                    type: "livetv"
-                },
-                {
-                    id: 15,
-                    title: "Xala Cinema",
-                    year: "En direct",
-                    rating: 4.8,
-                    duration: "24/7",
-                    description: "Films primés et blockbusters diffusés en continu toute la journée sans interruption.",
-                    image: "https://image.tmdb.org/t/p/original/56v2KjBlU4XaOv9rVYEQypROD7P.jpg",
-                    type: "livetv"
-                },
-                {
-                    id: 16,
-                    title: "Xala Kids",
-                    year: "En direct",
-                    rating: 4.7,
-                    duration: "24/7",
-                    description: "Chaîne dédiée aux enfants avec des dessins animés éducatifs et des programmes familiaux.",
-                    image: "https://image.tmdb.org/t/p/original/7IRy0iHdaS0JI3ng4ZYlk5gLSFn.jpg",
-                    type: "livetv"
+                    title: "Notre Planète",
+                    year: "2019",
+                    genre: "Nature",
+                    description: "Documentaire nature époustouflant",
+                    url: baseUrl + "/documentaires/notre-planete.html",
+                    id: "notre-planete",
+                    poster: "https://image.tmdb.org/t/p/w500/eFKTv0iMXU3avfb6G7C6q7DCOXB.jpg",
+                    rating: "9.2",
+                    version: "VF",
+                    episodes: "8"
                 }
             ]
         };
 
-        // Données de casting simulées
-        const castData = [
-            { id: 1, name: "Jean Dujardin", role: "Alex Mercer", image: "https://image.tmdb.org/t/p/original/2EivVl6k8aNMvDdH2vZkQeJqU5j.jpg" },
-            { id: 2, name: "Léa Seydoux", role: "Sarah Connor", image: "https://image.tmdb.org/t/p/original/7ksg82ZZOP5OjuqFvp9TjQ6M3Ec.jpg" },
-            { id: 3, name: "Omar Sy", role: "Marcus Wright", image: "https://image.tmdb.org/t/p/original/jzJ8KaM5UgH6UQb9Q4e9LGRtEOu.jpg" },
-            { id: 4, name: "Marion Cotillard", role: "Dr. Emily Shaw", image: "https://image.tmdb.org/t/p/original/7XC0oT7VeCFDojKYXbHIl84VNaV.jpg" },
-            { id: 5, name: "Vincent Cassel", role: "Victor Kray", image: "https://image.tmdb.org/t/p/original/7rwSXluNWZAluYMOEWBxkPmckES.jpg" }
-        ];
+        let currentTab = 'films';
+        let filteredData = [];
 
-        // Données de recommandations simulées
-        const recommendationsData = [
-            { id: 17, title: "Midnight Run", image: "https://image.tmdb.org/t/p/original/5kAGbi9MFAobQTVfK4kWPnIfnP5.jpg" },
-            { id: 18, title: "Shadow Protocol", image: "https://image.tmdb.org/t/p/original/6SPF6NL2efLEWxXXXKqmZczPnZP.jpg" },
-            { id: 19, title: "Dark Waters", image: "https://image.tmdb.org/t/p/original/c9kE1g3Q5ODnOQEh1k6WxX3v6VZ.jpg" },
-            { id: 20, title: "The Last Stand", image: "https://image.tmdb.org/t/p/original/9dHFRTHP7OAhDTKsmYeDUNAx7Bf.jpg" },
-            { id: 21, title: "Silent Hill", image: "https://image.tmdb.org/t/p/original/7ZO9yoEU2fAHKhmJWfAc2QIPWJg.jpg" }
-        ];
-
-        // Initialisation de la page
-        document.addEventListener('DOMContentLoaded', function() {
-            // Charger les particules pour l'effet hero
-            createParticles();
+        function generateMediaCard(media) {
+            const hasEpisodes = media.episodes && currentTab !== 'films';
             
-            // Charger le contenu initial
-            loadContent('featured', contentData.featured);
-            loadContent('movies', contentData.movies);
-            loadContent('shows', contentData.shows);
-            loadContent('livetv', contentData.livetv);
-            
-            // Configurer la recherche
-            document.getElementById('searchInput').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    searchContent();
-                }
-            });
-        });
-
-        // Fonction pour créer des particules animées
-        function createParticles() {
-            const particlesContainer = document.getElementById('heroParticles');
-            const particleCount = 50;
-            
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.classList.add('particle');
-                
-                // Position aléatoire
-                particle.style.left = `${Math.random() * 100}%`;
-                particle.style.top = `${Math.random() * 100}%`;
-                
-                // Taille aléatoire
-                const size = Math.random() * 3 + 1;
-                particle.style.width = `${size}px`;
-                particle.style.height = `${size}px`;
-                
-                // Opacité aléatoire
-                particle.style.opacity = Math.random() * 0.5 + 0.3;
-                
-                // Délai d'animation aléatoire
-                particle.style.animationDelay = `${Math.random() * 5}s`;
-                
-                particlesContainer.appendChild(particle);
-            }
-        }
-
-        // Fonction pour charger le contenu dans une section
-        function loadContent(sectionId, contentArray) {
-            const section = document.getElementById(`${sectionId}Grid`);
-            
-            // Effacer le loader
-            section.innerHTML = '';
-            
-            // Ajouter chaque élément de contenu
-            contentArray.forEach(item => {
-                const card = createContentCard(item);
-                section.appendChild(card);
-            });
-        }
-
-        // Fonction pour créer une carte de contenu
-        function createContentCard(item) {
-            const card = document.createElement('div');
-            card.className = 'content-card';
-            card.onclick = () => openModal(item);
-            
-            let badge = '';
-            if (item.badge) {
-                badge = `<div class="card-badge">${item.badge}</div>`;
-            }
-            
-            card.innerHTML = `
-                <div class="card-image" style="background-image: url('${item.image}')">
-                    ${badge}
-                </div>
-                <div class="card-content">
-                    <h3 class="card-title">${item.title}</h3>
-                    <div class="card-meta">
-                        <span>${item.year}</span>
-                        <span class="card-rating">⭐ ${item.rating}/10</span>
-                    </div>
-                    <p class="card-description">${item.description}</p>
-                    <div class="card-actions">
-                        <button class="action-btn play-btn" onclick="event.stopPropagation(); playContent(${item.id})">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                            </svg>
-                            Lecture
-                        </button>
-                        <button class="action-btn info-btn" onclick="event.stopPropagation(); openModal(${item.id})">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <line x1="12" y1="16" x2="12" y2="12"></line>
-                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                            </svg>
-                            Détails
-                        </button>
+            return `
+                <div class="short">
+                    <div class="short-in nl">
+                        <span class="film-version">
+                            <a href="#">${media.version}</a>
+                        </span>
+                        <a class="short-poster img-box with-mask" href="#" onclick="playMedia('${media.title}', '${media.url}')" alt="${media.title}">
+                            <div class="vote-circle" data-id="${media.id}">
+                                <span class="vote-score">${media.rating}</span>
+                            </div>
+                            <img src="${media.poster}" width="160" height="240" alt="${media.title} affiche" onerror="this.src='https://via.placeholder.com/160x240/333/fff?text=Affiche'" />
+                            <div class="short-mask fx-col fx-center fx-middle">
+                                <span class="fa fa-play-circle3"></span>
+                            </div>
+                        </a>
+                        ${hasEpisodes ? `<span class="mli-eps">${media.episodes} <i></i></span>` : ''}
+                        <div class="short-title">${media.title}</div>
                     </div>
                 </div>
             `;
-            
-            return card;
         }
 
-        // Fonction pour afficher une catégorie spécifique
-        function showCategory(category) {
-            // Mettre à jour le menu actif
-            document.querySelectorAll('.nav-links a').forEach(link => {
-                link.classList.remove('active');
-            });
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            // Mettre à jour les tabs
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             event.target.classList.add('active');
             
-            // Faire défiler jusqu'à la section appropriée
-            if (category === 'all') {
-                window.scrollTo({
-                    top: document.getElementById('heroSection').offsetHeight - 80,
-                    behavior: 'smooth'
-                });
-            } else {
-                const section = document.getElementById(`${category}Grid`).parentElement;
-                window.scrollTo({
-                    top: section.offsetTop - 80,
-                    behavior: 'smooth'
-                });
-            }
+            renderContent();
         }
 
-        // Fonction pour faire défiler jusqu'au contenu
-        function scrollToContent() {
-            window.scrollTo({
-                top: document.getElementById('heroSection').offsetHeight - 80,
-                behavior: 'smooth'
-            });
+        function renderContent() {
+            const grid = document.getElementById('contentGrid');
+            const data = filteredData.length > 0 ? filteredData : mediaData[currentTab];
+            
+            grid.innerHTML = data.map(media => generateMediaCard(media)).join('');
         }
 
-        // Fonction pour rechercher du contenu
         function searchContent() {
-            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            const query = document.getElementById('searchInput').value.toLowerCase();
             
-            if (query === '') {
-                showNotification('Veuillez entrer un terme de recherche', 'error');
-                return;
-            }
-            
-            // Simuler une recherche (en production, cela serait une requête API)
-            showNotification(`Recherche de "${query}" en cours...`, 'success');
-            
-            // Ici, vous feriez normalement une requête API
-            // Pour cet exemple, nous allons simplement filtrer nos données simulées
-            const allContent = [...contentData.featured, ...contentData.movies, ...contentData.shows, ...contentData.livetv];
-            const results = allContent.filter(item => 
-                item.title.toLowerCase().includes(query) || 
-                item.description.toLowerCase().includes(query)
-            );
-            
-            // Afficher les résultats
-            if (results.length > 0) {
-                const searchResultsGrid = document.createElement('div');
-                searchResultsGrid.className = 'content-grid';
-                searchResultsGrid.id = 'searchResultsGrid';
-                
-                results.forEach(item => {
-                    const card = createContentCard(item);
-                    searchResultsGrid.appendChild(card);
-                });
-                
-                // Créer une section pour les résultats
-                const searchSection = document.createElement('section');
-                searchSection.innerHTML = `
-                    <h2 class="section-title">Résultats pour "${query}"</h2>
-                `;
-                searchSection.appendChild(searchResultsGrid);
-                
-                // Insérer après la recherche
-                const searchContainer = document.querySelector('.search-container');
-                searchContainer.insertAdjacentElement('afterend', searchSection);
-                
-                // Faire défiler jusqu'aux résultats
-                window.scrollTo({
-                    top: searchSection.offsetTop - 80,
-                    behavior: 'smooth'
-                });
+            if (query.trim() === '') {
+                filteredData = [];
             } else {
-                showNotification(`Aucun résultat trouvé pour "${query}"`, 'error');
-            }
-        }
-
-        // Fonction pour ouvrir la modal avec les détails du contenu
-        function openModal(item) {
-            // Trouver l'élément complet dans nos données (si seulement l'ID a été passé)
-            if (typeof item === 'number') {
-                const allContent = [...contentData.featured, ...contentData.movies, ...contentData.shows, ...contentData.livetv];
-                item = allContent.find(content => content.id === item);
+                filteredData = mediaData[currentTab].filter(media => 
+                    media.title.toLowerCase().includes(query) ||
+                    media.genre.toLowerCase().includes(query) ||
+                    media.description.toLowerCase().includes(query)
+                );
             }
             
-            // Mettre à jour le contenu de la modal
-            document.getElementById('modalTitle').textContent = item.title;
-            document.getElementById('modalYear').textContent = item.year;
-            document.getElementById('modalRating').textContent = `⭐ ${item.rating}/10`;
-            document.getElementById('modalDuration').textContent = item.duration;
-            document.getElementById('modalDescription').textContent = item.description;
-            
-            // Définir l'image d'arrière-plan de l'en-tête
-            document.getElementById('modalHeader').style.backgroundImage = `url('${item.image}')`;
-            
-            // Charger le casting
-            const castContainer = document.getElementById('modalCast');
-            castContainer.innerHTML = '';
-            castData.forEach(actor => {
-                const castMember = document.createElement('div');
-                castMember.className = 'cast-member';
-                castMember.innerHTML = `
-                    <div class="cast-avatar" style="background-image: url('${actor.image}')"></div>
-                    <div class="cast-name">${actor.name}</div>
-                    <div class="cast-role">${actor.role}</div>
-                `;
-                castContainer.appendChild(castMember);
-            });
-            
-            // Charger les recommandations
-            const recommendationsContainer = document.getElementById('recommendationsGrid');
-            recommendationsContainer.innerHTML = '';
-            recommendationsData.forEach(recommendation => {
-                const recCard = document.createElement('div');
-                recCard.className = 'recommendation-card';
-                recCard.onclick = () => {
-                    // Trouver l'élément complet dans nos données
-                    const allContent = [...contentData.featured, ...contentData.movies, ...contentData.shows, ...contentData.livetv];
-                    const fullItem = allContent.find(content => content.id === recommendation.id) || recommendation;
-                    openModal(fullItem);
-                };
-                recCard.innerHTML = `
-                    <div class="recommendation-img" style="background-image: url('${recommendation.image}')"></div>
-                `;
-                recommendationsContainer.appendChild(recCard);
-            });
-            
-            // Afficher la modal
-            document.getElementById('videoModal').style.display = 'block';
-            document.body.style.overflow = 'hidden';
+            renderContent();
         }
 
-        // Fonction pour fermer la modal
-        function closeModal() {
-            document.getElementById('videoModal').style.display = 'none';
-            document.getElementById('aboutModal').style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
-
-        // Fonction pour afficher la modal "À propos"
-        function showInfo(type) {
-            if (type === 'about') {
-                document.getElementById('aboutModal').style.display = 'block';
-                document.body.style.overflow = 'hidden';
-            }
-        }
-
-        // Fonction pour lancer la lecture du contenu
-        function playContent(id) {
-            if (id) {
-                // Trouver l'élément dans nos données
-                const allContent = [...contentData.featured, ...contentData.movies, ...contentData.shows, ...contentData.livetv];
-                const item = allContent.find(content => content.id === id);
-                
-                showNotification(`Lecture de "${item.title}"`, 'success');
+        function playMedia(title, url) {
+            document.getElementById('modalTitle').textContent = title;
+            
+            // Pour les liens de streaming, on charge directement l'URL
+            if (url.includes('fsmirror77.lol')) {
+                document.getElementById('playerIframe').src = url;
             } else {
-                const title = document.getElementById('modalTitle').textContent;
-                showNotification(`Lecture de "${title}"`, 'success');
+                document.getElementById('playerIframe').src = url;
             }
             
-            closeModal();
-        }
-
-        // Fonction pour afficher une notification
-        function showNotification(message, type = 'success') {
-            const notification = document.getElementById('notification');
-            const notificationText = document.getElementById('notificationText');
+            document.getElementById('playerModal').classList.add('active');
             
-            notificationText.textContent = message;
-            notification.className = `notification ${type}`;
-            notification.style.display = 'flex';
-            
-            // Masquer après 3 secondes
+            // Forcer le reload de l'iframe pour éviter les problèmes de cache
             setTimeout(() => {
-                notification.style.display = 'none';
-            }, 3000);
+                const iframe = document.getElementById('playerIframe');
+                iframe.src = iframe.src;
+            }, 100);
         }
 
-        // Fermer la modal en cliquant à l'extérieur
-        window.onclick = function(event) {
-            const modal = document.getElementById('videoModal');
-            if (event.target === modal) {
-                closeModal();
+        function closePlayer() {
+            document.getElementById('playerModal').classList.remove('active');
+            document.getElementById('playerIframe').src = '';
+        }
+
+        // Fermer le modal en cliquant à l'extérieur
+        document.getElementById('playerModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePlayer();
             }
-            
-            const aboutModal = document.getElementById('aboutModal');
-            if (event.target === aboutModal) {
-                closeModal();
-            }
-        };
+        });
+
+        // Recherche en temps réel
+        document.getElementById('searchInput').addEventListener('input', searchContent);
+
+        // Initialiser le contenu
+        renderContent();
     </script>
 </body>
 </html>
