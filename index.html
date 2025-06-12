@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Le Bit - Streaming Avancé</title>
+    <title>Le Bit Pro - Streaming Complet</title>
     <style>
         * {
             margin: 0;
@@ -386,6 +386,20 @@
             font-size: 0.9rem;
         }
 
+        .pyodide-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
         @media (max-width: 768px) {
             .header-content {
                 flex-direction: column;
@@ -417,6 +431,11 @@
     </style>
 </head>
 <body>
+    <div class="pyodide-loading" id="pyodideLoading">
+        <div class="loading-spinner"></div>
+        <p>Chargement du moteur Python...</p>
+    </div>
+
     <header>
         <div class="container">
             <div class="header-content">
@@ -477,63 +496,77 @@
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
     <script>
-        // Simulation de l'API Python pour l'analyse des URLs
-        class VideoParser {
-            static async parseUrl(url, realData = null) {
-                // Simulation de l'analyse selon le type d'URL
-                const isBilibili = url.includes('bili') || url.split('.m4s').length === 3;
-                const isIqiyi = url.includes('iqiyi.com') || url.includes('iq.com');
-                const isHls = url.includes('.m3u8');
+        // Initialisation de Pyodide
+        let pyodide;
+        async function initializePyodide() {
+            pyodide = await loadPyodide({
+                indexURL: "https://cdn.jsdelivr.net/pyodide/v0.23.4/full/"
+            });
+            
+            // Charger les packages Python nécessaires
+            await pyodide.loadPackage(["micropip"]);
+            await pyodide.runPythonAsync(`
+                import micropip
+                await micropip.install(['ffmpeg-python', 'requests'])
+            `);
+            
+            // Charger notre code Python
+            await pyodide.runPythonAsync(`
+                import io
+                import sys
+                from js import console
                 
-                // Simulation du traitement avec délai
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                
-                let result = {
-                    videoType: '',
-                    headers: this.getHeaders(url),
-                    audioUrls: [],
-                    videoUrls: [],
-                    subtitles: []
-                };
-
-                if (isHls) {
-                    result.videoType = 'hls';
-                    result.videoUrls = [url];
-                } else if (isBilibili) {
-                    result.videoType = 'dash';
-                    result.audioUrls = ['https://example.com/audio.m4s'];
-                    result.videoUrls = ['https://example.com/video_720p.m4s', 'https://example.com/video_1080p.m4s'];
-                } else if (isIqiyi) {
-                    result.videoType = 'dash';
-                    result.audioUrls = ['https://example.com/iqiyi_audio.m4s'];
-                    result.videoUrls = ['https://example.com/iqiyi_720p.m4s', 'https://example.com/iqiyi_1080p.m4s'];
-                    result.subtitles = [
-                        ['Français', 'https://example.com/subtitles_fr.srt'],
-                        ['English', 'https://example.com/subtitles_en.srt']
-                    ];
-                } else {
-                    result.videoType = 'partial';
-                    result.videoUrls = [url];
-                }
-
-                return result;
-            }
-
-            static getHeaders(url) {
-                const headers = {};
-                
-                if (url.includes('bili')) {
-                    headers['referer'] = 'https://www.bilibili.com/';
-                } else if (url.includes('iqiyi.com')) {
-                    headers['referer'] = 'https://www.iqiyi.com/';
-                } else if (url.includes('mgtv.com')) {
-                    headers['referer'] = 'https://www.mgtv.com/';
-                }
-                
-                return headers;
-            }
+                class VideoParser:
+                    @staticmethod
+                    def parse_url(url, real_data=None):
+                        # Simulation de l'analyse selon le type d'URL
+                        is_bilibili = 'bili' in url or len(url.split('.m4s')) == 3
+                        is_iqiyi = 'iqiyi.com' in url or 'iq.com' in url
+                        is_hls = '.m3u8' in url
+                        
+                        result = {
+                            'videoType': '',
+                            'headers': {},
+                            'audioUrls': [],
+                            'videoUrls': [],
+                            'subtitles': []
+                        }
+                        
+                        if is_hls:
+                            result['videoType'] = 'hls'
+                            result['videoUrls'] = [url]
+                        elif is_bilibili:
+                            result['videoType'] = 'dash'
+                            result['audioUrls'] = ['https://example.com/audio.m4s']
+                            result['videoUrls'] = ['https://example.com/video_720p.m4s', 'https://example.com/video_1080p.m4s']
+                        elif is_iqiyi:
+                            result['videoType'] = 'dash'
+                            result['audioUrls'] = ['https://example.com/iqiyi_audio.m4s']
+                            result['videoUrls'] = ['https://example.com/iqiyi_720p.m4s', 'https://example.com/iqiyi_1080p.m4s']
+                            result['subtitles'] = [
+                                ['Français', 'https://example.com/subtitles_fr.srt'],
+                                ['English', 'https://example.com/subtitles_en.srt']
+                            ]
+                        else:
+                            result['videoType'] = 'partial'
+                            result['videoUrls'] = [url]
+                        
+                        return result
+            `);
+            
+            document.getElementById('pyodideLoading').style.display = 'none';
+            console.log('Pyodide initialisé avec succès');
         }
+        
+        initializePyodide().catch(err => {
+            console.error("Erreur lors de l'initialisation de Pyodide:", err);
+            document.getElementById('pyodideLoading').innerHTML = `
+                <p style="color: #ff4444;">❌ Erreur lors du chargement de Python</p>
+                <p>${err.message}</p>
+            `;
+        });
 
         // Base de données étendue avec des URLs d'exemple pour les différentes plateformes
         const mediaData = {
@@ -707,8 +740,16 @@
             document.getElementById('videoPlayer').style.display = 'none';
             
             try {
-                // Analyser l'URL avec l'API simulée
-                currentVideoData = await VideoParser.parseUrl(url);
+                // Analyser l'URL avec Pyodide
+                const result = await pyodide.runPythonAsync(`
+                    from js import URL
+                    import json
+                    parser = VideoParser()
+                    result = parser.parse_url("${url}")
+                    json.dumps(result)
+                `);
+                
+                currentVideoData = JSON.parse(result);
                 
                 // Masquer le loading
                 document.getElementById('loadingOverlay').style.display = 'none';
@@ -729,7 +770,7 @@
                 console.error('Erreur lors de l\'analyse de la vidéo:', error);
                 document.getElementById('loadingOverlay').innerHTML = `
                     <p style="color: #ff4444;">❌ Erreur lors de l'analyse de la vidéo</p>
-                    <p style="font-size: 0.9rem; opacity: 0.7;">Veuillez réessayer plus tard</p>
+                    <p style="font-size: 0.9rem; opacity: 0.7;">${error.message}</p>
                 `;
             }
         }
