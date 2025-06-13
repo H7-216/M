@@ -470,18 +470,65 @@
             
             try {
                 loading.style.display = 'block';
+                console.log('Chargement de la playlist...');
                 
-                const response = await fetch('https://aymrgknetzpucldhpkwm.supabase.co/storage/v1/object/public/tmdb/top-movies.m3u');
-                const playlistText = await response.text();
+                // Essayer plusieurs méthodes de chargement
+                let playlistText = '';
+                
+                try {
+                    // Méthode 1: Fetch direct
+                    const response = await fetch('https://aymrgknetzpucldhpkwm.supabase.co/storage/v1/object/public/tmdb/top-movies.m3u', {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'text/plain, */*',
+                            'Cache-Control': 'no-cache'
+                        },
+                        mode: 'cors'
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    playlistText = await response.text();
+                    console.log('Playlist chargée, taille:', playlistText.length, 'caractères');
+                    
+                } catch (fetchError) {
+                    console.warn('Fetch direct échoué:', fetchError);
+                    
+                    // Méthode 2: Proxy CORS
+                    try {
+                        const proxyResponse = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://aymrgknetzpucldhpkwm.supabase.co/storage/v1/object/public/tmdb/top-movies.m3u')}`);
+                        const proxyData = await proxyResponse.json();
+                        playlistText = proxyData.contents;
+                        console.log('Playlist chargée via proxy, taille:', playlistText.length, 'caractères');
+                    } catch (proxyError) {
+                        console.warn('Proxy CORS échoué:', proxyError);
+                        throw new Error('Impossible de charger la playlist via fetch ou proxy');
+                    }
+                }
+                
+                if (!playlistText || playlistText.trim().length === 0) {
+                    throw new Error('Playlist vide ou invalide');
+                }
                 
                 const movies = parseM3U(playlistText);
+                console.log('Films parsés:', movies.length);
+                
+                if (movies.length === 0) {
+                    throw new Error('Aucun film trouvé dans la playlist');
+                }
+                
                 allMovies = movies;
                 displayMovies(movies);
                 
                 loading.style.display = 'none';
+                console.log('Affichage terminé avec succès');
+                
             } catch (error) {
                 console.error('Erreur lors du chargement de la playlist:', error);
                 loading.style.display = 'none';
+                errorMessage.textContent = `Erreur: ${error.message}`;
                 errorMessage.style.display = 'block';
                 
                 // Afficher des films de démonstration en cas d'erreur
@@ -489,9 +536,11 @@
             }
         }
 
-        // Parser M3U
+        // Parser M3U amélioré
         function parseM3U(content) {
-            const lines = content.split('\n');
+            console.log('Parsing M3U, contenu:', content.substring(0, 200) + '...');
+            
+            const lines = content.split(/\r?\n/);
             const movies = [];
             let currentMovie = null;
 
@@ -500,24 +549,80 @@
                 
                 if (line.startsWith('#EXTINF:')) {
                     // Extraire les informations du film
-                    const infoMatch = line.match(/#EXTINF:(-?\d+),(.+)/);
+                    // Format: #EXTINF:duration,title
+                    const infoMatch = line.match(/#EXTINF:([^,]*),(.+)/);
                     if (infoMatch) {
-                        const title = infoMatch[2].trim();
+                        let title = infoMatch[2].trim();
+                        const duration = infoMatch[1].trim();
+                        
+                        // Nettoyer le titre (supprimer les caractères spéciaux)
+                        title = title.replace(/[^\w\s\-\.]/g, ' ').trim();
+                        if (!title) title = `Film ${movies.length + 1}`;
+                        
                         currentMovie = {
                             title: title,
-                            duration: infoMatch[1],
-                            description: `Film disponible en streaming haute qualité.`,
-                            id: movies.length
+                            duration: duration,
+                            description: `Durée: ${duration}s • Film disponible en streaming haute qualité`,
+                            id: movies.length,
+                            genre: extractGenre(title)
                         };
+                        
+                        console.log('Film trouvé:', title);
                     }
-                } else if (line.startsWith('http') && currentMovie) {
-                    currentMovie.url = line;
-                    movies.push(currentMovie);
-                    currentMovie = null;
+                } else if (line.startsWith('#EXTM3U')) {
+                    console.log('Header M3U détecté');
+                    continue;
+                } else if (line.startsWith('#')) {
+                    // Autres commentaires M3U, les ignorer pour l'instant
+                    continue;
+                } else if (line.length > 0 && (line.startsWith('http') || line.startsWith('https') || line.includes('://'))) {
+                    // URL du flux
+                    if (currentMovie) {
+                        currentMovie.url = line;
+                        movies.push(currentMovie);
+                        console.log('URL ajoutée pour:', currentMovie.title);
+                        currentMovie = null;
+                    } else {
+                        // URL sans EXTINF, créer un film basique
+                        const filename = line.split('/').pop().split('?')[0];
+                        const title = filename.replace(/\.[^/.]+$/, "").replace(/[_\-]/g, ' ');
+                        
+                        movies.push({
+                            title: title || `Film ${movies.length + 1}`,
+                            url: line,
+                            duration: 'N/A',
+                            description: 'Film disponible en streaming haute qualité',
+                            id: movies.length,
+                            genre: 'Film'
+                        });
+                        console.log('Film basique créé:', title);
+                    }
                 }
             }
             
+            console.log(`Parsing terminé: ${movies.length} films trouvés`);
             return movies;
+        }
+
+        // Extraire le genre basé sur le titre
+        function extractGenre(title) {
+            const genres = {
+                'action': ['action', 'fight', 'war', 'battle'],
+                'comedy': ['comedy', 'funny', 'humor', 'laugh'],
+                'drama': ['drama', 'story', 'life'],
+                'horror': ['horror', 'scary', 'fear', 'ghost'],
+                'sci-fi': ['sci', 'space', 'future', 'robot'],
+                'romance': ['love', 'romance', 'heart'],
+                'thriller': ['thriller', 'suspense', 'mystery']
+            };
+            
+            const lowerTitle = title.toLowerCase();
+            for (const [genre, keywords] of Object.entries(genres)) {
+                if (keywords.some(keyword => lowerTitle.includes(keyword))) {
+                    return genre.charAt(0).toUpperCase() + genre.slice(1);
+                }
+            }
+            return 'Film';
         }
 
         // Afficher les films
@@ -536,15 +641,23 @@
             });
         }
 
-        // Créer une carte de film
+        // Créer une carte de film améliorée
         function createMovieCard(movie) {
             const card = document.createElement('div');
             card.className = 'movie-card';
             card.onclick = () => playMovie(movie);
             
+            // Générer une couleur de fond basée sur le titre
+            const colors = ['#e50914', '#ff6b6b', '#4ecdc4', '#45b7d1', '#f39c12', '#9b59b6', '#e74c3c'];
+            const colorIndex = movie.title.length % colors.length;
+            const bgColor = colors[colorIndex];
+            
             card.innerHTML = `
-                <div class="movie-poster">
-                    🎬
+                <div class="movie-poster" style="background: linear-gradient(135deg, ${bgColor}22, ${bgColor}44);">
+                    <div style="font-size: 4rem; opacity: 0.3;">🎬</div>
+                    <div style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.7); padding: 5px 10px; border-radius: 15px; font-size: 0.8rem;">
+                        ${movie.genre || 'Film'}
+                    </div>
                     <button class="play-button">▶</button>
                 </div>
                 <div class="movie-info">
@@ -556,8 +669,10 @@
             return card;
         }
 
-        // Jouer un film
+        // Jouer un film avec gestion d'erreur améliorée
         function playMovie(movie) {
+            console.log('Lecture du film:', movie.title, 'URL:', movie.url);
+            
             const modal = document.getElementById('videoModal');
             const videoPlayer = document.getElementById('videoPlayer');
             const videoSource = document.getElementById('videoSource');
@@ -571,44 +686,74 @@
             modal.style.display = 'flex';
             document.body.style.overflow = 'hidden';
             
-            // Vérifier si HLS.js est supporté
-            if (Hls.isSupported()) {
+            // Réinitialiser le lecteur
+            videoPlayer.pause();
+            videoPlayer.removeAttribute('src');
+            videoPlayer.load();
+            
+            // Vérifier le type d'URL
+            const isHLS = movie.url.includes('.m3u8') || movie.url.includes('m3u8') || movie.url.includes('playlist');
+            const isMP4 = movie.url.includes('.mp4') || movie.url.includes('mp4');
+            
+            if (isHLS && Hls.isSupported()) {
+                // Utiliser HLS.js pour les flux HLS
+                console.log('Utilisation de HLS.js pour:', movie.url);
                 currentHls = new Hls({
                     enableWorker: true,
                     lowLatencyMode: true,
-                    backBufferLength: 90
+                    backBufferLength: 90,
+                    maxBufferLength: 30,
+                    xhrSetup: function(xhr, url) {
+                        xhr.setRequestHeader('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36');
+                    }
                 });
                 
                 currentHls.loadSource(movie.url);
                 currentHls.attachMedia(videoPlayer);
                 
                 currentHls.on(Hls.Events.MANIFEST_PARSED, function() {
-                    console.log('Manifest parsed, starting playback');
+                    console.log('Manifest HLS parsé avec succès');
+                    videoPlayer.play().catch(e => {
+                        console.log('Autoplay prevented, attendre interaction utilisateur');
+                    });
                 });
                 
                 currentHls.on(Hls.Events.ERROR, function(event, data) {
-                    console.error('HLS Error:', data);
+                    console.error('Erreur HLS:', data);
                     if (data.fatal) {
                         handleVideoError(movie, videoPlayer);
                     }
                 });
                 
-            } else if (videoPlayer.canPlayType('application/vnd.apple.mpegurl')) {
-                // Support natif Safari
-                videoSource.src = movie.url;
+            } else if (videoPlayer.canPlayType('application/vnd.apple.mpegurl') && isHLS) {
+                // Support natif Safari pour HLS
+                console.log('Utilisation du support natif Safari pour HLS');
+                videoPlayer.src = movie.url;
                 videoPlayer.load();
-            } else {
-                // Fallback pour les autres formats
-                videoSource.src = movie.url;
-                videoPlayer.load();
-            }
-            
-            // Tentative de lecture automatique
-            setTimeout(() => {
-                videoPlayer.play().catch(e => {
-                    console.log('Autoplay prevented:', e);
+                
+                videoPlayer.addEventListener('loadedmetadata', function() {
+                    videoPlayer.play().catch(e => {
+                        console.log('Autoplay prevented, attendre interaction utilisateur');
+                    });
                 });
-            }, 500);
+                
+            } else {
+                // Lecture directe pour MP4 et autres formats
+                console.log('Lecture directe pour:', movie.url);
+                videoPlayer.src = movie.url;
+                videoPlayer.load();
+                
+                videoPlayer.addEventListener('loadedmetadata', function() {
+                    videoPlayer.play().catch(e => {
+                        console.log('Autoplay prevented, attendre interaction utilisateur');
+                    });
+                });
+                
+                videoPlayer.addEventListener('error', function(e) {
+                    console.error('Erreur de lecture vidéo:', e);
+                    handleVideoError(movie, videoPlayer);
+                });
+            }
         }
 
         // Gérer les erreurs vidéo
@@ -674,29 +819,63 @@
 
         // Films de démonstration en cas d'erreur
         function displayDemoMovies() {
+            console.log('Affichage des films de démonstration');
+            
             const demoMovies = [
                 {
                     id: 1,
-                    title: "Film de Démonstration 1",
-                    description: "Un film captivant avec une histoire extraordinaire.",
-                    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                    title: "Big Buck Bunny",
+                    description: "Durée: 596s • Court-métrage d'animation en haute qualité",
+                    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+                    genre: "Animation"
                 },
                 {
                     id: 2,
-                    title: "Film de Démonstration 2", 
-                    description: "Une aventure épique qui vous tiendra en haleine.",
-                    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
+                    title: "Elephant's Dream", 
+                    description: "Durée: 653s • Premier film open source en 3D",
+                    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+                    genre: "Sci-Fi"
                 },
                 {
                     id: 3,
-                    title: "Film de Démonstration 3",
-                    description: "Un thriller psychologique aux rebondissements surprenants.",
-                    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+                    title: "For Bigger Blazes",
+                    description: "Durée: 15s • Démo technique haute définition",
+                    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+                    genre: "Demo"
+                },
+                {
+                    id: 4,
+                    title: "Sintel",
+                    description: "Durée: 888s • Film d'animation épique open source",
+                    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+                    genre: "Fantasy"
+                },
+                {
+                    id: 5,
+                    title: "Tears of Steel",
+                    description: "Durée: 734s • Film de science-fiction futuriste",
+                    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+                    genre: "Sci-Fi"
+                },
+                {
+                    id: 6,
+                    title: "What's Up?",
+                    description: "Durée: 30s • Comédie musicale animée",
+                    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4",
+                    genre: "Comedy"
                 }
             ];
             
             allMovies = demoMovies;
             displayMovies(demoMovies);
+            
+            // Masquer le message d'erreur après 5 secondes
+            setTimeout(() => {
+                const errorMessage = document.getElementById('errorMessage');
+                if (errorMessage.style.display === 'block') {
+                    errorMessage.style.display = 'none';
+                }
+            }, 5000);
         }
 
         // Prévenir la fermeture accidentelle pendant la lecture
