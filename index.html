@@ -406,6 +406,21 @@
             color: rgba(255, 255, 255, 0.6);
         }
 
+        /* Debug Info */
+        .debug-info {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            max-width: 300px;
+            z-index: 10000;
+            display: none;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .hero-title {
@@ -429,9 +444,17 @@
                 width: 95%;
             }
         }
+
+        /* Film de test styles */
+        .test-movie {
+            background: linear-gradient(45deg, #e50914, #ff1744);
+        }
     </style>
 </head>
 <body>
+    <!-- Debug Info -->
+    <div class="debug-info" id="debugInfo"></div>
+
     <!-- Header -->
     <header class="header" id="header">
         <nav class="nav">
@@ -479,7 +502,7 @@
                 <div class="loading-spinner"></div>
                 <div class="video-loading-text">Chargement du film...</div>
             </div>
-            <video class="video-player" id="videoPlayer" controls preload="none">
+            <video class="video-player" id="videoPlayer" controls preload="none" crossorigin="anonymous">
                 Votre navigateur ne supporte pas la lecture vidéo.
             </video>
         </div>
@@ -495,15 +518,30 @@
         // Variables globales
         let allMovies = [];
         let currentHls = null;
+        let debugMode = true;
+
+        // Debug logger
+        function debugLog(message, data = null) {
+            if (debugMode) {
+                console.log(`🎬 [DEBUG] ${message}`, data || '');
+                const debugDiv = document.getElementById('debugInfo');
+                debugDiv.style.display = 'block';
+                debugDiv.innerHTML = `<div>${new Date().toLocaleTimeString()}: ${message}</div>` + debugDiv.innerHTML;
+                if (debugDiv.children.length > 5) {
+                    debugDiv.removeChild(debugDiv.lastChild);
+                }
+            }
+        }
 
         // Initialisation
         document.addEventListener('DOMContentLoaded', function() {
+            debugLog('Initialisation de l\'application');
             loadPlaylist();
             initializeSearch();
             initializeScrollEffects();
         });
 
-        // Chargement de la playlist M3U avec meilleure gestion d'erreurs
+        // Chargement de la playlist M3U avec proxy CORS
         async function loadPlaylist() {
             const loading = document.getElementById('loading');
             const errorMessage = document.getElementById('errorMessage');
@@ -514,31 +552,53 @@
                 moviesGrid.innerHTML = '';
                 errorMessage.style.display = 'none';
                 
-                console.log('🎬 Chargement playlist M3U depuis Supabase...');
+                debugLog('🔄 Chargement playlist depuis Supabase...');
                 
-                // Tentative de chargement avec options CORS et cache
-                const response = await fetch('https://aymrgknetzpucldhpkwm.supabase.co/storage/v1/object/public/tmdb/top-movies.m3u', {
-                    method: 'GET',
-                    headers: {
-                        'Accept': '*/*',
-                        'Cache-Control': 'no-cache'
-                    },
-                    mode: 'cors'
-                });
+                // URLs de test possibles
+                const urls = [
+                    'https://aymrgknetzpucldhpkwm.supabase.co/storage/v1/object/public/tmdb/top-movies.m3u',
+                    // URL de backup si nécessaire
+                    'https://cors-anywhere.herokuapp.com/https://aymrgknetzpucldhpkwm.supabase.co/storage/v1/object/public/tmdb/top-movies.m3u'
+                ];
                 
-                if (!response.ok) {
-                    throw new Error(`Erreur ${response.status}: ${response.statusText}`);
+                let playlistText = null;
+                
+                for (const url of urls) {
+                    try {
+                        debugLog(`📡 Tentative de chargement: ${url}`);
+                        
+                        const response = await fetch(url, {
+                            method: 'GET',
+                            headers: {
+                                'Accept': '*/*',
+                                'Origin': window.location.origin,
+                                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                            },
+                            mode: 'cors',
+                            cache: 'no-cache'
+                        });
+                        
+                        if (response.ok) {
+                            playlistText = await response.text();
+                            debugLog(`✅ Playlist chargée (${playlistText.length} caractères)`);
+                            break;
+                        } else {
+                            debugLog(`❌ Erreur HTTP ${response.status}: ${response.statusText}`);
+                        }
+                    } catch (error) {
+                        debugLog(`❌ Erreur fetch: ${error.message}`);
+                    }
                 }
                 
-                const playlistText = await response.text();
-                console.log('📥 Playlist reçue:', playlistText.substring(0, 200) + '...');
-                
-                if (!playlistText || playlistText.trim().length === 0) {
-                    throw new Error('Playlist vide');
+                if (!playlistText) {
+                    throw new Error('Impossible de charger la playlist depuis toutes les sources');
                 }
                 
-                const movies = parseM3UAdvanced(playlistText);
-                console.log('🎭 Films extraits:', movies.length);
+                // Afficher les premières lignes pour debug
+                debugLog('📝 Début de la playlist:', playlistText.substring(0, 500));
+                
+                const movies = parseM3UEnhanced(playlistText);
+                debugLog(`🎭 ${movies.length} films extraits`);
                 
                 if (movies.length === 0) {
                     throw new Error('Aucun film valide trouvé dans la playlist');
@@ -548,88 +608,107 @@
                 displayMovies(movies);
                 
             } catch (error) {
-                console.error('❌ Erreur chargement:', error);
+                debugLog(`❌ Erreur chargement: ${error.message}`);
                 errorMessage.textContent = `Impossible de charger la playlist: ${error.message}`;
                 errorMessage.style.display = 'block';
                 
-                // En cas d'erreur, charger des films de démonstration
-                loadDemoMovies();
+                // Charger des films de test en attendant
+                loadTestMovies();
             } finally {
                 loading.style.display = 'none';
             }
         }
 
-        // Parser M3U amélioré pour gérer différents formats
-        function parseM3UAdvanced(content) {
-            const lines = content.split(/\r?\n/);
+        // Parser M3U ultra-robuste
+        function parseM3UEnhanced(content) {
+            const lines = content.split(/\r?\n/).map(line => line.trim()).filter(line => line);
             const movies = [];
             let currentMovie = null;
+            let lineIndex = 0;
 
-            console.log('🔍 Analyse de', lines.length, 'lignes');
+            debugLog(`🔍 Analyse de ${lines.length} lignes`);
 
-            for (let i = 0; i < lines.length; i++) {
-                const line = lines[i].trim();
+            for (const line of lines) {
+                lineIndex++;
                 
-                // Ignorer les lignes vides ou commentaires génériques
-                if (!line || line.startsWith('#EXTM3U')) {
+                // Ignorer les lignes vides et les commentaires génériques
+                if (!line || line.startsWith('#EXTM3U') || line.startsWith('#')) {
+                    if (line.startsWith('#EXTINF:')) {
+                        // Traiter les lignes EXTINF
+                        const match = line.match(/#EXTINF:([^,]*),(.+)/);
+                        if (match) {
+                            let title = match[2].trim();
+                            
+                            // Nettoyer le titre de tous les attributs
+                            title = title.replace(/\s*tvg-[^=]*="[^"]*"/g, '');
+                            title = title.replace(/\s*group-title="[^"]*"/g, '');
+                            title = title.replace(/\s*tvg-logo="[^"]*"/g, '');
+                            title = title.replace(/\s*,+\s*/g, ' ');
+                            title = title.trim();
+                            
+                            // Si le titre contient encore des virgules, prendre la première partie
+                            if (title.includes(',')) {
+                                title = title.split(',')[0].trim();
+                            }
+                            
+                            // Supprimer les caractères spéciaux de début/fin
+                            title = title.replace(/^[,\s]+|[,\s]+$/g, '');
+                            
+                            if (title) {
+                                currentMovie = {
+                                    id: movies.length + 1,
+                                    title: title,
+                                    description: `Film en streaming VF/VOSTFR`,
+                                    quality: 'HD',
+                                    duration: match[1].trim()
+                                };
+                                debugLog(`📋 Film préparé: "${title}"`);
+                            }
+                        }
+                    }
                     continue;
                 }
                 
-                if (line.startsWith('#EXTINF:')) {
-                    // Extraire les informations du titre
-                    const extinfMatch = line.match(/#EXTINF:([^,]*),(.+)/);
-                    if (extinfMatch) {
-                        const duration = extinfMatch[1].trim();
-                        let title = extinfMatch[2].trim();
-                        
-                        // Nettoyer le titre des balises et caractères indésirables
-                        title = title.replace(/tvg-[^=]*="[^"]*"/g, '').trim();
-                        title = title.replace(/group-title="[^"]*"/g, '').trim();
-                        title = title.replace(/,+/g, ' ').trim();
-                        
-                        // Extraire juste le nom du film
-                        if (title.includes(',')) {
-                            title = title.split(',')[0].trim();
-                        }
-                        
-                        currentMovie = {
-                            title: title || `Film ${movies.length + 1}`,
-                            duration: duration,
-                            description: `Film disponible en streaming VF/VOSTFR`,
-                            quality: 'HD',
-                            id: movies.length
-                        };
-                    }
-                } else if (line.startsWith('http') && currentMovie) {
-                    // URL du stream
-                    currentMovie.url = line;
-                    
-                    // Valider que l'URL semble correcte
-                    if (isValidStreamUrl(line)) {
+                // Si c'est une URL et qu'on a un film en attente
+                if (line.startsWith('http') && currentMovie) {
+                    // Valider l'URL
+                    if (isValidUrl(line)) {
+                        currentMovie.url = line;
                         movies.push(currentMovie);
-                        console.log('✅ Film ajouté:', currentMovie.title);
+                        debugLog(`✅ Film ajouté: "${currentMovie.title}" -> ${line.substring(0, 50)}...`);
                     } else {
-                        console.warn('⚠️ URL invalide pour:', currentMovie.title);
+                        debugLog(`⚠️ URL invalide pour "${currentMovie.title}": ${line.substring(0, 50)}...`);
                     }
-                    
                     currentMovie = null;
                 }
             }
             
+            debugLog(`🎬 Total films valides: ${movies.length}`);
             return movies;
         }
 
-        // Validation des URLs de stream
-        function isValidStreamUrl(url) {
+        // Validation d'URL améliorée
+        function isValidUrl(url) {
             try {
                 const urlObj = new URL(url);
-                return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
+                const validProtocols = ['http:', 'https:'];
+                const validExtensions = ['.m3u8', '.mp4', '.mkv', '.avi', '.ts'];
+                
+                if (!validProtocols.includes(urlObj.protocol)) {
+                    return false;
+                }
+                
+                // Accepter les URLs avec des extensions de streaming valides ou des paramètres
+                return validExtensions.some(ext => url.includes(ext)) || 
+                       url.includes('m3u8') || 
+                       url.includes('playlist') ||
+                       url.includes('stream');
             } catch {
                 return false;
             }
         }
 
-        // Afficher les films avec plus d'informations
+        // Afficher les films
         function displayMovies(movies) {
             const grid = document.getElementById('moviesGrid');
             grid.innerHTML = '';
@@ -644,14 +723,19 @@
                 grid.appendChild(movieCard);
             });
 
-            console.log('🎬 Affichage de', movies.length, 'films');
+            debugLog(`🎬 ${movies.length} films affichés`);
         }
 
-        // Créer une carte de film améliorée
+        // Créer une carte de film
         function createMovieCard(movie) {
             const card = document.createElement('div');
             card.className = 'movie-card';
             card.onclick = () => playMovie(movie);
+            
+            // Ajouter une classe spéciale pour les films de test
+            if (movie.isTest) {
+                card.classList.add('test-movie');
+            }
             
             card.innerHTML = `
                 <div class="movie-poster">
@@ -671,256 +755,325 @@
             return card;
         }
 
-        // Lecteur vidéo optimisé avec meilleure gestion des flux
+        // Lecteur vidéo ultra-robuste
         async function playMovie(movie) {
-            console.log('🎬 LECTURE:', movie.title);
-            console.log('🔗 URL:', movie.url);
+            debugLog(`🎬 LECTURE: "${movie.title}"`);
+            debugLog(`🔗 URL: ${movie.url}`);
             
             const modal = document.getElementById('videoModal');
             const videoPlayer = document.getElementById('videoPlayer');
             const videoLoading = document.getElementById('videoLoading');
             
-            // Ouvrir le modal et afficher le loading
+            // Ouvrir le modal
             modal.style.display = 'flex';
             videoLoading.style.display = 'flex';
             document.body.style.overflow = 'hidden';
             
             // Nettoyer le lecteur précédent
-            cleanupPlayer();
+            await cleanupPlayer();
             
             try {
-                // Vérifier la disponibilité du flux
-                const isStreamAvailable = await checkStreamAvailability(movie.url);
-                if (!isStreamAvailable) {
-                    throw new Error('Le flux vidéo n\'est pas disponible');
+                // Déterminer le type de flux
+                const isHLS = movie.url.includes('.m3u8') || movie.url.includes('m3u8');
+                debugLog(`📺 Type de flux: ${isHLS ? 'HLS' : 'Direct'}`);
+                
+                if (isHLS) {
+                    await setupHLSPlayer(movie, videoPlayer);
+                } else {
+                    await setupDirectPlayer(movie, videoPlayer);
                 }
                 
-                // Initialiser le lecteur selon le type de flux
-                if (movie.url.includes('.m3u8') || movie.url.includes('m3u8')) {
-                    await initializeHLSPlayer(movie, videoPlayer);
-                } else {
-                    await initializeNativePlayer(movie, videoPlayer);
-                }
+                debugLog('✅ Lecteur initialisé avec succès');
                 
             } catch (error) {
-                console.error('❌ Erreur lecture:', error);
-                alert(`Erreur lors de la lecture de "${movie.title}": ${error.message}`);
-                closeVideo();
+                debugLog(`❌ Erreur lecture: ${error.message}`);
+                
+                // Essayer en mode direct si HLS échoue
+                if (movie.url.includes('m3u8')) {
+                    debugLog('🔄 Tentative en mode direct...');
+                    try {
+                        await setupDirectPlayer(movie, videoPlayer);
+                        debugLog('✅ Mode direct fonctionne');
+                    } catch (directError) {
+                        debugLog(`❌ Mode direct échoué: ${directError.message}`);
+                        showError(`Impossible de lire "${movie.title}": ${error.message}`);
+                        closeVideo();
+                    }
+                } else {
+                    showError(`Erreur de lecture: ${error.message}`);
+                    closeVideo();
+                }
             } finally {
                 videoLoading.style.display = 'none';
             }
         }
 
-        // Vérifier la disponibilité du flux
-        async function checkStreamAvailability(url) {
-            try {
-                const response = await fetch(url, {
-                    method: 'HEAD',
-                    mode: 'no-cors'
-                });
-                return true; // Si pas d'erreur, le flux est probablement disponible
-            } catch {
-                // En mode no-cors, on ne peut pas vraiment vérifier, on assume que c'est OK
-                return true;
-            }
-        }
-
-        // Initialiser le lecteur HLS
-        async function initializeHLSPlayer(movie, videoPlayer) {
+        // Configuration du lecteur HLS
+        async function setupHLSPlayer(movie, videoPlayer) {
             return new Promise((resolve, reject) => {
-                if (Hls.isSupported()) {
-                    console.log('🎯 Utilisation HLS.js pour:', movie.title);
+                if (typeof Hls !== 'undefined' && Hls.isSupported()) {
+                    debugLog('🎯 Utilisation HLS.js');
                     
                     currentHls = new Hls({
                         debug: false,
                         enableWorker: true,
-                        lowLatencyMode: true,
+                        lowLatencyMode: false,
                         backBufferLength: 90,
                         maxBufferLength: 300,
                         maxMaxBufferLength: 600,
                         startLevel: -1,
                         capLevelToPlayerSize: true,
-                        // Gestion des erreurs réseau
-                        fragLoadingTimeOut: 20000,
-                        manifestLoadingTimeOut: 10000
+                        fragLoadingTimeOut: 30000,
+                        manifestLoadingTimeOut: 15000,
+                        fragLoadingMaxRetry: 3,
+                        manifestLoadingMaxRetry: 3,
+                        xhrSetup: function(xhr, url) {
+                            xhr.setRequestHeader('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36');
+                        }
                     });
                     
                     currentHls.loadSource(movie.url);
                     currentHls.attachMedia(videoPlayer);
                     
-                    currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
-                        console.log('✅ Manifest HLS chargé pour:', movie.title);
-                        videoPlayer.play().then(resolve).catch(reject);
+                    let resolved = false;
+                    
+                    currentHls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
+                        debugLog(`✅ Manifest HLS parsé (${data.levels.length} niveaux)`);
+                        if (!resolved) {
+                            resolved = true;
+                            videoPlayer.play().then(resolve).catch(reject);
+                        }
                     });
                     
                     currentHls.on(Hls.Events.ERROR, (event, data) => {
-                        console.error('❌ Erreur HLS:', data);
+                        debugLog(`❌ Erreur HLS: ${data.type} - ${data.details}`);
+                        
                         if (data.fatal) {
                             switch (data.type) {
                                 case Hls.ErrorTypes.NETWORK_ERROR:
-                                    console.log('🔄 Tentative de récupération réseau...');
+                                    debugLog('🔄 Récupération erreur réseau...');
                                     currentHls.startLoad();
                                     break;
                                 case Hls.ErrorTypes.MEDIA_ERROR:
-                                    console.log('🔄 Tentative de récupération média...');
+                                    debugLog('🔄 Récupération erreur média...');
                                     currentHls.recoverMediaError();
                                     break;
                                 default:
-                                    reject(new Error('Erreur fatale du lecteur HLS'));
+                                    reject(new Error(`Erreur HLS fatale: ${data.details}`));
                                     break;
                             }
                         }
                     });
                     
+                    // Timeout de sécurité
+                    setTimeout(() => {
+                        if (!resolved) {
+                            reject(new Error('Timeout chargement HLS'));
+                        }
+                    }, 15000);
+                    
                 } else if (videoPlayer.canPlayType('application/vnd.apple.mpegurl')) {
-                    // Safari natif
-                    console.log('🍎 Utilisation lecteur Safari natif');
+                    debugLog('🎯 Utilisation HLS natif (Safari)');
                     videoPlayer.src = movie.url;
-                    videoPlayer.load();
-                    videoPlayer.play().then(resolve).catch(reject);
+                    videoPlayer.addEventListener('loadedmetadata', () => {
+                        videoPlayer.play().then(resolve).catch(reject);
+                    });
                 } else {
-                    reject(new Error('Format HLS non supporté par ce navigateur'));
+                    reject(new Error('HLS non supporté par ce navigateur'));
                 }
             });
         }
 
-        // Initialiser le lecteur natif
-        async function initializeNativePlayer(movie, videoPlayer) {
+        // Configuration du lecteur direct
+        async function setupDirectPlayer(movie, videoPlayer) {
             return new Promise((resolve, reject) => {
-                console.log('🎯 Utilisation lecteur natif pour:', movie.title);
+                debugLog('🎯 Utilisation lecteur direct');
                 
                 videoPlayer.src = movie.url;
-                videoPlayer.load();
+                videoPlayer.type = 'video/mp4'; // Type MIME par défaut
                 
-                videoPlayer.addEventListener('loadeddata', () => {
-                    console.log('✅ Données vidéo chargées');
+                // Détecter le type de fichier
+                if (movie.url.includes('.mp4')) {
+                    videoPlayer.type = 'video/mp4';
+                } else if (movie.url.includes('.webm')) {
+                    videoPlayer.type = 'video/webm';
+                } else if (movie.url.includes('.ogg')) {
+                    videoPlayer.type = 'video/ogg';
+                }
+                
+                debugLog(`📺 Type MIME: ${videoPlayer.type}`);
+                
+                videoPlayer.addEventListener('loadedmetadata', () => {
+                    debugLog('✅ Métadonnées chargées');
                     videoPlayer.play().then(resolve).catch(reject);
-                }, { once: true });
+                });
                 
-                videoPlayer.addEventListener('error', (e) => {
-                    console.error('❌ Erreur lecteur natif:', e);
-                    reject(new Error('Impossible de lire cette vidéo'));
-                }, { once: true });
+                videoPlayer.addEventListener('error', () => {
+                    const error = videoPlayer.error;
+                    let message = 'Erreur inconnue';
+                    
+                    if (error) {
+                        switch(error.code) {
+                            case MediaError.MEDIA_ERR_ABORTED:
+                                message = 'Lecture annulée';
+                                break;
+                            case MediaError.MEDIA_ERR_NETWORK:
+                                message = 'Erreur réseau';
+                                break;
+                            case MediaError.MEDIA_ERR_DECODE:
+                                message = 'Erreur de décodage';
+                                break;
+                            case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
+                                message = 'Format non supporté';
+                                break;
+                        }
+                    }
+                    
+                    reject(new Error(message));
+                });
+                
+                // Timeout de sécurité
+                setTimeout(() => {
+                    if (videoPlayer.readyState < 2) {
+                        reject(new Error('Timeout chargement vidéo'));
+                    }
+                }, 10000);
             });
         }
 
-        // Nettoyer le lecteur
-        function cleanupPlayer() {
+        // Nettoyage du lecteur
+        async function cleanupPlayer() {
             const videoPlayer = document.getElementById('videoPlayer');
             
+            debugLog('🧹 Nettoyage du lecteur');
+            
+            // Arrêter la vidéo
+            videoPlayer.pause();
+            videoPlayer.removeAttribute('src');
+            videoPlayer.load();
+            
+            // Détruire l'instance HLS si elle existe
             if (currentHls) {
                 currentHls.destroy();
                 currentHls = null;
             }
-            
-            videoPlayer.pause();
-            videoPlayer.removeAttribute('src');
-            videoPlayer.load();
         }
 
         // Fermer la vidéo
         function closeVideo() {
-            const modal = document.getElementById('videoModal');
-            const videoLoading = document.getElementById('videoLoading');
+            debugLog('⏹ Fermeture du lecteur');
             
-            cleanupPlayer();
-            videoLoading.style.display = 'none';
+            const modal = document.getElementById('videoModal');
+            const videoPlayer = document.getElementById('videoPlayer');
+            
+            videoPlayer.pause();
             modal.style.display = 'none';
             document.body.style.overflow = 'auto';
+            
+            cleanupPlayer();
         }
 
-        // Films de démonstration en cas d'erreur
-        function loadDemoMovies() {
-            const demoMovies = [
-                {
-                    id: 1,
-                    title: "Big Buck Bunny",
-                    description: "Court-métrage d'animation en haute qualité",
-                    quality: "4K",
-                    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-                },
-                {
-                    id: 2,
-                    title: "Sintel", 
-                    description: "Film d'animation épique open source",
-                    quality: "HD",
-                    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
-                },
-                {
-                    id: 3,
-                    title: "Tears of Steel",
-                    description: "Court-métrage de science-fiction",
-                    quality: "HD",
-                    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4"
-                }
-            ];
+        // Afficher une erreur
+        function showError(message) {
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
             
-            allMovies = demoMovies;
-            displayMovies(demoMovies);
-            console.log('🎬 Films de démonstration chargés');
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 5000);
         }
 
         // Initialiser la recherche
         function initializeSearch() {
             const searchInput = document.getElementById('searchInput');
-            searchInput.addEventListener('input', function(e) {
-                const query = e.target.value.toLowerCase();
-                const filteredMovies = allMovies.filter(movie => 
-                    movie.title.toLowerCase().includes(query)
+            
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase().trim();
+                
+                if (query.length === 0) {
+                    displayMovies(allMovies);
+                    return;
+                }
+                
+                const filtered = allMovies.filter(movie => 
+                    movie.title.toLowerCase().includes(query) || 
+                    (movie.description && movie.description.toLowerCase().includes(query))
                 );
-                displayMovies(filteredMovies);
+                
+                displayMovies(filtered);
             });
         }
 
         // Effets de scroll
         function initializeScrollEffects() {
-            window.addEventListener('scroll', function() {
-                const header = document.getElementById('header');
-                header.classList.toggle('scrolled', window.scrollY > 100);
+            const header = document.getElementById('header');
+            
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
             });
         }
 
-        // Scroll vers les films
+        // Charger des films de test
+        function loadTestMovies() {
+            debugLog('⚠️ Chargement des films de test');
+            
+            const testMovies = [
+                {
+                    id: 1,
+                    title: "The Dark Knight",
+                    description: "Batman affronte le Joker dans ce chef-d'œuvre de Christopher Nolan",
+                    quality: "4K",
+                    url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+                    isTest: true
+                },
+                {
+                    id: 2,
+                    title: "Inception",
+                    description: "Un voleur qui entre dans les rêves doit accomplir une mission impossible",
+                    quality: "HD",
+                    url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+                    isTest: true
+                },
+                {
+                    id: 3,
+                    title: "Interstellar",
+                    description: "Un voyage épique à travers l'espace et le temps pour sauver l'humanité",
+                    quality: "HD",
+                    url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+                    isTest: true
+                }
+            ];
+            
+            allMovies = testMovies;
+            displayMovies(testMovies);
+        }
+
+        // Défilement vers la section films
         function scrollToMovies() {
-            document.getElementById('movies').scrollIntoView({ 
-                behavior: 'smooth' 
-            });
+            const moviesSection = document.getElementById('movies');
+            moviesSection.scrollIntoView({ behavior: 'smooth' });
         }
-
-        // Fermeture modal avec Escape
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeVideo();
-            }
-        });
-
-        // Prévenir la fermeture accidentelle
-        window.addEventListener('beforeunload', function() {
-            cleanupPlayer();
-        });
 
         // Gestion des erreurs globales
-        window.addEventListener('error', function(e) {
-            console.error('Erreur globale:', e.error);
+        window.addEventListener('error', (e) => {
+            debugLog(`⚠️ Erreur globale: ${e.message}`);
         });
 
-        // Auto-retry pour les flux qui échouent
-        function retryStream(movie, retryCount = 0) {
-            const maxRetries = 3;
-            
-            if (retryCount >= maxRetries) {
-                console.error('❌ Échec définitif après', maxRetries, 'tentatives');
-                return false;
+        // Exporter certaines fonctions pour le débogage
+        window.debug = {
+            loadPlaylist,
+            loadTestMovies,
+            closeVideo,
+            toggleDebug: () => {
+                debugMode = !debugMode;
+                debugLog(`Mode debug ${debugMode ? 'activé' : 'désactivé'}`);
             }
-            
-            console.log(`🔄 Tentative ${retryCount + 1}/${maxRetries} pour:`, movie.title);
-            
-            setTimeout(() => {
-                playMovie(movie);
-            }, 2000 * (retryCount + 1)); // Délai progressif
-            
-            return true;
-        }
+        };
     </script>
 </body>
 </html>
