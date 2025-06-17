@@ -63,7 +63,8 @@
 
         .hero-section {
             height: 100vh;
-            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.7)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><rect fill="%23000" width="1200" height="800"/><circle cx="600" cy="400" r="200" fill="%23e50914" opacity="0.1"/></svg>');
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.7)), 
+                        radial-gradient(circle at center, #e50914 0%, transparent 70%);
             background-size: cover;
             background-position: center;
             display: flex;
@@ -137,6 +138,7 @@
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            min-height: 400px;
         }
 
         .movie-info {
@@ -152,6 +154,7 @@
             border-radius: 8px;
             object-fit: cover;
             box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            background: #333;
         }
 
         .movie-details {
@@ -221,10 +224,16 @@
             background: rgba(255,255,255,0.1);
         }
 
-        .movie-card img {
+        .movie-card-poster {
             width: 100%;
             height: 350px;
             object-fit: cover;
+            background: linear-gradient(45deg, #333, #555);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
         }
 
         .movie-card-info {
@@ -251,7 +260,7 @@
 
         .play-button {
             position: absolute;
-            top: 50%;
+            top: 45%;
             left: 50%;
             transform: translate(-50%, -50%);
             background: rgba(229,9,20,0.9);
@@ -310,6 +319,15 @@
             font-weight: 600;
         }
 
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+            font-size: 1.2rem;
+            color: #aaa;
+        }
+
         @media (max-width: 768px) {
             .header {
                 padding: 1rem 2rem;
@@ -362,10 +380,12 @@
                     Sélectionnez un film pour commencer la lecture
                 </div>
                 <div class="player-wrapper">
-                    <div id="jwplayer-container"></div>
+                    <div id="jwplayer-container" class="loading">
+                        Chargement du lecteur...
+                    </div>
                 </div>
                 <div class="movie-info" id="movie-info" style="display: none;">
-                    <img class="movie-poster" id="current-poster" src="" alt="Affiche du film">
+                    <div class="movie-poster" id="current-poster">🎬</div>
                     <div class="movie-details">
                         <h2 class="movie-title" id="current-title"></h2>
                         <div class="movie-meta">
@@ -385,17 +405,17 @@
             <div class="categories">
                 <h2 class="section-title">Catalogue de Films</h2>
                 <div class="category-tabs">
-                    <button class="category-tab active" onclick="filterMovies('all')">Tous</button>
-                    <button class="category-tab" onclick="filterMovies('action')">Action</button>
-                    <button class="category-tab" onclick="filterMovies('drama')">Drame</button>
-                    <button class="category-tab" onclick="filterMovies('comedy')">Comédie</button>
-                    <button class="category-tab" onclick="filterMovies('thriller')">Thriller</button>
-                    <button class="category-tab" onclick="filterMovies('sci-fi')">Sci-Fi</button>
+                    <button class="category-tab active" onclick="filterMovies('all', this)">Tous</button>
+                    <button class="category-tab" onclick="filterMovies('action', this)">Action</button>
+                    <button class="category-tab" onclick="filterMovies('drama', this)">Drame</button>
+                    <button class="category-tab" onclick="filterMovies('comedy', this)">Comédie</button>
+                    <button class="category-tab" onclick="filterMovies('thriller', this)">Thriller</button>
+                    <button class="category-tab" onclick="filterMovies('sci-fi', this)">Sci-Fi</button>
                 </div>
             </div>
 
             <div class="movies-grid" id="movies-grid">
-                <!-- Les films seront générés dynamiquement -->
+                <div class="loading">Chargement des films...</div>
             </div>
         </div>
     </section>
@@ -412,7 +432,7 @@
             "displaydescription": true,
             "displaytitle": true,
             "flashplayer": "//ssl.p.jwpcdn.com/player/v/8.18.3/jwplayer.flash.swf",
-            "height": 360,
+            "height": 400,
             "key": "QFN07zA92fs4uuPHzLeE5OcGzNJe83omWTm19paRUYPCrOzCv0uCtBF4nagkXL1h",
             "mute": false,
             "ph": 1,
@@ -437,7 +457,7 @@
                 duration: "181 min",
                 rating: 4.8,
                 description: "Après les événements dévastateurs d'Avengers: Infinity War, l'univers est en ruines. Avec l'aide des alliés restants, les Avengers s'assemblent une fois de plus pour défaire les actions de Thanos et restaurer l'ordre dans l'univers.",
-                poster: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=600&fit=crop",
+                icon: "🦸‍♂️",
                 playlist: "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8"
             },
             {
@@ -448,7 +468,7 @@
                 duration: "148 min",
                 rating: 4.9,
                 description: "Dom Cobb est un voleur expérimenté dans l'art dangereux de l'extraction, voler les secrets des subconscients pendant l'état de rêve. Cette compétence rare l'a rendu un joueur convoité dans le monde perfide de l'espionnage d'entreprise.",
-                poster: "https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=400&h=600&fit=crop",
+                icon: "🌀",
                 playlist: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
             },
             {
@@ -459,7 +479,7 @@
                 duration: "152 min",
                 rating: 4.9,
                 description: "Batman lève les enjeux dans sa guerre contre le crime. Avec l'aide du lieutenant Jim Gordon et du procureur Harvey Dent, Batman se propose de démanteler les organisations criminelles restantes qui infestent les rues.",
-                poster: "https://images.unsplash.com/photo-1509347528160-9a9e33742cdb?w=400&h=600&fit=crop",
+                icon: "🦇",
                 playlist: "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8"
             },
             {
@@ -470,7 +490,7 @@
                 duration: "154 min",
                 rating: 4.7,
                 description: "Les vies de deux tueurs à gages, d'un boxeur, de la femme d'un gangster et d'une paire de voleurs de diner s'entremêlent dans quatre histoires de violence et de rédemption.",
-                poster: "https://images.unsplash.com/photo-1489599735734-79b4625469cc?w=400&h=600&fit=crop",
+                icon: "🔫",
                 playlist: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
             },
             {
@@ -481,7 +501,7 @@
                 duration: "142 min",
                 rating: 4.9,
                 description: "Deux hommes emprisonnés se lient d'amitié sur plusieurs années, trouvant du réconfort et une rédemption éventuelle grâce à des actes de décence commune.",
-                poster: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=600&fit=crop",
+                icon: "🏛️",
                 playlist: "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8"
             },
             {
@@ -492,7 +512,7 @@
                 duration: "142 min",
                 rating: 4.6,
                 description: "Les présidences de Kennedy et Johnson, les événements du Vietnam, Watergate et d'autres histoires se déroulent à travers la perspective d'un homme de l'Alabama avec un QI de 75.",
-                poster: "https://images.unsplash.com/photo-1489599735734-79b4625469cc?w=400&h=600&fit=crop",
+                icon: "🏃‍♂️",
                 playlist: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
             },
             {
@@ -503,7 +523,7 @@
                 duration: "136 min",
                 rating: 4.8,
                 description: "Un hacker informatique apprend de mystérieux rebelles sur la vraie nature de sa réalité et son rôle dans la guerre contre ses contrôleurs.",
-                poster: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=600&fit=crop",
+                icon: "💊",
                 playlist: "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8"
             },
             {
@@ -514,8 +534,30 @@
                 duration: "146 min",
                 rating: 4.7,
                 description: "L'histoire de Henry Hill et sa vie dans la mafia, couvrant ses relations avec sa femme Karen Hill et ses associés mafieux Jimmy Conway et Tommy DeVito.",
-                poster: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&h=600&fit=crop",
+                icon: "🕴️",
                 playlist: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+            },
+            {
+                id: 9,
+                title: "Interstellar",
+                year: 2014,
+                genre: "sci-fi",
+                duration: "169 min",
+                rating: 4.8,
+                description: "Une équipe d'explorateurs voyage à travers un trou de ver dans l'espace dans une tentative d'assurer la survie de l'humanité.",
+                icon: "🚀",
+                playlist: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
+            },
+            {
+                id: 10,
+                title: "The Godfather",
+                year: 1972,
+                genre: "drama",
+                duration: "175 min",
+                rating: 4.9,
+                description: "Le patriarche vieillissant d'une dynastie du crime organisé transfère le contrôle de son empire clandestin à son fils réticent.",
+                icon: "👔",
+                playlist: "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8"
             }
         ];
 
@@ -524,45 +566,58 @@
 
         // Initialisation
         document.addEventListener('DOMContentLoaded', function() {
-            initializePlayer();
-            renderMovies();
-            setupScrollEffect();
+            console.log('Initialisation de la page...');
+            setTimeout(() => {
+                initializePlayer();
+                renderMovies();
+                setupScrollEffect();
+            }, 500);
         });
 
         // Initialiser le lecteur JWPlayer
         function initializePlayer() {
-            playerInstance = jwplayer("jwplayer-container");
-            
-            playerInstance.setup({
-                ...jwDefaults,
-                file: "",
-                title: "CinéStream Player",
-                description: "Sélectionnez un film pour commencer",
-                width: "100%",
-                height: 500
-            });
+            try {
+                console.log('Initialisation JWPlayer...');
+                playerInstance = jwplayer("jwplayer-container");
+                
+                playerInstance.setup({
+                    ...jwDefaults,
+                    file: "",
+                    title: "CinéStream Player",
+                    description: "Sélectionnez un film pour commencer",
+                    width: "100%",
+                    height: 400
+                });
 
-            playerInstance.on('ready', function() {
-                console.log('JWPlayer initialisé avec PlayerID:', jwDefaults.pid);
-            });
+                playerInstance.on('ready', function() {
+                    console.log('JWPlayer initialisé avec PlayerID:', jwDefaults.pid);
+                    document.getElementById('jwplayer-container').innerHTML = '';
+                });
 
-            playerInstance.on('play', function() {
-                console.log('Lecture démarrée');
-            });
+                playerInstance.on('play', function() {
+                    console.log('Lecture démarrée');
+                });
 
-            playerInstance.on('error', function(e) {
-                console.error('Erreur JWPlayer:', e);
-            });
+                playerInstance.on('error', function(e) {
+                    console.error('Erreur JWPlayer:', e);
+                    alert('Erreur de lecture: ' + (e.message || 'Erreur inconnue'));
+                });
+            } catch (error) {
+                console.error('Erreur initialisation JWPlayer:', error);
+                document.getElementById('jwplayer-container').innerHTML = 
+                    '<div class="loading">Erreur de chargement du lecteur</div>';
+            }
         }
 
         // Rendre la grille de films
         function renderMovies(filter = 'all') {
+            console.log('Rendu des films, filtre:', filter);
             const grid = document.getElementById('movies-grid');
             const filteredMovies = filter === 'all' ? moviesDatabase : moviesDatabase.filter(movie => movie.genre === filter);
             
             grid.innerHTML = filteredMovies.map(movie => `
                 <div class="movie-card" onclick="playMovie(${movie.id})">
-                    <img src="${movie.poster}" alt="${movie.title}">
+                    <div class="movie-card-poster">${movie.icon}</div>
                     <div class="play-button">▶</div>
                     <div class="movie-card-info">
                         <h3 class="movie-card-title">${movie.title}</h3>
@@ -571,36 +626,49 @@
                     </div>
                 </div>
             `).join('');
+            
+            console.log(`${filteredMovies.length} films affichés`);
         }
 
         // Lire un film
         function playMovie(movieId) {
+            console.log('Lecture du film ID:', movieId);
             const movie = moviesDatabase.find(m => m.id === movieId);
-            if (!movie) return;
+            if (!movie) {
+                console.error('Film non trouvé:', movieId);
+                return;
+            }
 
             currentMovie = movie;
             
-            // Charger la vidéo dans JWPlayer
-            playerInstance.load({
-                file: movie.playlist,
-                title: movie.title,
-                description: movie.description,
-                width: "100%",
-                height: 500
-            });
+            try {
+                // Charger la vidéo dans JWPlayer
+                playerInstance.load({
+                    file: movie.playlist,
+                    title: movie.title,
+                    description: movie.description,
+                    width: "100%",
+                    height: 400
+                });
 
-            // Mettre à jour l'interface
-            updateMovieInfo(movie);
-            
-            // Scroll vers le lecteur
-            document.getElementById('content').scrollIntoView({ behavior: 'smooth' });
+                console.log('Chargement de:', movie.playlist);
+                
+                // Mettre à jour l'interface
+                updateMovieInfo(movie);
+                
+                // Scroll vers le lecteur
+                document.getElementById('content').scrollIntoView({ behavior: 'smooth' });
+            } catch (error) {
+                console.error('Erreur lors du chargement:', error);
+                alert('Erreur lors du chargement du film');
+            }
         }
 
         // Mettre à jour les informations du film
         function updateMovieInfo(movie) {
-            document.getElementById('current-playing').textContent = `En cours: ${movie.title}`;
+            document.getElementById('current-playing').textContent = `▶ En cours: ${movie.title}`;
             document.getElementById('movie-info').style.display = 'flex';
-            document.getElementById('current-poster').src = movie.poster;
+            document.getElementById('current-poster').textContent = movie.icon;
             document.getElementById('current-title').textContent = movie.title;
             document.getElementById('current-year').textContent = movie.year;
             document.getElementById('current-duration').textContent = movie.duration;
@@ -614,12 +682,14 @@
         }
 
         // Filtrer les films
-        function filterMovies(category) {
+        function filterMovies(category, element) {
+            console.log('Filtrage par catégorie:', category);
+            
             // Mettre à jour les onglets actifs
             document.querySelectorAll('.category-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
-            event.target.classList.add('active');
+            element.classList.add('active');
             
             // Rendre les films filtrés
             renderMovies(category);
@@ -648,23 +718,46 @@
                 switch(e.key) {
                     case ' ':
                         e.preventDefault();
-                        if (playerInstance.getState() === 'playing') {
-                            playerInstance.pause();
-                        } else {
-                            playerInstance.play();
+                        try {
+                            if (playerInstance.getState() === 'playing') {
+                                playerInstance.pause();
+                            } else {
+                                playerInstance.play();
+                            }
+                        } catch (error) {
+                            console.error('Erreur contrôle lecture:', error);
                         }
                         break;
                     case 'ArrowRight':
                         e.preventDefault();
-                        playerInstance.seek(playerInstance.getPosition() + 10);
+                        try {
+                            playerInstance.seek(playerInstance.getPosition() + 10);
+                        } catch (error) {
+                            console.error('Erreur seek:', error);
+                        }
                         break;
                     case 'ArrowLeft':
                         e.preventDefault();
-                        playerInstance.seek(playerInstance.getPosition() - 10);
+                        try {
+                            playerInstance.seek(playerInstance.getPosition() - 10);
+                        } catch (error) {
+                            console.error('Erreur seek:', error);
+                        }
                         break;
                 }
             }
         });
+
+        // Test des URLs
+        function testUrls() {
+            console.log('Test des URLs de streaming:');
+            moviesDatabase.forEach((movie, index) => {
+                console.log(`${index + 1}. ${movie.title}: ${movie.playlist}`);
+            });
+        }
+
+        // Lancer le test au chargement
+        setTimeout(testUrls, 2000);
     </script>
 </body>
 </html>
