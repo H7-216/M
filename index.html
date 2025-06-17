@@ -3,11 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CinéStream - Votre plateforme de streaming</title>
-    
-    <!-- JWPlayer CDN -->
-    <script src="https://cdn.jwplayer.com/libraries/KB5zFt7A.js"></script>
-    
+    <title>StreamFlix - Votre plateforme de streaming</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jwplayer/8.18.3/jwplayer.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -17,616 +14,302 @@
 
         body {
             font-family: 'Arial', sans-serif;
-            background: #000;
-            color: #fff;
-            overflow-x: hidden;
+            background: linear-gradient(135deg, #0f0c29, #24243e, #302b63);
+            color: white;
+            min-height: 100vh;
         }
 
-        /* Header */
         .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
-            transition: background 0.3s ease;
-            padding: 20px 4%;
-        }
-
-        .header.scrolled {
-            background: rgba(0,0,0,0.95);
-            backdrop-filter: blur(10px);
-        }
-
-        .nav {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .logo {
             font-size: 2rem;
             font-weight: bold;
-            color: #e50914;
-            text-shadow: 0 0 20px rgba(229, 9, 20, 0.5);
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .nav-links {
+        .nav-menu {
             display: flex;
             gap: 2rem;
             list-style: none;
         }
 
-        .nav-links a {
-            color: #fff;
-            text-decoration: none;
-            transition: color 0.3s ease;
-            font-weight: 500;
-        }
-
-        .nav-links a:hover {
-            color: #e50914;
-        }
-
-        /* Hero Section */
-        .hero {
-            height: 100vh;
-            background: linear-gradient(45deg, #000, #1a1a1a);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%23ffffff" opacity="0.05"/><circle cx="75" cy="75" r="1" fill="%23ffffff" opacity="0.03"/><circle cx="50" cy="10" r="1" fill="%23ffffff" opacity="0.04"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-            animation: grain 8s linear infinite;
-        }
-
-        @keyframes grain {
-            0%, 100% { transform: translate(0, 0); }
-            10% { transform: translate(-5%, -10%); }
-            20% { transform: translate(-15%, 5%); }
-            30% { transform: translate(7%, -25%); }
-            40% { transform: translate(-5%, 25%); }
-            50% { transform: translate(-15%, 10%); }
-            60% { transform: translate(15%, 0%); }
-            70% { transform: translate(0%, 15%); }
-            80% { transform: translate(3%, 35%); }
-            90% { transform: translate(-10%, 10%); }
-        }
-
-        .hero-content {
-            z-index: 2;
-            max-width: 800px;
-            padding: 0 2rem;
-        }
-
-        .hero-title {
-            font-size: 4rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-            background: linear-gradient(45deg, #e50914, #ff6b6b);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: glow 2s ease-in-out infinite alternate;
-        }
-
-        .hero-subtitle {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-        }
-
-        .cta-button {
-            background: linear-gradient(45deg, #e50914, #ff1744);
+        .nav-menu a {
             color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(229, 9, 20, 0.3);
-            text-transform: uppercase;
-            font-weight: bold;
-            letter-spacing: 1px;
+            text-decoration: none;
+            transition: color 0.3s;
         }
 
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(229, 9, 20, 0.5);
+        .nav-menu a:hover {
+            color: #4ecdc4;
         }
 
-        @keyframes glow {
-            from { text-shadow: 0 0 20px rgba(229, 9, 20, 0.5); }
-            to { text-shadow: 0 0 30px rgba(229, 9, 20, 0.8); }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
         }
 
-        /* Movies Section */
-        .movies-section {
-            padding: 4rem 4%;
-            background: #111;
-        }
-
-        .section-title {
-            font-size: 2.5rem;
-            margin-bottom: 2rem;
-            font-weight: bold;
-        }
-
-        .movies-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .movie-card {
-            background: rgba(255, 255, 255, 0.05);
+        .player-section {
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 15px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            cursor: pointer;
+            padding: 2rem;
+            margin-bottom: 2rem;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .player-container {
             position: relative;
+            margin-bottom: 1rem;
         }
 
-        .movie-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-            border-color: #e50914;
-        }
-
-        .movie-poster {
-            width: 100%;
-            height: 400px;
-            background: linear-gradient(45deg, #333, #555);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            color: #666;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .movie-poster::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(45deg, transparent, rgba(229, 9, 20, 0.1));
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .movie-card:hover .movie-poster::before {
-            opacity: 1;
-        }
-
-        .movie-info {
-            padding: 1.5rem;
-        }
-
-        .movie-title {
-            font-size: 1.3rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-            color: #fff;
-        }
-
-        .movie-description {
-            color: #ccc;
-            font-size: 0.9rem;
-            line-height: 1.5;
-            margin-bottom: 0.5rem;
-        }
-
-        .movie-meta {
+        .video-info {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-top: 1rem;
-            font-size: 0.8rem;
-            color: #888;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
         }
 
-        .movie-quality {
-            background: #e50914;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.7rem;
+        .video-title {
+            font-size: 1.5rem;
             font-weight: bold;
+            margin-bottom: 0.5rem;
         }
 
-        .play-button {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(229, 9, 20, 0.9);
-            border: none;
-            border-radius: 50%;
-            width: 80px;
-            height: 80px;
-            color: white;
-            font-size: 2rem;
-            cursor: pointer;
-            opacity: 0;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
+        .video-description {
+            color: #ccc;
+            font-size: 0.9rem;
         }
 
-        .movie-card:hover .play-button {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1.1);
+        .controls-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 2rem;
         }
 
-        /* Source Selection */
-        .source-selector {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.9);
-            padding: 8px;
-            border-radius: 8px;
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            z-index: 100;
-            min-width: 120px;
-        }
-
-        .movie-card:hover .source-selector {
+        .input-group {
             display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
         }
 
-        .source-btn {
-            background: #e50914;
-            color: white;
+        .input-group label {
+            font-weight: bold;
+            color: #4ecdc4;
+        }
+
+        .input-group input,
+        .input-group select,
+        .input-group textarea {
+            padding: 0.8rem;
             border: none;
-            padding: 5px 10px;
-            font-size: 0.8rem;
-            border-radius: 4px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .input-group input::placeholder,
+        .input-group textarea::placeholder {
+            color: #aaa;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .playlist-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .playlist-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #4ecdc4;
+        }
+
+        .playlist-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .playlist-item {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
             cursor: pointer;
             transition: all 0.3s;
-            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .source-btn:hover {
-            background: #ff1744;
-            transform: scale(1.05);
-        }
-
-        .source-btn.jwplayer {
-            background: #2196F3;
-        }
-
-        .source-btn.jwplayer:hover {
-            background: #1976D2;
-        }
-
-        /* Video Player Modal */
-        .video-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 2000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(20px);
-        }
-
-        .video-container {
-            width: 90%;
-            max-width: 1200px;
-            aspect-ratio: 16/9;
-            background: #000;
-            border-radius: 10px;
-            overflow: hidden;
-            position: relative;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
-        }
-
-        .video-player {
-            width: 100%;
-            height: 100%;
-            border: none;
-            background: #000;
-        }
-
-        /* JWPlayer Container */
-        .jwplayer-container {
-            width: 100%;
-            height: 100%;
-            background: #000;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .close-button {
-            position: absolute;
-            top: -50px;
-            right: 0;
-            background: rgba(229, 9, 20, 0.9);
-            border: none;
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            z-index: 2001;
-        }
-
-        .close-button:hover {
-            transform: scale(1.1);
-        }
-
-        /* Player Controls */
-        .player-controls {
-            position: absolute;
-            bottom: -60px;
-            left: 0;
-            right: 0;
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .source-switch-btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-
-        .source-switch-btn:hover {
-            background: rgba(229, 9, 20, 0.8);
-        }
-
-        .source-switch-btn.active {
-            background: #e50914;
-        }
-
-        /* Loading Animation */
-        .loading {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 3000;
-        }
-
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 3px solid rgba(229, 9, 20, 0.3);
-            border-top: 3px solid #e50914;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Video Loading */
-        .video-loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-            z-index: 2002;
-        }
-
-        .video-loading-text {
-            color: white;
-            font-size: 1rem;
-        }
-
-        /* Error Message */
-        .error-message {
-            background: rgba(255, 0, 0, 0.1);
-            border: 1px solid rgba(255, 0, 0, 0.3);
-            color: #ff6b6b;
-            padding: 1rem;
-            border-radius: 10px;
-            margin: 1rem 0;
-            text-align: center;
-            display: none;
-        }
-
-        /* Search Bar */
-        .search-container {
-            position: relative;
-            margin-bottom: 2rem;
-        }
-
-        .search-input {
-            width: 100%;
-            max-width: 400px;
-            padding: 15px 20px;
+        .playlist-item:hover {
             background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50px;
-            color: #fff;
-            font-size: 1rem;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
+            transform: translateY(-2px);
         }
 
-        .search-input:focus {
-            outline: none;
-            border-color: #e50914;
-            box-shadow: 0 0 20px rgba(229, 9, 20, 0.3);
+        .playlist-item.active {
+            border-color: #4ecdc4;
+            background: rgba(78, 205, 196, 0.2);
         }
 
-        .search-input::placeholder {
-            color: rgba(255, 255, 255, 0.6);
+        .item-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
         }
 
-        /* Debug Info */
-        .debug-info {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
+        .item-url {
+            color: #aaa;
             font-size: 0.8rem;
-            max-width: 300px;
-            z-index: 10000;
-            display: none;
+            word-break: break-all;
         }
 
-        /* Responsive */
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .status-ready { background: #4ecdc4; }
+        .status-loading { background: #ff9f40; animation: pulse 1s infinite; }
+        .status-error { background: #ff6b6b; }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+
         @media (max-width: 768px) {
-            .hero-title {
-                font-size: 2.5rem;
+            .controls-panel {
+                grid-template-columns: 1fr;
             }
             
-            .hero-subtitle {
-                font-size: 1.2rem;
-            }
-            
-            .nav-links {
+            .nav-menu {
                 display: none;
             }
             
-            .movies-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-                gap: 1rem;
+            .header {
+                padding: 1rem;
             }
             
-            .video-container {
-                width: 95%;
-            }
-            
-            .player-controls {
-                flex-wrap: wrap;
-                gap: 5px;
-            }
-            
-            .source-switch-btn {
-                padding: 6px 12px;
-                font-size: 0.8rem;
+            .container {
+                padding: 1rem;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Debug Info -->
-    <div class="debug-info" id="debugInfo"></div>
-
-    <!-- Header -->
-    <header class="header" id="header">
-        <nav class="nav">
-            <div class="logo">CinéStream</div>
-            <ul class="nav-links">
+    <header class="header">
+        <div class="logo">StreamFlix</div>
+        <nav>
+            <ul class="nav-menu">
                 <li><a href="#home">Accueil</a></li>
-                <li><a href="#movies">Films</a></li>
-                <li><a href="#series">Séries</a></li>
-                <li><a href="#trending">Tendances</a></li>
+                <li><a href="#playlist">Playlist</a></li>
+                <li><a href="#settings">Paramètres</a></li>
+                <li><a href="#about">À propos</a></li>
             </ul>
         </nav>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="hero-content">
-            <h1 class="hero-title">CinéStream</h1>
-            <p class="hero-subtitle">Découvrez des milliers de films et séries en haute qualité avec JWPlayer intégré</p>
-            <button class="cta-button" onclick="scrollToMovies()">Commencer à Regarder</button>
-        </div>
-    </section>
-
-    <!-- Movies Section -->
-    <section class="movies-section" id="movies">
-        <h2 class="section-title">🎬 Films Populaires</h2>
-        
-        <div class="search-container">
-            <input type="text" class="search-input" placeholder="Rechercher un film..." id="searchInput">
-        </div>
-
-        <div class="error-message" id="errorMessage">
-            Erreur lors du chargement de la playlist.
-        </div>
-
-        <div class="movies-grid" id="moviesGrid">
-            <!-- Movies will be loaded here -->
-        </div>
-    </section>
-
-    <!-- Video Modal -->
-    <div class="video-modal" id="videoModal">
-        <div class="video-container">
-            <button class="close-button" onclick="closeVideo()">&times;</button>
-            <div class="video-loading" id="videoLoading">
-                <div class="loading-spinner"></div>
-                <div class="video-loading-text">Chargement du film...</div>
+    <div class="container">
+        <section class="player-section">
+            <div class="player-container">
+                <div id="jwplayer-container"></div>
             </div>
             
-            <!-- JWPlayer Container -->
-            <div class="jwplayer-container" id="jwplayer-container" style="display: none;"></div>
-            
-            <!-- Iframe Fallback -->
-            <iframe class="video-player" id="videoPlayer" allowfullscreen></iframe>
-            
-            <!-- Player Controls -->
-            <div class="player-controls" id="playerControls">
-                <!-- Source switch buttons will be added here -->
+            <div class="video-info">
+                <div>
+                    <div class="video-title" id="current-title">Aucune vidéo sélectionnée</div>
+                    <div class="video-description" id="current-description">Choisissez une vidéo ou ajoutez une URL pour commencer</div>
+                </div>
+                <div class="stats">
+                    <span>Qualité: <span id="quality-info">Auto</span></span>
+                    <span>Format: <span id="format-info">-</span></span>
+                </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Loading Animation -->
-    <div class="loading" id="loading">
-        <div class="loading-spinner"></div>
+            <div class="controls-panel">
+                <div class="input-group">
+                    <label for="video-url">URL de la vidéo (MP4, M3U8, etc.)</label>
+                    <input type="url" id="video-url" placeholder="https://example.com/video.m3u8">
+                </div>
+                
+                <div class="input-group">
+                    <label for="video-title-input">Titre de la vidéo</label>
+                    <input type="text" id="video-title-input" placeholder="Titre de votre vidéo">
+                </div>
+                
+                <div class="input-group">
+                    <label for="video-poster">Image de couverture (URL)</label>
+                    <input type="url" id="video-poster" placeholder="https://example.com/poster.jpg">
+                </div>
+                
+                <div class="input-group">
+                    <label for="video-desc-input">Description</label>
+                    <textarea id="video-desc-input" placeholder="Description de la vidéo" rows="3"></textarea>
+                </div>
+            </div>
+            
+            <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+                <button class="btn" onclick="loadVideo()">Charger la vidéo</button>
+                <button class="btn" onclick="addToPlaylist()">Ajouter à la playlist</button>
+                <button class="btn" onclick="clearPlaylist()">Vider la playlist</button>
+            </div>
+        </section>
+
+        <section class="playlist-section">
+            <h2 class="playlist-title">Playlist de streaming</h2>
+            <div class="playlist-items" id="playlist-container">
+                <!-- Les éléments de playlist seront ajoutés ici dynamiquement -->
+            </div>
+        </section>
     </div>
 
     <script>
-        // Variables globales
-        let allMovies = [];
-        let debugMode = true;
-        let currentPlayer = null;
-        let currentMovie = null;
-        let currentSource = null;
-
-        // Configuration JWPlayer optimisée
-        const jwDefaults = {
+        // Configuration JWPlayer basée sur vos paramètres
+        var jwDefaults = {
             "aspectratio": "16:9",
             "autostart": false,
             "cast": {
@@ -635,525 +318,302 @@
             "controls": true,
             "displaydescription": true,
             "displaytitle": true,
-            "flashplayer": "//ssl.p.jwpcdn.com/player/v/8.18.3/jwplayer.flash.swf",
-            "height": "100%",
-            "key": "QFN07zA92fs4uuPHzLeE5OcGzNJe83omWTm19paRUYPCrOzCv0uCtBF4nagkXL1h",
+            "height": 480,
             "mute": false,
-            "ph": 1,
-            "pid": "KB5zFt7A",
             "playbackRateControls": true,
             "preload": "metadata",
             "repeat": false,
-            "stagevideo": false,
             "stretching": "uniform",
             "width": "100%",
-            "logo": {
-                "hide": true
-            },
-            "sharing": {
-                "sites": ["reddit", "facebook", "twitter"]
-            },
-            "related": {
-                "displayMode": "none"
+            "skin": {
+                "name": "glow"
             }
         };
 
-        // Configuration des sources de streaming
-        const streamingSources = {
-            beerscloud: {
-                name: 'BeersCloud',
-                baseUrl: 'https://beerscloud.com/embed/',
-                type: 'jwplayer',
-                priority: 1
-            },
-            sharecloudy: {
-                name: 'ShareCloudy',
-                baseUrl: 'https://sharecloudy.com/embed/',
-                type: 'jwplayer',
-                priority: 2
-            },
-            vidsrc: {
-                name: 'VidSrc',
-                baseUrl: 'https://vidsrc.to/embed/movie/',
-                type: 'embed',
-                priority: 3
-            },
-            multiembed: {
-                name: 'MultiEmbed',
-                baseUrl: 'https://multiembed.mov/directstream.php?video_id=',
-                type: 'embed',
-                priority: 4
-            },
-            embedsu: {
-                name: 'EmbedSu',
-                baseUrl: 'https://embed.su/embed/movie/',
-                type: 'embed',
-                priority: 5
-            }
-        };
+        // Application de la configuration par défaut
+        jwplayer.defaults = jwDefaults;
 
-        // Base de données de films avec URLs personnalisées pour BeersCloud et ShareCloudy
-        const moviesDatabase = [
-            {
-                id: 550,
-                title: "Fight Club",
-                description: "Un employé de bureau insomnique et un fabricant de savon forment un club de combat clandestin.",
-                year: 1999,
-                quality: "HD",
-                genre: "Drame",
-                customUrls: {
-                    beerscloud: "https://beerscloud.com/embed/movie/fight-club-1999",
-                    sharecloudy: "https://sharecloudy.com/embed/movie/fight-club"
-                }
-            },
-            {
-                id: 13,
-                title: "Forrest Gump",
-                description: "L'histoire d'un homme simple qui traverse plusieurs décennies de l'histoire américaine.",
-                year: 1994,
-                quality: "HD",
-                genre: "Drame",
-                customUrls: {
-                    beerscloud: "https://beerscloud.com/embed/movie/forrest-gump-1994",
-                    sharecloudy: "https://sharecloudy.com/embed/movie/forrest-gump"
-                }
-            },
-            {
-                id: 278,
-                title: "The Shawshank Redemption",
-                description: "Deux hommes emprisonnés se lient d'amitié sur plusieurs années.",
-                year: 1994,
-                quality: "HD",
-                genre: "Drame",
-                customUrls: {
-                    beerscloud: "https://beerscloud.com/embed/movie/shawshank-redemption",
-                    sharecloudy: "https://sharecloudy.com/embed/movie/shawshank"
-                }
-            },
-            {
-                id: 238,
-                title: "The Godfather",
-                description: "Le patriarche vieillissant d'une dynastie du crime organisé transfère le contrôle de son empire clandestin à son fils réticent.",
-                year: 1972,
-                quality: "HD",
-                genre: "Crime",
-                customUrls: {
-                    beerscloud: "https://beerscloud.com/embed/movie/godfather-1972",
-                    sharecloudy: "https://sharecloudy.com/embed/movie/godfather"
-                }
-            },
-            {
-                id: 155,
-                title: "The Dark Knight",
-                description: "Batman affronte le Joker dans cette suite sombre et complexe.",
-                year: 2008,
-                quality: "HD",
-                genre: "Action",
-                customUrls: {
-                    beerscloud: "https://beerscloud.com/embed/movie/dark-knight-2008",
-                    sharecloudy: "https://sharecloudy.com/embed/movie/dark-knight"
-                }
-            }
-        ];
+        let playerInstance = null;
+        let playlist = [];
+        let currentVideoIndex = -1;
 
-        // Debug logger
-        function debugLog(message, data = null) {
-            if (debugMode) {
-                console.log(`🎬 [DEBUG] ${message}`, data || '');
-                const debugDiv = document.getElementById('debugInfo');
-                debugDiv.style.display = 'block';
-                debugDiv.innerHTML = `<div>${new Date().toLocaleTimeString()}: ${message}</div>` + debugDiv.innerHTML;
-                if (debugDiv.children.length > 5) {
-                    debugDiv.removeChild(debugDiv.lastChild);
-                }
-            }
-        }
-
-        // Initialisation
-        document.addEventListener('DOMContentLoaded', function() {
-            debugLog('Initialisation de CinéStream avec JWPlayer');
+        // Initialisation du lecteur
+        function initPlayer() {
+            playerInstance = jwplayer("jwplayer-container");
             
-            // Initialiser JWPlayer defaults
-            if (typeof jwplayer !== 'undefined') {
-                jwplayer.defaults = jwDefaults;
-                debugLog('JWPlayer configuré avec succès');
-            } else {
-                debugLog('ERREUR: JWPlayer non disponible');
-            }
-            
-            loadMoviesFromDatabase();
-            initializeSearch();
-            initializeScrollEffects();
-        });
-
-        // Charger les films depuis la base de données
-        function loadMoviesFromDatabase() {
-            debugLog(`Chargement de ${moviesDatabase.length} films`);
-            allMovies = moviesDatabase.map(movie => ({
-                ...movie,
-                sources: generateStreamingSources(movie)
-            }));
-            displayMovies(allMovies);
-        }
-
-        // Générer les sources de streaming pour un film
-        function generateStreamingSources(movie) {
-            const sources = {};
-            Object.keys(streamingSources).forEach(key => {
-                const source = streamingSources[key];
-                let url;
-                
-                // Utiliser les URLs personnalisées si disponibles
-                if (movie.customUrls && movie.customUrls[key]) {
-                    url = movie.customUrls[key];
-                } else {
-                    url = source.baseUrl + movie.id;
-                }
-                
-                sources[key] = {
-                    name: source.name,
-                    url: url,
-                    type: source.type,
-                    priority: source.priority
-                };
-            });
-            return sources;
-        }
-
-        // Créer une carte de film avec sélecteur de sources
-        function createMovieCard(movie) {
-            const card = document.createElement('div');
-            card.className = 'movie-card';
-            
-            // Trier les sources par priorité
-            const sortedSources = Object.entries(movie.sources)
-                .sort((a, b) => a[1].priority - b[1].priority);
-            
-            // Créer les boutons de sources
-            const sourcesHtml = sortedSources.map(([key, source]) => {
-                const buttonClass = source.type === 'jwplayer' ? 'source-btn jwplayer' : 'source-btn';
-                return `<button class="${buttonClass}" onclick="playMovieFromSource('${movie.id}', '${key}')" title="${source.type === 'jwplayer' ? 'Lecteur JWPlayer' : 'Lecteur Embed'}">${source.name}</button>`;
-            }).join('');
-            
-            const defaultSource = sortedSources[0][0]; // Première source par priorité
-            
-            card.innerHTML = `
-                <div class="movie-poster">
-                    🎬
-                    <button class="play-button" onclick="playMovieFromSource('${movie.id}', '${defaultSource}')">▶</button>
-                    <div class="source-selector">
-                        ${sourcesHtml}
-                    </div>
-                </div>
-                <div class="movie-info">
-                    <h3 class="movie-title">${movie.title}</h3>
-                    <p class="movie-description">${movie.description}</p>
-                    <div class="movie-meta">
-                        <span class="movie-quality">${movie.quality}</span>
-                        <span>${movie.year}</span>
-                        <span>${movie.genre}</span>
-                    </div>
-                </div>
-            `;
-            
-            return card;
-        }
-
-        // Afficher les films
-        function displayMovies(movies) {
-            const grid = document.getElementById('moviesGrid');
-            grid.innerHTML = '';
-
-            if (movies.length === 0) {
-                grid.innerHTML = '<p style="text-align: center; color: #666; grid-column: 1/-1;">Aucun film trouvé.</p>';
-                return;
-            }
-
-            movies.forEach(movie => {
-                const movieCard = createMovieCard(movie);
-                grid.appendChild(movieCard);
-            });
-
-            debugLog(`${movies.length} films affichés`);
-        }
-
-        // Fonction pour extraire l'URL de la vidéo depuis BeersCloud/ShareCloudy
-        async function extractVideoUrl(embedUrl, sourceType) {
-            try {
-                // Simulation d'extraction d'URL - à adapter selon la structure réelle des sites
-                debugLog(`Tentative d'extraction depuis: ${embedUrl}`);
-                
-                if (sourceType === 'beerscloud') {
-                    // Pour BeersCloud, on peut essayer de récupérer le lien direct
-                    return embedUrl.replace('/embed/', '/stream/') + '.mp4';
-                } else if (sourceType === 'sharecloudy') {
-                    // Pour ShareCloudy, adapter selon leur API
-                    return embedUrl.replace('/embed/', '/direct/') + '.m3u8';
-                }
-                
-                return null;
-            } catch (error) {
-                debugLog(`Erreur extraction: ${error.message}`);
-                return null;
-            }
-        }
-
-        // Jouer un film depuis une source spécifique
-        async function playMovieFromSource(movieId, sourceKey) {
-            debugLog(`Tentative de lecture du film ${movieId} depuis ${sourceKey}`);
-            
-            const movie = allMovies.find(m => m.id == movieId);
-            if (!movie) {
-                debugLog('Film non trouvé');
-                showError('Film non trouvé');
-                return;
-            }
-            
-            const source = movie.sources[sourceKey];
-            if (!source) {
-                debugLog('Source non disponible');
-                showError('Source non disponible');
-                return;
-            }
-            
-            currentMovie = movie;
-            currentSource = source;
-            
-            showLoading(true);
-            openVideoModal();
-            
-            try {
-                if (source.type === 'jwplayer') {
-                    await playWithJWPlayer(source.url, sourceKey);
-                } else {
-                    playWithIframe(source.url);
-                }
-                
-                updatePlayerControls(movie);
-            } catch (error) {
-                debugLog(`Erreur de lecture: ${error.message}`);
-                showError('Erreur de chargement du flux');
-                // Essayer la source suivante en cas d'échec
-                tryNextSource(movie, sourceKey);
-            } finally {
-                showLoading(false);
-            }
-        }
-
-        // Jouer avec JWPlayer (optimisé pour BeersCloud/ShareCloudy)
-        async function playWithJWPlayer(embedUrl, sourceKey) {
-            debugLog(`Initialisation JWPlayer pour ${embedUrl}`);
-            
-            // Masquer l'iframe et afficher le conteneur JWPlayer
-            document.getElementById('videoPlayer').style.display = 'none';
-            const jwContainer = document.getElementById('jwplayer-container');
-            jwContainer.style.display = 'block';
-            
-            // Extraire l'URL de la vidéo
-            let videoUrl = await extractVideoUrl(embedUrl, sourceKey);
-            if (!videoUrl) {
-                debugLog('Utilisation de l\'URL embed comme fallback');
-                videoUrl = embedUrl;
-            }
-            
-            // Configurer JWPlayer
-            currentPlayer = jwplayer('jwplayer-container').setup({
+            playerInstance.setup({
                 ...jwDefaults,
-                file: videoUrl,
-                image: `https://image.tmdb.org/t/p/original/${currentMovie.poster_path || ''}`,
-                title: currentMovie.title,
-                description: currentMovie.description,
-                abouttext: `Source: ${currentSource.name}`,
-                aboutlink: embedUrl
+                file: "",
+                title: "StreamFlix Player",
+                description: "Lecteur de streaming avancé"
             });
-            
-            // Gestion des erreurs
-            currentPlayer.on('error', (e) => {
-                debugLog(`Erreur JWPlayer: ${e.message}`);
-                showError('Erreur de lecture avec JWPlayer');
-                tryNextSource(currentMovie, sourceKey);
+
+            // Événements du lecteur
+            playerInstance.on('ready', function() {
+                console.log('Lecteur JWPlayer initialisé');
+                updateStatus('ready');
             });
-            
-            currentPlayer.on('buffer', () => {
-                document.getElementById('videoLoading').style.display = 'flex';
+
+            playerInstance.on('play', function() {
+                console.log('Lecture démarrée');
             });
-            
-            currentPlayer.on('play', () => {
-                document.getElementById('videoLoading').style.display = 'none';
+
+            playerInstance.on('error', function(e) {
+                console.error('Erreur du lecteur:', e);
+                updateStatus('error');
+                alert('Erreur lors de la lecture: ' + e.message);
             });
-            
-            debugLog('JWPlayer configuré avec succès');
+
+            playerInstance.on('complete', function() {
+                console.log('Lecture terminée');
+                playNext();
+            });
+
+            playerInstance.on('meta', function(e) {
+                updateVideoInfo(e);
+            });
         }
 
-        // Jouer avec iframe (fallback)
-        function playWithIframe(url) {
-            debugLog(`Initialisation iframe pour ${url}`);
-            
-            // Masquer JWPlayer et afficher l'iframe
-            document.getElementById('jwplayer-container').style.display = 'none';
-            const iframe = document.getElementById('videoPlayer');
-            iframe.style.display = 'block';
-            
-            iframe.src = url;
-            
-            // Gestion du chargement
-            document.getElementById('videoLoading').style.display = 'flex';
-            iframe.onload = () => {
-                document.getElementById('videoLoading').style.display = 'none';
+        // Charger une vidéo
+        function loadVideo() {
+            const url = document.getElementById('video-url').value.trim();
+            const title = document.getElementById('video-title-input').value.trim() || 'Vidéo sans titre';
+            const poster = document.getElementById('video-poster').value.trim();
+            const description = document.getElementById('video-desc-input').value.trim();
+
+            if (!url) {
+                alert('Veuillez entrer une URL de vidéo');
+                return;
+            }
+
+            updateStatus('loading');
+
+            const config = {
+                file: url,
+                title: title,
+                description: description
             };
+
+            if (poster) {
+                config.image = poster;
+            }
+
+            playerInstance.load(config);
             
-            debugLog('Iframe configurée avec succès');
+            // Mise à jour de l'interface
+            document.getElementById('current-title').textContent = title;
+            document.getElementById('current-description').textContent = description || 'Aucune description';
+            
+            // Détection du format
+            const format = detectFormat(url);
+            document.getElementById('format-info').textContent = format;
         }
 
-        // Essayer la source suivante en cas d'échec
-        function tryNextSource(movie, failedSourceKey) {
-            const sources = Object.entries(movie.sources)
-                .sort((a, b) => a[1].priority - b[1].priority);
+        // Ajouter à la playlist
+        function addToPlaylist() {
+            const url = document.getElementById('video-url').value.trim();
+            const title = document.getElementById('video-title-input').value.trim() || 'Vidéo sans titre';
+            const poster = document.getElementById('video-poster').value.trim();
+            const description = document.getElementById('video-desc-input').value.trim();
+
+            if (!url) {
+                alert('Veuillez entrer une URL de vidéo');
+                return;
+            }
+
+            const video = {
+                id: Date.now(),
+                url: url,
+                title: title,
+                poster: poster,
+                description: description,
+                format: detectFormat(url)
+            };
+
+            playlist.push(video);
+            renderPlaylist();
             
-            const currentIndex = sources.findIndex(([key]) => key === failedSourceKey);
-            if (currentIndex < sources.length - 1) {
-                const nextSource = sources[currentIndex + 1];
-                debugLog(`Essai de la source suivante: ${nextSource[0]}`);
-                playMovieFromSource(movie.id, nextSource[0]);
-            } else {
-                debugLog('Aucune autre source disponible');
-                showError('Toutes les sources ont échoué');
+            // Vider les champs
+            document.getElementById('video-url').value = '';
+            document.getElementById('video-title-input').value = '';
+            document.getElementById('video-poster').value = '';
+            document.getElementById('video-desc-input').value = '';
+        }
+
+        // Afficher la playlist
+        function renderPlaylist() {
+            const container = document.getElementById('playlist-container');
+            
+            if (playlist.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: #aaa; padding: 2rem;">Aucune vidéo dans la playlist</div>';
+                return;
+            }
+
+            container.innerHTML = playlist.map((video, index) => `
+                <div class="playlist-item ${index === currentVideoIndex ? 'active' : ''}" 
+                     onclick="playFromPlaylist(${index})">
+                    <div class="item-title">
+                        <span class="status-indicator status-ready"></span>
+                        ${video.title}
+                    </div>
+                    <div class="item-url">${video.format.toUpperCase()} - ${video.url}</div>
+                    ${video.description ? `<div style="margin-top: 0.5rem; font-size: 0.8rem; color: #bbb;">${video.description}</div>` : ''}
+                    <div style="margin-top: 0.5rem;">
+                        <button onclick="event.stopPropagation(); removeFromPlaylist(${index})" 
+                                style="background: #ff6b6b; border: none; padding: 0.3rem 0.8rem; border-radius: 4px; color: white; cursor: pointer;">
+                            Supprimer
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Lire depuis la playlist
+        function playFromPlaylist(index) {
+            if (index < 0 || index >= playlist.length) return;
+
+            currentVideoIndex = index;
+            const video = playlist[index];
+
+            updateStatus('loading');
+
+            const config = {
+                file: video.url,
+                title: video.title,
+                description: video.description
+            };
+
+            if (video.poster) {
+                config.image = video.poster;
+            }
+
+            playerInstance.load(config);
+            
+            document.getElementById('current-title').textContent = video.title;
+            document.getElementById('current-description').textContent = video.description || 'Aucune description';
+            document.getElementById('format-info').textContent = video.format.toUpperCase();
+            
+            renderPlaylist();
+        }
+
+        // Supprimer de la playlist
+        function removeFromPlaylist(index) {
+            playlist.splice(index, 1);
+            if (currentVideoIndex === index) {
+                currentVideoIndex = -1;
+            } else if (currentVideoIndex > index) {
+                currentVideoIndex--;
+            }
+            renderPlaylist();
+        }
+
+        // Vider la playlist
+        function clearPlaylist() {
+            if (confirm('Êtes-vous sûr de vouloir vider la playlist ?')) {
+                playlist = [];
+                currentVideoIndex = -1;
+                renderPlaylist();
             }
         }
 
-        // Mettre à jour les contrôles du lecteur
-        function updatePlayerControls(movie) {
-            const controls = document.getElementById('playerControls');
-            controls.innerHTML = '';
-            
-            // Trier les sources par priorité
-            const sortedSources = Object.entries(movie.sources)
-                .sort((a, b) => a[1].priority - b[1].priority);
-            
-            // Ajouter un bouton pour chaque source
-            sortedSources.forEach(([key, source]) => {
-                const btn = document.createElement('button');
-                btn.className = `source-switch-btn ${key === currentSource ? 'active' : ''}`;
-                if (source.type === 'jwplayer') {
-                    btn.className += ' jwplayer';
-                }
-                btn.textContent = source.name;
-                btn.onclick = () => playMovieFromSource(movie.id, key);
-                btn.title = `Basculer vers ${source.name} (${source.type})`;
-                controls.appendChild(btn);
-            });
-        }
-
-        // Ouvrir le modal vidéo
-        function openVideoModal() {
-            const modal = document.getElementById('videoModal');
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-            
-            // Focus sur le modal pour les contrôles clavier
-            modal.focus();
-        }
-
-        // Fermer le modal vidéo
-        function closeVideo() {
-            const modal = document.getElementById('videoModal');
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-            
-            // Arrêter le lecteur
-            if (currentPlayer && typeof currentPlayer.stop === 'function') {
-                currentPlayer.stop();
+        // Lire la vidéo suivante
+        function playNext() {
+            if (currentVideoIndex < playlist.length - 1) {
+                playFromPlaylist(currentVideoIndex + 1);
             }
-            
-            // Réinitialiser l'iframe
-            const iframe = document.getElementById('videoPlayer');
-            iframe.src = '';
-            
-            currentPlayer = null;
-            currentMovie = null;
-            currentSource = null;
         }
 
-        // Afficher/masquer le chargement
-        function showLoading(show) {
-            document.getElementById('loading').style.display = show ? 'flex' : 'none';
-            document.getElementById('videoLoading').style.display = show ? 'flex' : 'none';
-        }
-
-        // Afficher une erreur
-        function showError(message) {
-            const errorDiv = document.getElementById('errorMessage');
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
-            
-            setTimeout(() => {
-                errorDiv.style.display = 'none';
-            }, 5000);
-        }
-
-        // Initialiser la recherche
-        function initializeSearch() {
-            const searchInput = document.getElementById('searchInput');
-            searchInput.addEventListener('input', (e) => {
-                const query = e.target.value.toLowerCase();
-                if (query.length > 2) {
-                    const filtered = allMovies.filter(movie => 
-                        movie.title.toLowerCase().includes(query) || 
-                        movie.description.toLowerCase().includes(query) ||
-                        movie.genre.toLowerCase().includes(query)
-                    );
-                    displayMovies(filtered);
-                } else if (query.length === 0) {
-                    displayMovies(allMovies);
-                }
-            });
-        }
-
-        // Effets de scroll
-        function initializeScrollEffects() {
-            window.addEventListener('scroll', () => {
-                const header = document.getElementById('header');
-                if (window.scrollY > 50) {
-                    header.classList.add('scrolled');
-                } else {
-                    header.classList.remove('scrolled');
-                }
-            });
-        }
-
-        // Scroll vers les films
-        function scrollToMovies() {
-            document.getElementById('movies').scrollIntoView({
-                behavior: 'smooth'
-            });
-        }
-
-        // Gestion des touches
-        document.addEventListener('keydown', (e) => {
-            const modal = document.getElementById('videoModal');
-            if (modal.style.display === 'flex') {
-                // Échap pour fermer
-                if (e.key === 'Escape') {
-                    closeVideo();
-                }
-                
-                // Espace pour play/pause
-                if (e.key === ' ' && currentPlayer) {
-                    e.preventDefault();
-                    if (currentPlayer.getState() === 'playing') {
-                        currentPlayer.pause();
-                    } else {
-                        currentPlayer.play();
-                    }
-                }
+        // Détecter le format de fichier
+        function detectFormat(url) {
+            const extension = url.split('.').pop().toLowerCase().split('?')[0];
+            switch (extension) {
+                case 'm3u8': return 'HLS';
+                case 'mpd': return 'DASH';
+                case 'mp4': return 'MP4';
+                case 'webm': return 'WebM';
+                case 'mov': return 'MOV';
+                case 'avi': return 'AVI';
+                default: return 'Unknown';
             }
+        }
+
+        // Mettre à jour le statut
+        function updateStatus(status) {
+            const indicators = document.querySelectorAll('.status-indicator');
+            indicators.forEach(indicator => {
+                indicator.className = `status-indicator status-${status}`;
+            });
+        }
+
+        // Mettre à jour les informations vidéo
+        function updateVideoInfo(metadata) {
+            if (metadata.duration) {
+                console.log('Durée:', metadata.duration);
+            }
+            if (metadata.width && metadata.height) {
+                document.getElementById('quality-info').textContent = `${metadata.width}x${metadata.height}`;
+            }
+        }
+
+        // Exemples de vidéos pour démonstration
+        function loadExampleVideos() {
+            const examples = [
+                {
+                    title: "Exemple HLS Stream",
+                    url: "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+                    description: "Stream de démonstration HLS"
+                },
+                {
+                    title: "Exemple MP4",
+                    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+                    description: "Vidéo MP4 de démonstration"
+                }
+            ];
+
+            examples.forEach(video => {
+                playlist.push({
+                    id: Date.now() + Math.random(),
+                    url: video.url,
+                    title: video.title,
+                    description: video.description,
+                    format: detectFormat(video.url)
+                });
+            });
+
+            renderPlaylist();
+        }
+
+        // Initialisation au chargement de la page
+        document.addEventListener('DOMContentLoaded', function() {
+            initPlayer();
+            renderPlaylist();
+            
+            // Charger quelques exemples
+            setTimeout(loadExampleVideos, 1000);
         });
 
-        // Debug mode toggle (double-clic sur le logo)
-        document.querySelector('.logo').addEventListener('dblclick', () => {
-            debugMode = !debugMode;
-            document.getElementById('debugInfo').style.display = debugMode ? 'block' : 'none';
-            debugLog(`Mode debug ${debugMode ? 'activé' : 'désactivé'}`);
+        // Gestion des raccourcis clavier
+        document.addEventListener('keydown', function(e) {
+            if (playerInstance) {
+                switch(e.key) {
+                    case ' ':
+                        e.preventDefault();
+                        if (playerInstance.getState() === 'playing') {
+                            playerInstance.pause();
+                        } else {
+                            playerInstance.play();
+                        }
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        playerInstance.seek(playerInstance.getPosition() + 10);
+                        break;
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        playerInstance.seek(playerInstance.getPosition() - 10);
+                        break;
+                }
+            }
         });
     </script>
 </body>
