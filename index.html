@@ -317,7 +317,6 @@
             }
         }
 
-        /* Animations */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -395,19 +394,45 @@
     </div>
 
     <div class="content-grid" id="contentGrid">
-        <!-- Contenu chargé dynamiquement -->
     </div>
 
     <script>
-        // Configuration de l'API
-        const API_KEY = '44a41075eb6f4f5e3646b8e103837eaf';
-        const API_BASE_URL = 'https://98330cb9-d0c6-450d-a9ed-6f8c130b81f8-00-17uh62fvqj0wi.janeway.replit.dev';
-        const API_ENDPOINT = `${API_BASE_URL}/api/key/${API_KEY}`;
+        const DEFAULT_API_CONFIG = {
+            API_BASE_URL: 'https://98330cb9-d0c6-450d-a9ed-6f8c130b81f8-00-17uh62fvqj0wi.janeway.replit.dev',
+            API_KEY: '55f7a2cc6ed112b9ed793081e5bbcd2e'
+        };
+
+        let apiConfig = JSON.parse(localStorage.getItem('streamvision_api_config')) || DEFAULT_API_CONFIG;
+        
+        let API_BASE_URL = apiConfig.API_BASE_URL;
+        let API_KEY = apiConfig.API_KEY;
+        let API_ENDPOINT = `${API_BASE_URL}/api/key/${API_KEY}`;
         
         let contentData = [];
         let currentFilter = 'all';
         
-        // Fonctions utilitaires
+        function updateApiConfig(newConfig) {
+            API_BASE_URL = newConfig.API_BASE_URL;
+            API_KEY = newConfig.API_KEY;
+            API_ENDPOINT = `${API_BASE_URL}/api/key/${API_KEY}`;
+            localStorage.setItem('streamvision_api_config', JSON.stringify(newConfig));
+            console.log('🔑 Configuration API mise à jour :', newConfig);
+        }
+
+        async function checkApiConnectivity() {
+            try {
+                const response = await fetch(API_ENDPOINT, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${API_KEY}`
+                    }
+                });
+                return response.ok;
+            } catch (error) {
+                return false;
+            }
+        }
+
         function showLoading(show) {
             document.getElementById('loadingIndicator').style.display = show ? 'flex' : 'none';
         }
@@ -440,7 +465,6 @@
             }
         }
 
-        // Chargement du contenu depuis l'API
         async function loadContent() {
             showLoading(true);
             showError(false);
@@ -449,6 +473,18 @@
             try {
                 console.log(`🌐 Tentative de connexion à: ${API_ENDPOINT}`);
                 
+                const isApiConnected = await checkApiConnectivity();
+                
+                if (!isApiConnected) {
+                    const lastWorkingConfig = JSON.parse(localStorage.getItem('streamvision_last_working_config'));
+                    if (lastWorkingConfig) {
+                        updateApiConfig(lastWorkingConfig);
+                        console.log('🔄 Retour à la dernière configuration fonctionnelle');
+                    }
+                    
+                    throw new Error('Impossible de se connecter à l\'API');
+                }
+
                 const response = await fetch(API_ENDPOINT, {
                     headers: {
                         'Accept': 'application/json',
@@ -465,6 +501,12 @@
                 
                 console.log(`✅ ${contentData.length} contenus chargés depuis l'API`);
                 updateApiStatus(true, `Connecté - ${contentData.length} contenus`);
+                
+                localStorage.setItem('streamvision_last_working_config', JSON.stringify({
+                    API_BASE_URL: API_BASE_URL,
+                    API_KEY: API_KEY
+                }));
+                
                 displayContent(contentData);
                 updateStatsFromData();
 
@@ -473,7 +515,6 @@
                 updateApiStatus(false, 'Erreur de connexion');
                 showError(true, error.message);
                 
-                // Mode démo avec contenu factice
                 contentData = getDemoContent();
                 displayContent(contentData);
                 updateStatsFromData();
@@ -482,7 +523,6 @@
             }
         }
 
-        // Données de démonstration
         function getDemoContent() {
             return [
                 {
@@ -564,7 +604,6 @@
         }
 
         function filterContent(category) {
-            // Mettre à jour les boutons actifs
             document.querySelectorAll('.category-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
@@ -572,7 +611,6 @@
 
             currentFilter = category;
 
-            // Filtrer le contenu
             let filtered = contentData;
             if (category !== 'all') {
                 filtered = contentData.filter(item => item.category === category);
@@ -581,7 +619,6 @@
             displayContent(filtered);
         }
 
-        // Recherche en temps réel
         let searchTimeout;
         document.getElementById('searchBox').addEventListener('input', function(e) {
             clearTimeout(searchTimeout);
@@ -602,19 +639,27 @@
             }, 300);
         });
 
-        // Initialisation
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Initialisation de StreamVision');
-            console.log(`🔑 Clé API: ${API_KEY}`);
-            console.log(`🌐 Endpoint: ${API_ENDPOINT}`);
+            console.log('🔑 Configuration API:', { API_BASE_URL, API_KEY });
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const newApiUrl = urlParams.get('api_url');
+            const newApiKey = urlParams.get('api_key');
+            
+            if (newApiUrl && newApiKey) {
+                updateApiConfig({
+                    API_BASE_URL: newApiUrl,
+                    API_KEY: newApiKey
+                });
+            }
             
             loadContent();
 
-            // Actualisation périodique
             setInterval(() => {
                 console.log('🔄 Actualisation automatique du contenu...');
                 loadContent();
-            }, 300000); // Toutes les 5 minutes
+            }, 300000);
         });
     </script>
 </body>
