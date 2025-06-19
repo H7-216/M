@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -165,6 +166,19 @@
             font-size: 0.9rem;
             opacity: 0.8;
         }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
+        }
+
+        .error {
+            text-align: center;
+            padding: 2rem;
+            color: #ff6b6b;
+            font-size: 1.2rem;
+        }
     </style>
 </head>
 <body>
@@ -204,45 +218,78 @@
         </div>
     </div>
     
+    <div id="loading" class="loading" style="display: none;">
+        🔄 Chargement du contenu...
+    </div>
+    
+    <div id="error" class="error" style="display: none;">
+        ❌ Erreur lors du chargement du contenu
+    </div>
+    
     <div class="content-grid" id="contentGrid">
         <!-- Le contenu sera inséré ici via JavaScript -->
     </div>
     
     <script>
-        // Données de démonstration - remplacez par vos vraies données
         let contentData = [];
+        let currentFilter = 'all';
         
-        // Fonction pour charger les données
-        function loadContent() {
-            // Ici vous devriez charger les données depuis votre base de données
-            // Pour la démo, on utilise des données factices
-            fetch('/api/content')
-                .then(response => response.json())
-                .then(data => {
-                    contentData = data;
-                    displayContent(contentData);
-                    updateStats();
-                })
-                .catch(error => {
-                    console.error('Erreur lors du chargement:', error);
-                    // Données de fallback
-                    displayContent([]);
-                });
+        // Fonction pour charger les données depuis l'API
+        async function loadContent() {
+            try {
+                showLoading(true);
+                const response = await fetch('/api/content');
+                
+                if (!response.ok) {
+                    throw new Error('Erreur réseau');
+                }
+                
+                contentData = await response.json();
+                displayContent(contentData);
+                loadStats();
+                showLoading(false);
+            } catch (error) {
+                console.error('Erreur lors du chargement:', error);
+                showError(true);
+                showLoading(false);
+            }
+        }
+        
+        // Fonction pour charger les statistiques
+        async function loadStats() {
+            try {
+                const response = await fetch('/api/stats');
+                const stats = await response.json();
+                
+                document.getElementById('movieCount').textContent = stats.movie || 0;
+                document.getElementById('seriesCount').textContent = stats.series || 0;
+                document.getElementById('animeCount').textContent = stats.anime || 0;
+                document.getElementById('totalCount').textContent = stats.total || 0;
+            } catch (error) {
+                console.error('Erreur lors du chargement des stats:', error);
+            }
         }
         
         function displayContent(content) {
             const grid = document.getElementById('contentGrid');
             grid.innerHTML = '';
             
+            if (content.length === 0) {
+                grid.innerHTML = '<div style="text-align: center; grid-column: 1 / -1; padding: 2rem;">Aucun contenu trouvé</div>';
+                return;
+            }
+            
             content.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'content-card';
                 card.innerHTML = `
-                    <img src="${item.image || 'https://via.placeholder.com/250x300?text=Pas+d\'image'}" 
-                         alt="${item.title}" class="content-image">
+                    <img src="${item.image}" 
+                         alt="${item.title}" 
+                         class="content-image"
+                         onerror="this.src='https://via.placeholder.com/250x300?text=Pas+d\\'image'">
                     <div class="content-title">${item.title}</div>
                     <div class="content-category">${getCategoryLabel(item.category)}</div>
-                    <button class="watch-btn" onclick="watchContent('${item.url}', '${item.title}')">
+                    <button class="watch-btn" onclick="watchContent('${item.url}', '${item.title.replace(/'/g, "\\'")}')">
                         ▶ Regarder
                     </button>
                 `;
@@ -260,50 +307,78 @@
             return labels[category] || category;
         }
         
-        function filterContent(category) {
+        async function filterContent(category) {
             // Mettre à jour les boutons actifs
             document.querySelectorAll('.category-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
             event.target.classList.add('active');
             
-            // Filtrer le contenu
-            let filtered = contentData;
-            if (category !== 'all') {
-                filtered = contentData.filter(item => item.category === category);
-            }
+            currentFilter = category;
             
-            displayContent(filtered);
+            try {
+                showLoading(true);
+                let filtered = [];
+                
+                if (category === 'all') {
+                    filtered = contentData;
+                } else {
+                    const response = await fetch(`/api/content/category/${category}`);
+                    filtered = await response.json();
+                }
+                
+                displayContent(filtered);
+                showLoading(false);
+            } catch (error) {
+                console.error('Erreur lors du filtrage:', error);
+                showError(true);
+                showLoading(false);
+            }
         }
         
         function watchContent(url, title) {
-            // Ouvrir le lecteur vidéo
-            alert(`Ouverture de: ${title}\nURL: ${url}`);
-            // Ici vous pouvez implémenter votre lecteur vidéo
+            console.log(`Ouverture de: ${title}`);
+            console.log(`URL: ${url}`);
             window.open(url, '_blank');
         }
         
-        function updateStats() {
-            const stats = {
-                movie: contentData.filter(item => item.category === 'movie').length,
-                series: contentData.filter(item => item.category === 'series').length,
-                anime: contentData.filter(item => item.category === 'anime').length,
-                total: contentData.length
-            };
-            
-            document.getElementById('movieCount').textContent = stats.movie;
-            document.getElementById('seriesCount').textContent = stats.series;
-            document.getElementById('animeCount').textContent = stats.anime;
-            document.getElementById('totalCount').textContent = stats.total;
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+            document.getElementById('contentGrid').style.display = show ? 'none' : 'grid';
         }
         
-        // Recherche en temps réel
+        function showError(show) {
+            document.getElementById('error').style.display = show ? 'block' : 'none';
+        }
+        
+        // Recherche en temps réel avec debounce
+        let searchTimeout;
         document.getElementById('searchBox').addEventListener('input', function(e) {
-            const query = e.target.value.toLowerCase();
-            const filtered = contentData.filter(item => 
-                item.title.toLowerCase().includes(query)
-            );
-            displayContent(filtered);
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(async () => {
+                const query = e.target.value.trim();
+                
+                if (query === '') {
+                    if (currentFilter === 'all') {
+                        displayContent(contentData);
+                    } else {
+                        filterContent(currentFilter);
+                    }
+                    return;
+                }
+                
+                try {
+                    showLoading(true);
+                    const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+                    const results = await response.json();
+                    displayContent(results);
+                    showLoading(false);
+                } catch (error) {
+                    console.error('Erreur lors de la recherche:', error);
+                    showError(true);
+                    showLoading(false);
+                }
+            }, 300);
         });
         
         // Charger le contenu au démarrage
