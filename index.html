@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎬 Streameo Pro - Plateforme Premium</title>
+    <title>🎬 StreamVision - Plateforme de Streaming Premium</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
     <style>
         :root {
@@ -16,6 +16,8 @@
             --danger: #f44336;
             --warning: #ff9800;
             --info: #2196f3;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.1);
         }
 
         * {
@@ -25,37 +27,34 @@
         }
 
         body {
-            font-family: 'Poppins', 'Segoe UI', sans-serif;
-            background: linear-gradient(to right, var(--dark), var(--primary));
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--dark), var(--primary));
             color: var(--light);
             min-height: 100vh;
-            overflow-x: hidden;
             line-height: 1.6;
         }
 
         .header {
-            background: rgba(15, 12, 41, 0.8);
+            background: rgba(15, 12, 41, 0.85);
             padding: 2rem 1rem;
             text-align: center;
             backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid var(--card-border);
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
         }
 
         .header h1 {
-            font-size: 3.5rem;
+            font-size: 3.2rem;
             margin-bottom: 0.5rem;
             background: linear-gradient(45deg, var(--accent), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
             font-weight: 700;
-            letter-spacing: 1px;
         }
 
         .header p {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             opacity: 0.9;
             margin-bottom: 1rem;
         }
@@ -75,21 +74,21 @@
         }
 
         .search-container {
-            margin: 2rem auto;
+            margin: 2.5rem auto;
             max-width: 800px;
             padding: 0 1.5rem;
         }
 
         .search-box {
             width: 100%;
-            padding: 1.2rem 1.5rem;
+            padding: 1.1rem 1.8rem;
             border: none;
             border-radius: 50px;
             font-size: 1.1rem;
             background: rgba(255, 255, 255, 0.1);
             color: white;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--card-border);
             transition: all 0.3s ease;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
@@ -98,7 +97,7 @@
             outline: none;
             background: rgba(255, 255, 255, 0.2);
             border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(0, 242, 254, 0.3);
+            box-shadow: 0 0 0 3px rgba(0, 242, 254, 0.2);
         }
 
         .search-box::placeholder {
@@ -112,19 +111,19 @@
             margin: 2rem auto;
             flex-wrap: wrap;
             padding: 0 1.5rem;
-            max-width: 1200px;
+            max-width: 1000px;
         }
 
         .category-btn {
             padding: 0.8rem 1.8rem;
             border: none;
             border-radius: 50px;
-            background: rgba(255, 255, 255, 0.08);
+            background: var(--card-bg);
             color: white;
             cursor: pointer;
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--card-border);
             font-weight: 500;
             font-size: 0.95rem;
             display: flex;
@@ -135,40 +134,39 @@
         .category-btn:hover, .category-btn.active {
             background: rgba(0, 242, 254, 0.2);
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
             border-color: var(--accent);
             color: var(--accent);
         }
 
         .content-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 2rem;
             padding: 2rem;
-            max-width: 1400px;
+            max-width: 1500px;
             margin: 0 auto;
         }
 
         .content-card {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
+            background: var(--card-bg);
+            border-radius: 12px;
             overflow: hidden;
             transition: all 0.3s ease;
             backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
 
         .content-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
             border-color: var(--accent);
         }
 
         .video-container {
             position: relative;
             width: 100%;
-            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            padding-bottom: 56.25%;
             background: #000;
         }
 
@@ -186,7 +184,7 @@
         }
 
         .content-title {
-            font-size: 1.25rem;
+            font-size: 1.2rem;
             margin-bottom: 0.8rem;
             font-weight: 600;
             line-height: 1.4;
@@ -196,11 +194,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
         }
 
         .content-category {
-            background: rgba(106, 17, 203, 0.3);
+            background: rgba(106, 17, 203, 0.25);
             color: var(--accent);
             padding: 0.4rem 1rem;
             border-radius: 50px;
@@ -220,8 +218,8 @@
 
         .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1.5rem;
             margin: 3rem auto;
             padding: 0 2rem;
             max-width: 1000px;
@@ -229,28 +227,24 @@
 
         .stat-item {
             padding: 1.5rem;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
+            background: var(--card-bg);
+            border-radius: 12px;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--card-border);
             text-align: center;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .stat-item:hover {
             transform: translateY(-5px);
-            background: rgba(0, 242, 254, 0.1);
             border-color: var(--accent);
         }
 
         .stat-number {
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             font-weight: 700;
             color: var(--accent);
             margin-bottom: 0.5rem;
-            background: linear-gradient(to right, var(--accent), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
         }
 
         .stat-label {
@@ -263,7 +257,7 @@
         .loading {
             text-align: center;
             padding: 3rem;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -276,7 +270,7 @@
             border: 4px solid rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             border-top-color: var(--accent);
-            animation: spin 1s ease-in-out infinite;
+            animation: spin 1s linear infinite;
         }
 
         @keyframes spin {
@@ -287,12 +281,10 @@
             text-align: center;
             padding: 2rem;
             background: rgba(244, 67, 54, 0.1);
-            border-radius: 15px;
-            margin: 2rem;
+            border-radius: 12px;
+            margin: 2rem auto;
             border: 1px solid rgba(244, 67, 54, 0.3);
             max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
         }
 
         .error-icon {
@@ -325,7 +317,7 @@
             }
         }
 
-        /* Animation pour les cartes */
+        /* Animations */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -340,23 +332,21 @@
         .content-card:nth-child(2) { animation-delay: 0.2s; }
         .content-card:nth-child(3) { animation-delay: 0.3s; }
         .content-card:nth-child(4) { animation-delay: 0.4s; }
-        .content-card:nth-child(5) { animation-delay: 0.5s; }
-        .content-card:nth-child(6) { animation-delay: 0.6s; }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header class="header">
-        <h1>🎬 Streameo Pro</h1>
-        <p>Streaming haute qualité en 4K</p>
+        <h1>🎬 StreamVision</h1>
+        <p>Votre plateforme de streaming haute qualité</p>
         <div class="api-status" id="apiStatus">
-            <span id="apiStatusIcon">🔑</span>
-            <span id="apiStatusText">Connexion à l'API en cours...</span>
+            <span id="apiStatusIcon">⏳</span>
+            <span id="apiStatusText">Connexion en cours...</span>
         </div>
     </header>
 
     <div class="search-container">
-        <input type="text" class="search-box" placeholder="🔍 Rechercher un film, série, animé..." id="searchBox">
+        <input type="text" class="search-box" placeholder="🔍 Rechercher un film, série ou animé..." id="searchBox">
     </div>
 
     <div class="categories">
@@ -371,9 +361,6 @@
         </button>
         <button class="category-btn" onclick="filterContent('anime')">
             <span>🎌</span> Animés
-        </button>
-        <button class="category-btn" onclick="filterContent('documentary')">
-            <span>📚</span> Documentaires
         </button>
     </div>
 
@@ -391,10 +378,6 @@
             <div class="stat-label">Animés</div>
         </div>
         <div class="stat-item">
-            <div class="stat-number" id="documentaryCount">0</div>
-            <div class="stat-label">Documentaires</div>
-        </div>
-        <div class="stat-item">
             <div class="stat-number" id="totalCount">0</div>
             <div class="stat-label">Total</div>
         </div>
@@ -408,17 +391,17 @@
     <div id="errorIndicator" class="error" style="display: none;">
         <div class="error-icon">❌</div>
         <h3>Erreur de connexion</h3>
-        <p id="errorMessage">Impossible de se connecter au serveur. Veuillez réessayer plus tard.</p>
+        <p id="errorMessage">Impossible de charger le contenu. Veuillez réessayer.</p>
     </div>
 
     <div class="content-grid" id="contentGrid">
-        <!-- Le contenu sera inséré ici via JavaScript -->
+        <!-- Contenu chargé dynamiquement -->
     </div>
 
     <script>
         // Configuration de l'API
         const API_KEY = '7f0fac89e72b7f1bf3ef3290c98e6d12';
-        const API_BASE_URL = 'https://98330cb9-d0c6-450d-a9ed-6f8c130b81f8-00-17uh62fvqj0wi.janeway.replit.dev/api/key/';
+        const API_BASE_URL = 'https://98330cb9-d0c6-450d-a9ed-6f8c130b81f8-00-17uh62fvqj0wi.janeway.replit.dev';
         const API_ENDPOINT = `${API_BASE_URL}/api/key/${API_KEY}`;
         
         let contentData = [];
@@ -449,13 +432,11 @@
                 textEl.textContent = message || 'API Connectée';
                 statusEl.style.background = 'rgba(76, 175, 80, 0.15)';
                 statusEl.style.color = 'var(--success)';
-                statusEl.style.borderColor = 'rgba(76, 175, 80, 0.3)';
             } else {
                 iconEl.textContent = '⚠️';
                 textEl.textContent = message || 'API Déconnectée';
                 statusEl.style.background = 'rgba(244, 67, 54, 0.15)';
                 statusEl.style.color = 'var(--danger)';
-                statusEl.style.borderColor = 'rgba(244, 67, 54, 0.3)';
             }
         }
 
@@ -471,19 +452,19 @@
                 const response = await fetch(API_ENDPOINT, {
                     headers: {
                         'Accept': 'application/json',
-                        'X-API-Key': API_KEY
+                        'Authorization': `Bearer ${API_KEY}`
                     }
                 });
 
                 if (!response.ok) {
-                    throw new Error(`Erreur HTTP: ${response.status} ${response.statusText}`);
+                    throw new Error(`Erreur ${response.status}: ${response.statusText}`);
                 }
 
                 const data = await response.json();
                 contentData = data.content || [];
                 
                 console.log(`✅ ${contentData.length} contenus chargés depuis l'API`);
-                updateApiStatus(true, `Connecté (${contentData.length} contenus)`);
+                updateApiStatus(true, `Connecté - ${contentData.length} contenus`);
                 displayContent(contentData);
                 updateStatsFromData();
 
@@ -506,33 +487,17 @@
             return [
                 {
                     id: 1,
-                    title: "Démo - Film d'Action",
+                    title: "Exemple de Film",
                     category: "movie",
-                    image: "https://via.placeholder.com/800x450?text=Film+Demo",
+                    image: "https://via.placeholder.com/800x450?text=Exemple+Film",
                     url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
                     server_name: "Demo"
                 },
                 {
                     id: 2,
-                    title: "Démo - Série Drama",
+                    title: "Exemple de Série",
                     category: "series",
-                    image: "https://via.placeholder.com/800x450?text=Série+Demo",
-                    url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-                    server_name: "Demo"
-                },
-                {
-                    id: 3,
-                    title: "Démo - Animé Japonais",
-                    category: "anime",
-                    image: "https://via.placeholder.com/800x450?text=Animé+Demo",
-                    url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-                    server_name: "Demo"
-                },
-                {
-                    id: 4,
-                    title: "Démo - Documentaire Nature",
-                    category: "documentary",
-                    image: "https://via.placeholder.com/800x450?text=Documentaire+Demo",
+                    image: "https://via.placeholder.com/800x450?text=Exemple+Série",
                     url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
                     server_name: "Demo"
                 }
@@ -544,14 +509,12 @@
                 movie: contentData.filter(item => item.category === 'movie').length,
                 series: contentData.filter(item => item.category === 'series').length,
                 anime: contentData.filter(item => item.category === 'anime').length,
-                documentary: contentData.filter(item => item.category === 'documentary').length,
                 total: contentData.length
             };
 
             document.getElementById('movieCount').textContent = stats.movie;
             document.getElementById('seriesCount').textContent = stats.series;
             document.getElementById('animeCount').textContent = stats.anime;
-            document.getElementById('documentaryCount').textContent = stats.documentary;
             document.getElementById('totalCount').textContent = stats.total;
         }
 
@@ -559,7 +522,7 @@
             const grid = document.getElementById('contentGrid');
 
             if (!content || content.length === 0) {
-                grid.innerHTML = '<div class="no-content">😔 Aucun contenu trouvé</div>';
+                grid.innerHTML = '<div class="no-content">😔 Aucun contenu disponible</div>';
                 return;
             }
 
@@ -575,7 +538,8 @@
                         <iframe src="${item.url}" 
                                 title="${item.title}" 
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                allowfullscreen>
+                                allowfullscreen
+                                loading="lazy">
                         </iframe>
                     </div>
                     <div class="content-info">
@@ -594,8 +558,7 @@
             const labels = {
                 'movie': '🎬 Film',
                 'series': '📺 Série',
-                'anime': '🎌 Animé',
-                'documentary': '📚 Documentaire'
+                'anime': '🎌 Animé'
             };
             return labels[category] || category;
         }
@@ -641,9 +604,9 @@
 
         // Initialisation
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Initialisation de Streameo Pro...');
+            console.log('🚀 Initialisation de StreamVision');
             console.log(`🔑 Clé API: ${API_KEY}`);
-            console.log(`🌐 Point d'accès API: ${API_ENDPOINT}`);
+            console.log(`🌐 Endpoint: ${API_ENDPOINT}`);
             
             loadContent();
 
