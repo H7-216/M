@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎬 Streameo - Votre plateforme de streaming</title>
+    <title>🎬 Streameo - Plateforme de Streaming</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
     <style>
         * {
@@ -12,78 +11,81 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d2d5f 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             min-height: 100vh;
             overflow-x: hidden;
         }
-        
+
         .header {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 1.5rem 2rem;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2rem;
             text-align: center;
             backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
         }
-        
+
         .header h1 {
             font-size: 3rem;
             margin-bottom: 0.5rem;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
             background-size: 300% 300%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             animation: gradientShift 4s ease-in-out infinite;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
-        
+
         @keyframes gradientShift {
             0%, 100% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
         }
-        
-        .header p {
-            font-size: 1.2rem;
-            opacity: 0.8;
-            margin-top: 0.5rem;
+
+        .api-status {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-top: 1rem;
         }
-        
+
         .search-container {
             margin: 2rem auto;
             max-width: 600px;
             padding: 0 1rem;
             position: relative;
         }
-        
+
         .search-box {
             width: 100%;
-            padding: 1.2rem 1.5rem;
+            padding: 1.2rem;
             border: none;
             border-radius: 30px;
             font-size: 1.1rem;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.15);
             color: white;
             backdrop-filter: blur(10px);
-            border: 2px solid transparent;
+            border: 2px solid rgba(255, 255, 255, 0.2);
             transition: all 0.3s ease;
         }
-        
+
         .search-box:focus {
             outline: none;
+            background: rgba(255, 255, 255, 0.25);
             border-color: #4ecdc4;
             box-shadow: 0 0 20px rgba(78, 205, 196, 0.3);
         }
-        
+
         .search-box::placeholder {
-            color: rgba(255, 255, 255, 0.6);
+            color: rgba(255, 255, 255, 0.7);
         }
-        
+
         .categories {
             display: flex;
             justify-content: center;
@@ -92,7 +94,7 @@
             flex-wrap: wrap;
             padding: 0 1rem;
         }
-        
+
         .category-btn {
             padding: 1rem 2rem;
             border: none;
@@ -102,65 +104,17 @@
             cursor: pointer;
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            font-weight: 600;
-            font-size: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            font-weight: 500;
         }
-        
-        .category-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
+
+        .category-btn:hover, .category-btn.active {
+            background: rgba(255, 255, 255, 0.25);
             transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border-color: #4ecdc4;
         }
-        
-        .category-btn.active {
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 20px rgba(78, 205, 196, 0.4);
-        }
-        
-        .stats {
-            text-align: center;
-            margin: 3rem 0;
-            padding: 1rem;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
-        
-        .stat-item {
-            padding: 1.5rem;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.3s ease;
-        }
-        
-        .stat-item:hover {
-            transform: translateY(-5px);
-        }
-        
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #4ecdc4;
-            margin-bottom: 0.5rem;
-        }
-        
-        .stat-label {
-            font-size: 1rem;
-            opacity: 0.8;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
+
         .content-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -169,19 +123,19 @@
             max-width: 1400px;
             margin: 0 auto;
         }
-        
+
         .content-card {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 20px;
             padding: 1.5rem;
             text-align: center;
             transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
             position: relative;
             overflow: hidden;
         }
-        
+
         .content-card::before {
             content: '';
             position: absolute;
@@ -189,66 +143,64 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(45deg, transparent, rgba(78, 205, 196, 0.1), transparent);
+            background: linear-gradient(45deg, rgba(255, 107, 107, 0.1), rgba(78, 205, 196, 0.1));
             opacity: 0;
             transition: opacity 0.3s ease;
+            z-index: -1;
         }
-        
-        .content-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-        
+
         .content-card:hover::before {
             opacity: 1;
         }
-        
+
+        .content-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: #4ecdc4;
+        }
+
         .content-image {
             width: 100%;
             height: 350px;
             object-fit: cover;
             border-radius: 15px;
             margin-bottom: 1rem;
-            border: 2px solid rgba(255, 255, 255, 0.1);
             transition: transform 0.3s ease;
         }
-        
+
         .content-card:hover .content-image {
             transform: scale(1.05);
         }
-        
+
         .content-title {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             margin-bottom: 0.8rem;
-            font-weight: bold;
+            font-weight: 600;
             line-height: 1.4;
-            position: relative;
-            z-index: 1;
         }
-        
+
         .content-category {
-            background: linear-gradient(45deg, #76b900, #4caf50);
-            color: white;
-            padding: 0.5rem 1rem;
+            background: rgba(76, 175, 80, 0.3);
+            color: #4caf50;
+            padding: 0.4rem 1rem;
             border-radius: 20px;
             font-size: 0.9rem;
             display: inline-block;
             margin-bottom: 1rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            position: relative;
-            z-index: 1;
+            border: 1px solid rgba(76, 175, 80, 0.5);
         }
-        
-        .content-meta {
+
+        .content-server {
+            background: rgba(33, 150, 243, 0.3);
+            color: #2196f3;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            display: inline-block;
             margin-bottom: 1rem;
-            font-size: 0.9rem;
-            opacity: 0.8;
-            position: relative;
-            z-index: 1;
+            margin-left: 0.5rem;
         }
-        
+
         .watch-btn {
             background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
             color: white;
@@ -256,83 +208,87 @@
             padding: 1rem 2rem;
             border-radius: 25px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
             font-size: 1rem;
             transition: all 0.3s ease;
-            position: relative;
-            z-index: 1;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
-        
+
         .watch-btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 10px 25px rgba(78, 205, 196, 0.4);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
         }
-        
+
+        .stats {
+            text-align: center;
+            margin: 2rem 0;
+            padding: 2rem;
+        }
+
+        .stat-item {
+            display: inline-block;
+            margin: 0 2rem 1rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            min-width: 150px;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #4ecdc4;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-top: 0.5rem;
+        }
+
         .loading {
             text-align: center;
             padding: 3rem;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
         }
-        
-        .loading::after {
-            content: '';
-            display: inline-block;
-            width: 30px;
-            height: 30px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: #4ecdc4;
-            animation: spin 1s linear infinite;
-            margin-left: 1rem;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
+
         .error {
             text-align: center;
             padding: 3rem;
             color: #ff6b6b;
-            font-size: 1.3rem;
             background: rgba(255, 107, 107, 0.1);
-            margin: 2rem;
             border-radius: 15px;
-            border: 1px solid rgba(255, 107, 107, 0.3);
+            margin: 2rem;
         }
-        
+
         .no-content {
             text-align: center;
             padding: 3rem;
-            font-size: 1.3rem;
-            opacity: 0.7;
-            grid-column: 1 / -1;
+            font-size: 1.2rem;
+            opacity: 0.8;
         }
-        
-        .footer {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 2rem;
-            text-align: center;
-            margin-top: 3rem;
-            backdrop-filter: blur(15px);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
+
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 2rem;
             }
-            
+
             .content-grid {
                 grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-                gap: 1.5rem;
+                gap: 1rem;
                 padding: 1rem;
             }
-            
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
+
+            .categories {
+                gap: 0.5rem;
+            }
+
+            .category-btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -340,359 +296,284 @@
 <body>
     <header class="header">
         <h1>🎬 Streameo</h1>
-        <p>Votre plateforme de streaming ultime - Films, Séries, Animés</p>
+        <p>Votre plateforme de streaming ultime</p>
+        <div class="api-status" id="apiStatus">
+            🔑 API Connectée
+        </div>
     </header>
-    
+
     <div class="search-container">
         <input type="text" class="search-box" placeholder="🔍 Rechercher un film, une série, un animé..." id="searchBox">
     </div>
-    
+
     <div class="categories">
-        <button class="category-btn active" onclick="filterContent('all')">📱 Tout</button>
+        <button class="category-btn active" onclick="filterContent('all')">🎯 Tout</button>
         <button class="category-btn" onclick="filterContent('movie')">🎬 Films</button>
         <button class="category-btn" onclick="filterContent('series')">📺 Séries</button>
-        <button class="category-btn" onclick="filterContent('anime')">🍙 Animés</button>
+        <button class="category-btn" onclick="filterContent('anime')">🎌 Animés</button>
         <button class="category-btn" onclick="filterContent('documentary')">📚 Documentaires</button>
     </div>
-    
+
     <div class="stats" id="stats">
-        <div class="stats-grid">
-            <div class="stat-item">
-                <div class="stat-number" id="movieCount">0</div>
-                <div class="stat-label">Films</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number" id="seriesCount">0</div>
-                <div class="stat-label">Séries</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number" id="animeCount">0</div>
-                <div class="stat-label">Animés</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number" id="totalCount">0</div>
-                <div class="stat-label">Total</div>
-            </div>
+        <div class="stat-item">
+            <div class="stat-number" id="movieCount">0</div>
+            <div class="stat-label">Films</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" id="seriesCount">0</div>
+            <div class="stat-label">Séries</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" id="animeCount">0</div>
+            <div class="stat-label">Animés</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" id="documentaryCount">0</div>
+            <div class="stat-label">Documentaires</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" id="totalCount">0</div>
+            <div class="stat-label">Total</div>
         </div>
     </div>
-    
-    <div id="loading" class="loading" style="display: none;">
-        🔄 Chargement du contenu en cours...
+
+    <div id="loadingIndicator" class="loading">
+        🔄 Chargement du contenu...
     </div>
-    
-    <div id="error" class="error" style="display: none;">
-        ❌ Erreur lors du chargement du contenu. Vérifiez que l'API est démarrée.
+
+    <div id="errorIndicator" class="error" style="display: none;">
+        ❌ Erreur de connexion à l'API
     </div>
-    
+
     <div class="content-grid" id="contentGrid">
         <!-- Le contenu sera inséré ici via JavaScript -->
     </div>
-    
-    <footer class="footer">
-        <p>© 2024 Streameo - Votre plateforme de streaming préférée</p>
-        <p style="margin-top: 0.5rem; opacity: 0.6;">Développé avec ❤️ pour les amateurs de cinéma</p>
-    </footer>
-    
+
     <script>
         let contentData = [];
         let currentFilter = 'all';
-        const API_BASE = window.location.origin; // Utilise l'URL actuelle
         
-        // Configuration des catégories
-        const categoryConfig = {
-            'movie': { label: '🎬 Film', color: '#ff6b6b' },
-            'series': { label: '📺 Série', color: '#4ecdc4' },
-            'anime': { label: '🍙 Animé', color: '#45b7d1' },
-            'documentary': { label: '📚 Documentaire', color: '#96ceb4' }
-        };
-        
-        // Fonction pour charger les données depuis l'API ou la base de données locale
+        // Clé API intégrée directement
+        const apiKey = '79e541c6b86264c3d1bda0a8580ae5a7';
+
+        // Configuration de l'API
+        const API_BASE_URL = window.location.origin;
+
+        // Fonctions utilitaires
+        function showLoading(show) {
+            document.getElementById('loadingIndicator').style.display = show ? 'block' : 'none';
+        }
+
+        function showError(show) {
+            document.getElementById('errorIndicator').style.display = show ? 'block' : 'none';
+        }
+
+        function updateApiStatus(connected) {
+            const statusEl = document.getElementById('apiStatus');
+            if (connected) {
+                statusEl.textContent = `🔑 API Connectée (${apiKey.substring(0, 8)}...)`;
+                statusEl.style.background = 'rgba(76, 175, 80, 0.2)';
+                statusEl.style.color = '#4caf50';
+            } else {
+                statusEl.textContent = '❌ API Déconnectée';
+                statusEl.style.background = 'rgba(244, 67, 54, 0.2)';
+                statusEl.style.color = '#f44336';
+            }
+        }
+
+        // Chargement du contenu avec la clé API
         async function loadContent() {
+            showLoading(true);
+            showError(false);
+
             try {
-                showLoading(true);
-                
-                // Essayer d'abord l'API Flask
-                try {
-                    const response = await fetch(`${API_BASE}/api/content`);
-                    if (response.ok) {
-                        contentData = await response.json();
-                        console.log('Données chargées depuis l\'API:', contentData.length, 'éléments');
-                    } else {
-                        throw new Error('API non disponible');
-                    }
-                } catch (apiError) {
-                    console.warn('API non disponible, chargement des données de démonstration');
-                    // Charger des données de démonstration si l'API n'est pas disponible
-                    contentData = await loadDemoData();
+                console.log('🔑 Utilisation de la clé API:', apiKey);
+
+                // Chargement du contenu avec la clé intégrée
+                const response = await fetch(`${API_BASE_URL}/api/key/${apiKey}`);
+
+                if (!response.ok) {
+                    throw new Error(`Erreur HTTP: ${response.status}`);
                 }
-                
-                if (contentData.length === 0) {
-                    contentData = await loadDemoData();
-                }
-                
+
+                const data = await response.json();
+                contentData = data.content || [];
+
+                console.log(`📊 ${contentData.length} contenus chargés via l'API`);
+
                 displayContent(contentData);
-                updateStats();
-                showLoading(false);
-                
+                updateApiStatus(true);
+
             } catch (error) {
                 console.error('Erreur lors du chargement:', error);
+                updateApiStatus(false);
                 showError(true);
-                showLoading(false);
+
+                // Données de démonstration en cas d'erreur
+                contentData = [
+                    {
+                        id: 1,
+                        title: "Démo - Film d'Action",
+                        category: "movie",
+                        image: "https://via.placeholder.com/250x350?text=Film+Demo",
+                        url: "#demo1",
+                        server_name: "Demo"
+                    },
+                    {
+                        id: 2,
+                        title: "Démo - Série Drama",
+                        category: "series",
+                        image: "https://via.placeholder.com/250x350?text=Serie+Demo",
+                        url: "#demo2",
+                        server_name: "Demo"
+                    }
+                ];
+                displayContent(contentData);
             }
+
+            showLoading(false);
         }
-        
-        // Données de démonstration si l'API n'est pas disponible
-        async function loadDemoData() {
-            return [
-                {
-                    id: 1,
-                    title: "Avatar: La Voie de l'Eau",
-                    category: "movie",
-                    image: "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
-                    url: "https://uqload.com/demo1",
-                    year: 2022,
-                    genre: "Science-Fiction",
-                    rating: 8.1
-                },
-                {
-                    id: 2,
-                    title: "Stranger Things",
-                    category: "series",
-                    image: "https://image.tmdb.org/t/p/w500/x2LSRK2Cm7MZhjluni1msVJ3wDF.jpg",
-                    url: "https://uqload.com/demo2",
-                    year: 2022,
-                    genre: "Drame, Fantastique",
-                    rating: 8.7
-                },
-                {
-                    id: 3,
-                    title: "Demon Slayer",
-                    category: "anime",
-                    image: "https://image.tmdb.org/t/p/w500/xUfRZu2mi8jH6SzQEJGP6tjBuYj.jpg",
-                    url: "https://uqload.com/demo3",
-                    year: 2021,
-                    genre: "Animation, Action",
-                    rating: 8.9
-                },
-                {
-                    id: 4,
-                    title: "Notre Planète",
-                    category: "documentary",
-                    image: "https://image.tmdb.org/t/p/w500/gD7gCDLhTLO8qGkh9OxoCjVAF1E.jpg",
-                    url: "https://uqload.com/demo4",
-                    year: 2019,
-                    genre: "Documentaire Nature",
-                    rating: 9.2
-                },
-                {
-                    id: 5,
-                    title: "Top Gun: Maverick",
-                    category: "movie",
-                    image: "https://image.tmdb.org/t/p/w500/62HCnUTziyWcpDaBO2i1DX17ljH.jpg",
-                    url: "https://uqload.com/demo5",
-                    year: 2022,
-                    genre: "Action, Drame",
-                    rating: 8.3
-                },
-                {
-                    id: 6,
-                    title: "The Last of Us",
-                    category: "series",
-                    image: "https://image.tmdb.org/t/p/w500/uKvVjHNqB5VmOrdxqAt2F7J78ED.jpg",
-                    url: "https://uqload.com/demo6",
-                    year: 2023,
-                    genre: "Drame, Horreur",
-                    rating: 8.8
-                }
-            ];
-        }
-        
-        // Fonction pour charger les statistiques
+
+        // Chargement des statistiques
         async function loadStats() {
             try {
-                const response = await fetch(`${API_BASE}/api/stats`);
-                if (response.ok) {
-                    const stats = await response.json();
-                    updateStatsDisplay(stats);
-                }
+                const response = await fetch(`${API_BASE_URL}/api/stats`);
+                const stats = await response.json();
+
+                document.getElementById('movieCount').textContent = stats.movie || 0;
+                document.getElementById('seriesCount').textContent = stats.series || 0;
+                document.getElementById('animeCount').textContent = stats.anime || 0;
+                document.getElementById('documentaryCount').textContent = stats.documentary || 0;
+                document.getElementById('totalCount').textContent = stats.total || 0;
+
             } catch (error) {
-                console.log('Stats depuis données locales');
-                updateStats();
+                console.error('Erreur lors du chargement des stats:', error);
+                updateStatsFromData();
             }
         }
-        
-        function updateStatsDisplay(stats) {
-            document.getElementById('movieCount').textContent = stats.movie || 0;
-            document.getElementById('seriesCount').textContent = stats.series || 0;
-            document.getElementById('animeCount').textContent = stats.anime || 0;
-            document.getElementById('totalCount').textContent = stats.total || 0;
+
+        function updateStatsFromData() {
+            const stats = {
+                movie: contentData.filter(item => item.category === 'movie').length,
+                series: contentData.filter(item => item.category === 'series').length,
+                anime: contentData.filter(item => item.category === 'anime').length,
+                documentary: contentData.filter(item => item.category === 'documentary').length,
+                total: contentData.length
+            };
+
+            document.getElementById('movieCount').textContent = stats.movie;
+            document.getElementById('seriesCount').textContent = stats.series;
+            document.getElementById('animeCount').textContent = stats.anime;
+            document.getElementById('documentaryCount').textContent = stats.documentary;
+            document.getElementById('totalCount').textContent = stats.total;
         }
-        
+
         function displayContent(content) {
             const grid = document.getElementById('contentGrid');
-            grid.innerHTML = '';
-            
+
             if (!content || content.length === 0) {
                 grid.innerHTML = '<div class="no-content">😔 Aucun contenu trouvé</div>';
                 return;
             }
-            
+
+            grid.innerHTML = '';
+
             content.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'content-card';
-                
-                const categoryInfo = categoryConfig[item.category] || { label: item.category, color: '#4caf50' };
-                
                 card.innerHTML = `
-                    <img src="${item.image || 'https://via.placeholder.com/280x350/1a1a3e/4ecdc4?text=Pas+d\\'image'}" 
-                         alt="${item.title}" 
-                         class="content-image"
-                         onerror="this.src='https://via.placeholder.com/280x350/1a1a3e/4ecdc4?text=Pas+d\\'image'">
+                    <img src="${item.image || 'https://via.placeholder.com/250x350?text=Pas+d\'image'}" 
+                         alt="${item.title}" class="content-image" 
+                         onerror="this.src='https://via.placeholder.com/250x350?text=Image+Indisponible'">
                     <div class="content-title">${item.title}</div>
-                    <div class="content-category" style="background: ${categoryInfo.color}">${categoryInfo.label}</div>
-                    <div class="content-meta">
-                        ${item.year ? `📅 ${item.year}` : ''} 
-                        ${item.genre ? `• 🎭 ${item.genre}` : ''}
-                        ${item.rating ? `<br>⭐ ${item.rating}/10` : ''}
-                    </div>
+                    <div class="content-category">${getCategoryLabel(item.category)}</div>
+                    ${item.server_name ? `<div class="content-server">${item.server_name}</div>` : ''}
                     <button class="watch-btn" onclick="watchContent('${item.url}', '${item.title.replace(/'/g, "\\'")}')">
-                        ▶ Regarder maintenant
+                        ▶ Regarder
                     </button>
                 `;
                 grid.appendChild(card);
             });
         }
-        
-        async function filterContent(category) {
+
+        function getCategoryLabel(category) {
+            const labels = {
+                'movie': '🎬 Film',
+                'series': '📺 Série',
+                'anime': '🎌 Animé',
+                'documentary': '📚 Documentaire'
+            };
+            return labels[category] || category;
+        }
+
+        function filterContent(category) {
             // Mettre à jour les boutons actifs
             document.querySelectorAll('.category-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
             event.target.classList.add('active');
-            
+
             currentFilter = category;
-            
-            try {
-                showLoading(true);
-                let filtered = [];
-                
-                if (category === 'all') {
-                    filtered = contentData;
-                } else {
-                    // Essayer l'API d'abord
-                    try {
-                        const response = await fetch(`${API_BASE}/api/content/category/${category}`);
-                        if (response.ok) {
-                            filtered = await response.json();
-                        } else {
-                            throw new Error('API non disponible');
-                        }
-                    } catch (apiError) {
-                        // Filtrer localement si l'API n'est pas disponible
-                        filtered = contentData.filter(item => item.category === category);
-                    }
-                }
-                
-                displayContent(filtered);
-                showLoading(false);
-            } catch (error) {
-                console.error('Erreur lors du filtrage:', error);
-                showError(true);
-                showLoading(false);
+
+            // Filtrer le contenu
+            let filtered = contentData;
+            if (category !== 'all') {
+                filtered = contentData.filter(item => item.category === category);
             }
+
+            displayContent(filtered);
         }
-        
+
         function watchContent(url, title) {
-            console.log(`🎬 Ouverture de: ${title}`);
-            console.log(`🔗 URL: ${url}`);
-            
-            // Créer une popup de confirmation
-            if (confirm(`Voulez-vous regarder "${title}" ?\n\nCela ouvrira le lien dans un nouvel onglet.`)) {
-                window.open(url, '_blank');
+            if (url.startsWith('#demo')) {
+                alert(`🎬 Démo: ${title}\n\nCeci est un contenu de démonstration.\nL'API est en cours de chargement...`);
+                return;
             }
+
+            console.log(`🎬 Ouverture de: ${title} - ${url}`);
+            window.open(url, '_blank');
         }
-        
-        function updateStats() {
-            const stats = {
-                movie: contentData.filter(item => item.category === 'movie').length,
-                series: contentData.filter(item => item.category === 'series').length,
-                anime: contentData.filter(item => item.category === 'anime').length,
-                total: contentData.length
-            };
-            
-            updateStatsDisplay(stats);
-        }
-        
-        function showLoading(show) {
-            document.getElementById('loading').style.display = show ? 'block' : 'none';
-            document.getElementById('contentGrid').style.display = show ? 'none' : 'grid';
-            document.getElementById('error').style.display = 'none';
-        }
-        
-        function showError(show) {
-            document.getElementById('error').style.display = show ? 'block' : 'none';
-            document.getElementById('loading').style.display = 'none';
-        }
-        
-        // Recherche en temps réel avec debounce
+
+        // Recherche en temps réel
         let searchTimeout;
         document.getElementById('searchBox').addEventListener('input', function(e) {
             clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(async () => {
-                const query = e.target.value.trim();
-                
+            searchTimeout = setTimeout(() => {
+                const query = e.target.value.toLowerCase().trim();
+
                 if (query === '') {
-                    if (currentFilter === 'all') {
-                        displayContent(contentData);
-                    } else {
-                        await filterContent(currentFilter);
-                    }
+                    filterContent(currentFilter);
                     return;
                 }
-                
-                try {
-                    showLoading(true);
-                    let results = [];
-                    
-                    // Essayer l'API de recherche
-                    try {
-                        const response = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(query)}`);
-                        if (response.ok) {
-                            results = await response.json();
-                        } else {
-                            throw new Error('API non disponible');
-                        }
-                    } catch (apiError) {
-                        // Recherche locale si l'API n'est pas disponible
-                        results = contentData.filter(item => 
-                            item.title.toLowerCase().includes(query.toLowerCase()) ||
-                            (item.genre && item.genre.toLowerCase().includes(query.toLowerCase()))
-                        );
-                    }
-                    
-                    displayContent(results);
-                    showLoading(false);
-                } catch (error) {
-                    console.error('Erreur lors de la recherche:', error);
-                    showError(true);
-                    showLoading(false);
-                }
+
+                const filtered = contentData.filter(item => 
+                    item.title.toLowerCase().includes(query) ||
+                    (item.server_name && item.server_name.toLowerCase().includes(query))
+                );
+
+                displayContent(filtered);
             }, 300);
         });
-        
-        // Initialisation au chargement de la page
+
+        // Initialisation
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Initialisation de Streameo...');
+            console.log('🔑 Clé API intégrée:', apiKey);
+            
+            // Mise à jour immédiate du statut API
+            updateApiStatus(true);
+            
             loadContent();
             loadStats();
+
+            // Actualisation périodique
+            setInterval(() => {
+                if (contentData.length < 10) {
+                    console.log('🔄 Rechargement automatique...');
+                    loadContent();
+                }
+            }, 30000); // Toutes les 30 secondes
         });
-        
-        // Vérification périodique de l'API
-        setInterval(() => {
-            if (contentData.length <= 6) { // Si on n'a que les données de démo
-                loadContent();
-            }
-        }, 30000); // Vérifier toutes les 30 secondes
     </script>
 </body>
 </html>
