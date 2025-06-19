@@ -3,1012 +3,311 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CinéStream Premium</title>
-    
-    <!-- JWPlayer CDN avec votre clé -->
-    <script src="https://cdn.jwplayer.com/libraries/KB5zFt7A.js"></script>
-    
+    <title>Mon Site de Streaming</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
+        
         body {
-            background-color: #0f0f1a;
-            color: #ffffff;
-            overflow-x: hidden;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            min-height: 100vh;
         }
-
-        /* Header Style */
+        
         .header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            background: linear-gradient(to bottom, #000000dd, #00000000);
-            padding: 20px 5%;
-            transition: all 0.3s ease;
-        }
-
-        .header.scrolled {
-            background: #000000ee;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 5px 30px #00000050;
-        }
-
-        .nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 2rem;
-            font-weight: 800;
-            color: #ff2a2a;
-            text-shadow: 0 0 15px #ff2a2a80;
-            cursor: pointer;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 25px;
-        }
-
-        .nav-links a {
-            color: #ffffff;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        .nav-links a:hover {
-            color: #ff2a2a;
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: #ff2a2a;
-            transition: width 0.3s;
-        }
-
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-
-        /* Hero Section */
-        .hero {
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem 2rem;
             text-align: center;
-            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
-            position: relative;
-            overflow: hidden;
+            backdrop-filter: blur(10px);
         }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            width: 300%;
-            height: 300%;
-            background: radial-gradient(circle, #ff2a2a10 0%, #00000000 70%);
-            animation: rotate 120s linear infinite;
-        }
-
-        @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            max-width: 800px;
-            padding: 0 20px;
-        }
-
-        .hero-title {
-            font-size: 4.5rem;
-            font-weight: 900;
-            margin-bottom: 20px;
-            background: linear-gradient(45deg, #ff2a2a, #ff7676);
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 5px 15px #ff2a2a40;
-            animation: pulse 2s ease-in-out infinite alternate;
         }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.03); }
+        
+        .search-container {
+            margin: 2rem auto;
+            max-width: 600px;
+            padding: 0 1rem;
         }
-
-        .hero-subtitle {
-            font-size: 1.3rem;
-            margin-bottom: 30px;
-            opacity: 0.9;
-            line-height: 1.6;
-        }
-
-        .cta-button {
-            background: linear-gradient(45deg, #ff2a2a, #ff5252);
-            color: white;
+        
+        .search-box {
+            width: 100%;
+            padding: 1rem;
             border: none;
-            padding: 15px 40px;
+            border-radius: 25px;
             font-size: 1.1rem;
-            font-weight: 700;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px #ff2a2a40;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px #ff2a2a60;
-        }
-
-        /* Movies Section */
-        .movies-section {
-            padding: 100px 5%;
-            background: #0a0a12;
-        }
-
-        .section-title {
-            font-size: 2.5rem;
-            margin-bottom: 40px;
-            font-weight: 800;
-            color: #ffffff;
-            position: relative;
-            display: inline-block;
-        }
-
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 0;
-            width: 50px;
-            height: 4px;
-            background: #ff2a2a;
-            border-radius: 2px;
-        }
-
-        .movies-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 30px;
-        }
-
-        .movie-card {
-            background: #161622;
-            border-radius: 10px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            box-shadow: 0 10px 20px #00000030;
-            position: relative;
-        }
-
-        .movie-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px #00000050;
-        }
-
-        .movie-poster {
-            width: 100%;
-            height: 400px;
-            background: #222233;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .movie-poster::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, #ff2a2a10, #00000000);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .movie-card:hover .movie-poster::before {
-            opacity: 1;
-        }
-
-        .movie-info {
-            padding: 20px;
-        }
-
-        .movie-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: #ffffff;
-        }
-
-        .movie-description {
-            color: #aaaaaa;
-            font-size: 0.9rem;
-            line-height: 1.5;
-            margin-bottom: 15px;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .movie-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.8rem;
-            color: #777777;
-        }
-
-        .movie-quality {
-            background: #ff2a2a;
+            background: rgba(255, 255, 255, 0.1);
             color: white;
-            padding: 3px 10px;
-            border-radius: 4px;
-            font-weight: 700;
-            font-size: 0.7rem;
-        }
-
-        .play-button {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #ff2a2a;
-            border: none;
-            border-radius: 50%;
-            width: 70px;
-            height: 70px;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            opacity: 0;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 5px 20px #00000080;
-        }
-
-        .movie-card:hover .play-button {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1.1);
-        }
-
-        /* Source Selector */
-        .source-selector {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: #000000cc;
-            padding: 10px;
-            border-radius: 8px;
-            display: none;
-            flex-direction: column;
-            gap: 8px;
-            z-index: 100;
-            min-width: 140px;
-            backdrop-filter: blur(5px);
-            border: 1px solid #ffffff20;
-        }
-
-        .movie-card:hover .source-selector {
-            display: flex;
-        }
-
-        .source-btn {
-            background: #ff2a2a;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            font-size: 0.8rem;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 600;
-            text-align: left;
-        }
-
-        .source-btn:hover {
-            background: #ff5252;
-            transform: translateX(5px);
-        }
-
-        .source-btn.jwplayer {
-            background: #4285f4;
-        }
-
-        .source-btn.jwplayer:hover {
-            background: #5a95f5;
-        }
-
-        /* Video Modal */
-        .video-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #000000ee;
-            z-index: 2000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(20px);
-        }
-
-        .video-container {
-            width: 90%;
-            max-width: 1200px;
-            aspect-ratio: 16/9;
-            background: #000;
-            border-radius: 10px;
-            overflow: hidden;
-            position: relative;
-            box-shadow: 0 20px 60px #000000;
-        }
-
-        .video-player {
-            width: 100%;
-            height: 100%;
-            border: none;
-            background: #000;
-        }
-
-        /* JWPlayer Container */
-        .jwplayer-container {
-            width: 100%;
-            height: 100%;
-            background: #000;
-        }
-
-        .close-button {
-            position: absolute;
-            top: -50px;
-            right: 0;
-            background: #ff2a2a;
-            border: none;
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 10px #00000080;
-        }
-
-        .close-button:hover {
-            transform: rotate(90deg);
-            background: #ff5252;
-        }
-
-        /* Player Controls */
-        .player-controls {
-            position: absolute;
-            bottom: -60px;
-            left: 0;
-            right: 0;
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .source-switch-btn {
-            background: #ffffff20;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-            font-weight: 600;
-            backdrop-filter: blur(5px);
-            border: 1px solid #ffffff30;
-        }
-
-        .source-switch-btn:hover {
-            background: #ff2a2a;
-            transform: translateY(-3px);
-        }
-
-        .source-switch-btn.active {
-            background: #ff2a2a;
-            box-shadow: 0 5px 15px #ff2a2a50;
-        }
-
-        .source-switch-btn.jwplayer {
-            background: #4285f420;
-        }
-
-        .source-switch-btn.jwplayer.active {
-            background: #4285f4;
-            box-shadow: 0 5px 15px #4285f450;
-        }
-
-        /* Loading Animation */
-        .loading {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #00000080;
-            z-index: 3000;
-            display: none;
-            align-items: center;
-            justify-content: center;
             backdrop-filter: blur(10px);
         }
-
-        .loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 5px solid #ffffff10;
-            border-top: 5px solid #ff2a2a;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        
+        .search-box::placeholder {
+            color: rgba(255, 255, 255, 0.7);
         }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Video Loading */
-        .video-loading {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: none;
-            flex-direction: column;
-            align-items: center;
+        
+        .categories {
+            display: flex;
             justify-content: center;
-            gap: 20px;
-            background: #00000080;
-            z-index: 2002;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
         }
-
-        .video-loading-text {
+        
+        .category-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
             color: white;
-            font-size: 1.2rem;
-            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
         }
-
-        /* Error Message */
-        .error-message {
-            background: #ff2a2a20;
-            border: 1px solid #ff2a2a50;
-            color: #ff7676;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
+        
+        .category-btn:hover, .category-btn.active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .content-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1rem;
             text-align: center;
-            display: none;
-            font-weight: 600;
+            transition: transform 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        /* Search Bar */
-        .search-container {
-            margin-bottom: 40px;
-            max-width: 600px;
+        
+        .content-card:hover {
+            transform: translateY(-5px);
         }
-
-        .search-input {
+        
+        .content-image {
             width: 100%;
-            padding: 15px 25px;
-            background: #161622;
-            border: 2px solid #ffffff20;
-            border-radius: 50px;
-            color: #ffffff;
-            font-size: 1rem;
-            transition: all 0.3s;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 1rem;
         }
-
-        .search-input:focus {
-            outline: none;
-            border-color: #ff2a2a;
-            box-shadow: 0 0 20px #ff2a2a30;
+        
+        .content-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
         }
-
-        .search-input::placeholder {
-            color: #aaaaaa;
+        
+        .content-category {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-bottom: 1rem;
         }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero-title {
-                font-size: 2.8rem;
-            }
-            
-            .hero-subtitle {
-                font-size: 1.1rem;
-            }
-            
-            .nav-links {
-                display: none;
-            }
-            
-            .movies-grid {
-                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-                gap: 20px;
-            }
-            
-            .video-container {
-                width: 95%;
-            }
-            
-            .player-controls {
-                bottom: -80px;
-            }
+        
+        .watch-btn {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+        }
+        
+        .watch-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .stats {
+            text-align: center;
+            margin: 2rem 0;
+            padding: 1rem;
+        }
+        
+        .stat-item {
+            display: inline-block;
+            margin: 0 2rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4ecdc4;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header" id="header">
-        <nav class="nav">
-            <div class="logo">CinéStream</div>
-            <ul class="nav-links">
-                <li><a href="#home">Accueil</a></li>
-                <li><a href="#movies">Films</a></li>
-                <li><a href="#series">Séries</a></li>
-                <li><a href="#trending">Tendances</a></li>
-            </ul>
-        </nav>
+    <header class="header">
+        <h1>🎬 Mon Site de Streaming</h1>
+        <p>Votre plateforme de streaming ultime</p>
     </header>
-
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="hero-content">
-            <h1 class="hero-title">CinéStream Premium</h1>
-            <p class="hero-subtitle">Streaming haute qualité avec lecteur JWPlayer optimisé. Découvrez des milliers de films et séries en 4K.</p>
-            <button class="cta-button" onclick="scrollToMovies()">Commencer</button>
+    
+    <div class="search-container">
+        <input type="text" class="search-box" placeholder="Rechercher un film, une série, un animé..." id="searchBox">
+    </div>
+    
+    <div class="categories">
+        <button class="category-btn active" onclick="filterContent('all')">Tout</button>
+        <button class="category-btn" onclick="filterContent('movie')">Films</button>
+        <button class="category-btn" onclick="filterContent('series')">Séries</button>
+        <button class="category-btn" onclick="filterContent('anime')">Animés</button>
+        <button class="category-btn" onclick="filterContent('documentary')">Documentaires</button>
+    </div>
+    
+    <div class="stats" id="stats">
+        <div class="stat-item">
+            <div class="stat-number" id="movieCount">0</div>
+            <div class="stat-label">Films</div>
         </div>
-    </section>
-
-    <!-- Movies Section -->
-    <section class="movies-section" id="movies">
-        <h2 class="section-title">🎬 Films Populaires</h2>
-        
-        <div class="search-container">
-            <input type="text" class="search-input" placeholder="Rechercher un film..." id="searchInput">
+        <div class="stat-item">
+            <div class="stat-number" id="seriesCount">0</div>
+            <div class="stat-label">Séries</div>
         </div>
-
-        <div class="error-message" id="errorMessage"></div>
-
-        <div class="movies-grid" id="moviesGrid">
-            <!-- Films chargés dynamiquement -->
+        <div class="stat-item">
+            <div class="stat-number" id="animeCount">0</div>
+            <div class="stat-label">Animés</div>
         </div>
-    </section>
-
-    <!-- Video Modal -->
-    <div class="video-modal" id="videoModal">
-        <div class="video-container">
-            <button class="close-button" onclick="closeVideo()">&times;</button>
-            <div class="video-loading" id="videoLoading">
-                <div class="loading-spinner"></div>
-                <div class="video-loading-text">Chargement du contenu...</div>
-            </div>
-            
-            <!-- JWPlayer Container -->
-            <div class="jwplayer-container" id="jwplayer-container" style="display: none;"></div>
-            
-            <!-- Iframe Fallback -->
-            <iframe class="video-player" id="videoPlayer" allowfullscreen></iframe>
-            
-            <!-- Player Controls -->
-            <div class="player-controls" id="playerControls">
-                <!-- Boutons de source ajoutés dynamiquement -->
-            </div>
+        <div class="stat-item">
+            <div class="stat-number" id="totalCount">0</div>
+            <div class="stat-label">Total</div>
         </div>
     </div>
-
-    <!-- Loading Animation -->
-    <div class="loading" id="loading">
-        <div class="loading-spinner"></div>
+    
+    <div class="content-grid" id="contentGrid">
+        <!-- Le contenu sera inséré ici via JavaScript -->
     </div>
-
+    
     <script>
-        // Configuration JWPlayer avec votre clé
-        var jwDefaults = {
-            "aspectratio": "16:9",
-            "autostart": true,
-            "cast": {},
-            "controls": true,
-            "displaydescription": true,
-            "displaytitle": true,
-            "height": 360,
-            "key": "mGchvnEGcLVoeauoDDnU+pnUSx8P5idL0okGnH0o/xGISl3R/VPuaSYtWlS1ZVBr",
-            "mute": false,
-            "ph": 1,
-            "pid": "KB5zFt7A",
-            "playbackRateControls": false,
-            "preload": "metadata",
-            "repeat": false,
-            "stretching": "uniform",
-            "width": "100%"
-        };
-        jwplayer.defaults = jwDefaults;
-
-        // Variables globales
-        let allMovies = [];
-        let currentPlayer = null;
-        let currentMovie = null;
-        let currentSource = null;
-
-        // Configuration des sources
-        const streamingSources = {
-            beerscloud: {
-                name: 'BeersCloud',
-                baseUrl: 'https://beerscloud.com/embed/',
-                type: 'jwplayer',
-                priority: 1
-            },
-            sharecloudy: {
-                name: 'ShareCloudy',
-                baseUrl: 'https://sharecloudy.com/embed/',
-                type: 'jwplayer',
-                priority: 2
-            },
-            vidsrc: {
-                name: 'VidSrc',
-                baseUrl: 'https://vidsrc.to/embed/movie/',
-                type: 'embed',
-                priority: 3
-            },
-            multiembed: {
-                name: 'MultiEmbed',
-                baseUrl: 'https://multiembed.mov/directstream.php?video_id=',
-                type: 'embed',
-                priority: 4
-            }
-        };
-
-        // Base de données de films
-        const moviesDatabase = [
-            {
-                id: 550,
-                title: "Fight Club",
-                description: "Un employé de bureau insomnique et un fabricant de savon forment un club de combat clandestin.",
-                year: 1999,
-                quality: "HD",
-                genre: "Drame",
-                customUrls: {
-                    beerscloud: "https://beerscloud.com/embed/movie/fight-club-1999",
-                    sharecloudy: "https://sharecloudy.com/embed/movie/fight-club"
-                }
-            },
-            {
-                id: 13,
-                title: "Forrest Gump",
-                description: "L'histoire d'un homme simple qui traverse plusieurs décennies de l'histoire américaine.",
-                year: 1994,
-                quality: "HD",
-                genre: "Drame",
-                customUrls: {
-                    beerscloud: "https://beerscloud.com/embed/movie/forrest-gump-1994",
-                    sharecloudy: "https://sharecloudy.com/embed/movie/forrest-gump"
-                }
-            },
-            {
-                id: 155,
-                title: "The Dark Knight",
-                description: "Batman affronte le Joker dans cette suite sombre et complexe.",
-                year: 2008,
-                quality: "4K",
-                genre: "Action",
-                customUrls: {
-                    beerscloud: "https://beerscloud.com/embed/movie/dark-knight-2008",
-                    sharecloudy: "https://sharecloudy.com/embed/movie/dark-knight"
-                }
-            },
-            {
-                id: 680,
-                title: "Pulp Fiction",
-                description: "Les vies de deux hommes de main, d'un boxeur, d'un gangster et de sa femme s'entrecroisent.",
-                year: 1994,
-                quality: "HD",
-                genre: "Crime",
-                customUrls: {
-                    beerscloud: "https://beerscloud.com/embed/movie/pulp-fiction-1994",
-                    sharecloudy: "https://sharecloudy.com/embed/movie/pulp-fiction"
-                }
-            }
-        ];
-
-        // Initialisation
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Initialisation de CinéStream avec JWPlayer');
-            loadMoviesFromDatabase();
-            initializeSearch();
-            initializeScrollEffects();
-        });
-
-        // Charger les films
-        function loadMoviesFromDatabase() {
-            allMovies = moviesDatabase.map(movie => ({
-                ...movie,
-                sources: generateStreamingSources(movie)
-            }));
-            displayMovies(allMovies);
+        // Données de démonstration - remplacez par vos vraies données
+        let contentData = [];
+        
+        // Fonction pour charger les données
+        function loadContent() {
+            // Ici vous devriez charger les données depuis votre base de données
+            // Pour la démo, on utilise des données factices
+            fetch('/api/content')
+                .then(response => response.json())
+                .then(data => {
+                    contentData = data;
+                    displayContent(contentData);
+                    updateStats();
+                })
+                .catch(error => {
+                    console.error('Erreur lors du chargement:', error);
+                    // Données de fallback
+                    displayContent([]);
+                });
         }
-
-        // Générer les sources
-        function generateStreamingSources(movie) {
-            const sources = {};
-            Object.keys(streamingSources).forEach(key => {
-                const source = streamingSources[key];
-                let url = movie.customUrls && movie.customUrls[key] 
-                    ? movie.customUrls[key] 
-                    : source.baseUrl + movie.id;
-                
-                sources[key] = {
-                    name: source.name,
-                    url: url,
-                    type: source.type,
-                    priority: source.priority
-                };
-            });
-            return sources;
-        }
-
-        // Afficher les films
-        function displayMovies(movies) {
-            const grid = document.getElementById('moviesGrid');
+        
+        function displayContent(content) {
+            const grid = document.getElementById('contentGrid');
             grid.innerHTML = '';
-
-            if (movies.length === 0) {
-                grid.innerHTML = '<p style="text-align:center;grid-column:1/-1;color:#aaa">Aucun film trouvé</p>';
-                return;
-            }
-
-            movies.forEach(movie => {
+            
+            content.forEach(item => {
                 const card = document.createElement('div');
-                card.className = 'movie-card';
-                
-                const sortedSources = Object.entries(movie.sources)
-                    .sort((a, b) => a[1].priority - b[1].priority);
-                
-                const defaultSource = sortedSources[0][0];
-                
+                card.className = 'content-card';
                 card.innerHTML = `
-                    <div class="movie-poster">
-                        <div style="font-size:3rem;">🎬</div>
-                        <button class="play-button" onclick="playMovieFromSource(${movie.id}, '${defaultSource}')">▶</button>
-                        <div class="source-selector">
-                            ${sortedSources.map(([key, source]) => `
-                                <button class="source-btn ${source.type === 'jwplayer' ? 'jwplayer' : ''}" 
-                                        onclick="playMovieFromSource(${movie.id}, '${key}')">
-                                    ${source.name}
-                                </button>
-                            `).join('')}
-                        </div>
-                    </div>
-                    <div class="movie-info">
-                        <h3 class="movie-title">${movie.title}</h3>
-                        <p class="movie-description">${movie.description}</p>
-                        <div class="movie-meta">
-                            <span class="movie-quality">${movie.quality}</span>
-                            <span>${movie.year}</span>
-                            <span>${movie.genre}</span>
-                        </div>
-                    </div>
+                    <img src="${item.image || 'https://via.placeholder.com/250x300?text=Pas+d\'image'}" 
+                         alt="${item.title}" class="content-image">
+                    <div class="content-title">${item.title}</div>
+                    <div class="content-category">${getCategoryLabel(item.category)}</div>
+                    <button class="watch-btn" onclick="watchContent('${item.url}', '${item.title}')">
+                        ▶ Regarder
+                    </button>
                 `;
                 grid.appendChild(card);
             });
         }
-
-        // Jouer un film
-        async function playMovieFromSource(movieId, sourceKey) {
-            const movie = allMovies.find(m => m.id == movieId);
-            if (!movie) return showError('Film non trouvé');
-
-            const source = movie.sources[sourceKey];
-            if (!source) return showError('Source non disponible');
-
-            currentMovie = movie;
-            currentSource = source;
-
-            showLoading(true);
-            openVideoModal();
-
-            try {
-                if (source.type === 'jwplayer') {
-                    await playWithJWPlayer(source.url, sourceKey);
-                } else {
-                    playWithIframe(source.url);
-                }
-                updatePlayerControls(movie);
-            } catch (error) {
-                console.error('Erreur:', error);
-                showError('Erreur de chargement');
-                tryNextSource(movie, sourceKey);
-            } finally {
-                showLoading(false);
-            }
-        }
-
-        // Jouer avec JWPlayer
-        async function playWithJWPlayer(url, sourceKey) {
-            document.getElementById('videoPlayer').style.display = 'none';
-            const jwContainer = document.getElementById('jwplayer-container');
-            jwContainer.style.display = 'block';
-
-            currentPlayer = jwplayer('jwplayer-container').setup({
-                ...jwDefaults,
-                file: url,
-                title: currentMovie.title,
-                abouttext: `Source: ${currentSource.name}`,
-                aboutlink: url
-            });
-
-            currentPlayer.on('error', (e) => {
-                console.error('JWPlayer error:', e);
-                showError('Erreur de lecture');
-                tryNextSource(currentMovie, sourceKey);
-            });
-
-            currentPlayer.on('buffer', () => {
-                document.getElementById('videoLoading').style.display = 'flex';
-            });
-
-            currentPlayer.on('play', () => {
-                document.getElementById('videoLoading').style.display = 'none';
-            });
-        }
-
-        // Jouer avec iframe
-        function playWithIframe(url) {
-            document.getElementById('jwplayer-container').style.display = 'none';
-            const iframe = document.getElementById('videoPlayer');
-            iframe.style.display = 'block';
-            iframe.src = url;
-            
-            document.getElementById('videoLoading').style.display = 'flex';
-            iframe.onload = () => {
-                document.getElementById('videoLoading').style.display = 'none';
+        
+        function getCategoryLabel(category) {
+            const labels = {
+                'movie': 'Film',
+                'series': 'Série',
+                'anime': 'Animé',
+                'documentary': 'Documentaire'
             };
+            return labels[category] || category;
         }
-
-        // Essayer la source suivante
-        function tryNextSource(movie, failedSourceKey) {
-            const sources = Object.entries(movie.sources)
-                .sort((a, b) => a[1].priority - b[1].priority);
+        
+        function filterContent(category) {
+            // Mettre à jour les boutons actifs
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
             
-            const currentIndex = sources.findIndex(([key]) => key === failedSourceKey);
-            if (currentIndex < sources.length - 1) {
-                const nextSource = sources[currentIndex + 1];
-                playMovieFromSource(movie.id, nextSource[0]);
-            } else {
-                showError('Toutes les sources ont échoué');
-            }
-        }
-
-        // Mettre à jour les contrôles
-        function updatePlayerControls(movie) {
-            const controls = document.getElementById('playerControls');
-            controls.innerHTML = '';
-            
-            Object.entries(movie.sources)
-                .sort((a, b) => a[1].priority - b[1].priority)
-                .forEach(([key, source]) => {
-                    const btn = document.createElement('button');
-                    btn.className = `source-switch-btn ${key === currentSource ? 'active' : ''} ${source.type === 'jwplayer' ? 'jwplayer' : ''}`;
-                    btn.textContent = source.name;
-                    btn.onclick = () => playMovieFromSource(movie.id, key);
-                    controls.appendChild(btn);
-                });
-        }
-
-        // Ouvrir le modal
-        function openVideoModal() {
-            document.getElementById('videoModal').style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-        }
-
-        // Fermer le modal
-        function closeVideo() {
-            document.getElementById('videoModal').style.display = 'none';
-            document.body.style.overflow = 'auto';
-            
-            if (currentPlayer) {
-                currentPlayer.stop();
-                currentPlayer.remove();
-                currentPlayer = null;
+            // Filtrer le contenu
+            let filtered = contentData;
+            if (category !== 'all') {
+                filtered = contentData.filter(item => item.category === category);
             }
             
-            document.getElementById('videoPlayer').src = '';
+            displayContent(filtered);
         }
-
-        // Afficher/masquer le chargement
-        function showLoading(show) {
-            document.getElementById('loading').style.display = show ? 'flex' : 'none';
-            document.getElementById('videoLoading').style.display = show ? 'flex' : 'none';
+        
+        function watchContent(url, title) {
+            // Ouvrir le lecteur vidéo
+            alert(`Ouverture de: ${title}\nURL: ${url}`);
+            // Ici vous pouvez implémenter votre lecteur vidéo
+            window.open(url, '_blank');
         }
-
-        // Afficher une erreur
-        function showError(message) {
-            const errorDiv = document.getElementById('errorMessage');
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
-            setTimeout(() => errorDiv.style.display = 'none', 5000);
+        
+        function updateStats() {
+            const stats = {
+                movie: contentData.filter(item => item.category === 'movie').length,
+                series: contentData.filter(item => item.category === 'series').length,
+                anime: contentData.filter(item => item.category === 'anime').length,
+                total: contentData.length
+            };
+            
+            document.getElementById('movieCount').textContent = stats.movie;
+            document.getElementById('seriesCount').textContent = stats.series;
+            document.getElementById('animeCount').textContent = stats.anime;
+            document.getElementById('totalCount').textContent = stats.total;
         }
-
-        // Initialiser la recherche
-        function initializeSearch() {
-            document.getElementById('searchInput').addEventListener('input', (e) => {
-                const query = e.target.value.toLowerCase();
-                const filtered = query.length > 2 
-                    ? allMovies.filter(movie => 
-                        movie.title.toLowerCase().includes(query) || 
-                        movie.description.toLowerCase().includes(query))
-                    : allMovies;
-                displayMovies(filtered);
-            });
-        }
-
-        // Effets de scroll
-        function initializeScrollEffects() {
-            window.addEventListener('scroll', () => {
-                document.getElementById('header').classList.toggle(
-                    'scrolled', window.scrollY > 50
-                );
-            });
-        }
-
-        // Scroll vers les films
-        function scrollToMovies() {
-            document.getElementById('movies').scrollIntoView({
-                behavior: 'smooth'
-            });
-        }
-
-        // Raccourcis clavier
-        document.addEventListener('keydown', (e) => {
-            if (document.getElementById('videoModal').style.display === 'flex') {
-                if (e.key === 'Escape') closeVideo();
-                if (e.key === ' ' && currentPlayer) {
-                    e.preventDefault();
-                    currentPlayer.getState() === 'playing' 
-                        ? currentPlayer.pause() 
-                        : currentPlayer.play();
-                }
-            }
+        
+        // Recherche en temps réel
+        document.getElementById('searchBox').addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase();
+            const filtered = contentData.filter(item => 
+                item.title.toLowerCase().includes(query)
+            );
+            displayContent(filtered);
         });
+        
+        // Charger le contenu au démarrage
+        loadContent();
     </script>
 </body>
 </html>
