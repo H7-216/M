@@ -38,7 +38,6 @@
                 radial-gradient(circle at 80% 70%, rgba(0, 247, 255, 0.15) 0%, transparent 30%);
         }
 
-        /* Effet de particules cosmiques */
         body::before {
             content: "";
             position: fixed;
@@ -820,29 +819,17 @@
         }
 
         // Chargement du contenu depuis streamingData.js
-        async function loadContent() {
+        function loadContent() {
             showLoading(true);
             showError(false);
 
             try {
-                // Chargement du fichier externe
-                const response = await fetch('streamingData.js');
-                
-                if (!response.ok) {
-                    throw new Error('Fichier streamingData.js non trouvé');
+                // Vérifier si le fichier a bien chargé les données
+                if (typeof window.streamingData === 'undefined') {
+                    throw new Error('Les données de streaming ne sont pas disponibles');
                 }
                 
-                // Évaluer le contenu du fichier JS
-                const scriptContent = await response.text();
-                const dataMatch = scriptContent.match(/const streamingData = (\[.*?\])/s);
-                
-                if (!dataMatch) {
-                    throw new Error('Format de données invalide dans streamingData.js');
-                }
-                
-                // Convertir la chaîne JSON en objet JavaScript
-                contentData = eval(`(${dataMatch[1]})`);
-                
+                contentData = window.streamingData;
                 console.log(`📊 ${contentData.length} contenus chargés depuis streamingData.js`);
                 displayContent(contentData);
                 updateStatsFromData();
@@ -916,13 +903,10 @@
         // Fonction pour regarder le contenu
         function watchContent(url, title) {
             if (url.includes('youtube.com') || url.includes('vimeo.com') || url.includes('dailymotion.com')) {
-                // Pour les iframes standard
                 dom.videoPlayer.src = url;
             } else if (url.startsWith('#')) {
-                // Pour les démos
                 dom.videoPlayer.src = `https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1`;
             } else {
-                // Pour les autres URLs
                 dom.videoPlayer.src = url;
             }
             
@@ -951,7 +935,6 @@
         }
 
         function filterContent(category) {
-            // Mettre à jour les boutons actifs
             document.querySelectorAll('.category-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
@@ -959,7 +942,6 @@
 
             currentFilter = category;
 
-            // Filtrer le contenu
             let filtered = contentData;
             if (category !== 'all') {
                 filtered = contentData.filter(item => item.category === category);
@@ -1018,7 +1000,6 @@
                 dom.themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
             }
             
-            // Sauvegarder la préférence
             localStorage.setItem('theme', currentTheme);
         }
 
@@ -1038,7 +1019,15 @@
                 }
             }
             
-            loadContent();
+            // Charger le script des données
+            const script = document.createElement('script');
+            script.src = 'streamingData.js';
+            script.onload = loadContent;
+            script.onerror = function() {
+                console.error('Erreur de chargement de streamingData.js');
+                loadContent(); // Tentative avec données de démo
+            };
+            document.head.appendChild(script);
         });
 
         // Exposer les fonctions globales
