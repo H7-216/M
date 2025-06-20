@@ -1,25 +1,12 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎬 StreamVision - Plateforme de Streaming Premium</title>
+    <title>🎬 Streameo - Plateforme de Streaming</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
     <style>
-        :root {
-            --primary: #6a11cb;
-            --secondary: #2575fc;
-            --accent: #00f2fe;
-            --dark: #0f0c29;
-            --light: #f8f9fa;
-            --success: #4caf50;
-            --danger: #f44336;
-            --warning: #ff9800;
-            --info: #2196f3;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --card-border: rgba(255, 255, 255, 0.1);
-        }
-
         * {
             margin: 0;
             padding: 0;
@@ -27,160 +14,163 @@
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, var(--dark), var(--primary));
-            color: var(--light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
             min-height: 100vh;
-            line-height: 1.6;
+            overflow-x: hidden;
         }
 
         .header {
-            background: rgba(15, 12, 41, 0.85);
-            padding: 2rem 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2rem;
             text-align: center;
             backdrop-filter: blur(15px);
-            border-bottom: 1px solid var(--card-border);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
         }
 
         .header h1 {
-            font-size: 3.2rem;
+            font-size: 3rem;
             margin-bottom: 0.5rem;
-            background: linear-gradient(45deg, var(--accent), var(--secondary));
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+            background-size: 300% 300%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            font-weight: 700;
+            animation: gradientShift 4s ease-in-out infinite;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            margin-bottom: 1rem;
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
         .api-status {
-            background: rgba(76, 175, 80, 0.15);
-            color: var(--success);
-            padding: 0.5rem 1.5rem;
-            border-radius: 50px;
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
             font-size: 0.9rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-            border: 1px solid rgba(76, 175, 80, 0.3);
-            font-weight: 500;
+            display: inline-block;
+            margin-top: 1rem;
         }
 
         .search-container {
-            margin: 2.5rem auto;
-            max-width: 800px;
-            padding: 0 1.5rem;
+            margin: 2rem auto;
+            max-width: 600px;
+            padding: 0 1rem;
+            position: relative;
         }
 
         .search-box {
             width: 100%;
-            padding: 1.1rem 1.8rem;
+            padding: 1.2rem;
             border: none;
-            border-radius: 50px;
+            border-radius: 30px;
             font-size: 1.1rem;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.15);
             color: white;
             backdrop-filter: blur(10px);
-            border: 1px solid var(--card-border);
+            border: 2px solid rgba(255, 255, 255, 0.2);
             transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         .search-box:focus {
             outline: none;
-            background: rgba(255, 255, 255, 0.2);
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(0, 242, 254, 0.2);
+            background: rgba(255, 255, 255, 0.25);
+            border-color: #4ecdc4;
+            box-shadow: 0 0 20px rgba(78, 205, 196, 0.3);
         }
 
         .search-box::placeholder {
-            color: rgba(255, 255, 255, 0.6);
+            color: rgba(255, 255, 255, 0.7);
         }
 
         .categories {
             display: flex;
             justify-content: center;
             gap: 1rem;
-            margin: 2rem auto;
+            margin: 2rem 0;
             flex-wrap: wrap;
-            padding: 0 1.5rem;
-            max-width: 1000px;
+            padding: 0 1rem;
         }
 
         .category-btn {
-            padding: 0.8rem 1.8rem;
+            padding: 1rem 2rem;
             border: none;
-            border-radius: 50px;
-            background: var(--card-bg);
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
             color: white;
             cursor: pointer;
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
-            border: 1px solid var(--card-border);
+            border: 2px solid rgba(255, 255, 255, 0.1);
             font-weight: 500;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
 
         .category-btn:hover, .category-btn.active {
-            background: rgba(0, 242, 254, 0.2);
-            transform: translateY(-2px);
-            border-color: var(--accent);
-            color: var(--accent);
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border-color: #4ecdc4;
         }
 
         .content-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 2rem;
             padding: 2rem;
-            max-width: 1500px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
         .content-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            overflow: hidden;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
             transition: all 0.3s ease;
             backdrop-filter: blur(15px);
-            border: 1px solid var(--card-border);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        }
-
-        .content-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            border-color: var(--accent);
-        }
-
-        .video-container {
+            border: 2px solid rgba(255, 255, 255, 0.1);
             position: relative;
-            width: 100%;
-            padding-bottom: 56.25%;
-            background: #000;
+            overflow: hidden;
         }
 
-        .video-container iframe {
+        .content-card::before {
+            content: '';
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255, 107, 107, 0.1), rgba(78, 205, 196, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
         }
 
-        .content-info {
-            padding: 1.5rem;
+        .content-card:hover::before {
+            opacity: 1;
+        }
+
+        .content-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: #4ecdc4;
+        }
+
+        .content-image {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .content-card:hover .content-image {
+            transform: scale(1.05);
         }
 
         .content-title {
@@ -190,107 +180,89 @@
             line-height: 1.4;
         }
 
-        .content-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
-
         .content-category {
-            background: rgba(106, 17, 203, 0.25);
-            color: var(--accent);
+            background: rgba(76, 175, 80, 0.3);
+            color: #4caf50;
             padding: 0.4rem 1rem;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            border: 1px solid rgba(0, 242, 254, 0.3);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(76, 175, 80, 0.5);
         }
 
         .content-server {
-            background: rgba(37, 117, 252, 0.2);
-            color: var(--secondary);
+            background: rgba(33, 150, 243, 0.3);
+            color: #2196f3;
             padding: 0.3rem 0.8rem;
-            border-radius: 50px;
+            border-radius: 15px;
             font-size: 0.8rem;
-            font-weight: 500;
+            display: inline-block;
+            margin-bottom: 1rem;
+            margin-left: 0.5rem;
+        }
+
+        .watch-btn {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .watch-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
         }
 
         .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 1.5rem;
-            margin: 3rem auto;
-            padding: 0 2rem;
-            max-width: 1000px;
+            text-align: center;
+            margin: 2rem 0;
+            padding: 2rem;
         }
 
         .stat-item {
+            display: inline-block;
+            margin: 0 2rem 1rem;
             padding: 1.5rem;
-            background: var(--card-bg);
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
             backdrop-filter: blur(10px);
-            border: 1px solid var(--card-border);
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .stat-item:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            min-width: 150px;
         }
 
         .stat-number {
-            font-size: 2.2rem;
-            font-weight: 700;
-            color: var(--accent);
-            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #4ecdc4;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
         .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.8;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-top: 0.5rem;
         }
 
         .loading {
             text-align: center;
             padding: 3rem;
-            font-size: 1.1rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            border-top-color: var(--accent);
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+            font-size: 1.2rem;
         }
 
         .error {
             text-align: center;
-            padding: 2rem;
-            background: rgba(244, 67, 54, 0.1);
-            border-radius: 12px;
-            margin: 2rem auto;
-            border: 1px solid rgba(244, 67, 54, 0.3);
-            max-width: 800px;
-        }
-
-        .error-icon {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            color: var(--danger);
+            padding: 3rem;
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 15px;
+            margin: 2rem;
         }
 
         .no-content {
@@ -298,70 +270,49 @@
             padding: 3rem;
             font-size: 1.2rem;
             opacity: 0.8;
-            grid-column: 1 / -1;
         }
 
         @media (max-width: 768px) {
             .header h1 {
-                font-size: 2.5rem;
+                font-size: 2rem;
             }
 
             .content-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 1rem;
                 padding: 1rem;
-                gap: 1.5rem;
             }
 
-            .stats {
-                grid-template-columns: repeat(2, 1fr);
+            .categories {
+                gap: 0.5rem;
+            }
+
+            .category-btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
             }
         }
-
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .content-card {
-            animation: fadeIn 0.5s ease-out forwards;
-            opacity: 0;
-        }
-
-        .content-card:nth-child(1) { animation-delay: 0.1s; }
-        .content-card:nth-child(2) { animation-delay: 0.2s; }
-        .content-card:nth-child(3) { animation-delay: 0.3s; }
-        .content-card:nth-child(4) { animation-delay: 0.4s; }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header class="header">
-        <h1>🎬 StreamVision</h1>
-        <p>Votre plateforme de streaming haute qualité</p>
+        <h1>🎬 Streameo</h1>
+        <p>Votre plateforme de streaming ultime</p>
         <div class="api-status" id="apiStatus">
-            <span id="apiStatusIcon">⏳</span>
-            <span id="apiStatusText">Connexion en cours...</span>
+            🔑 API Connectée
         </div>
     </header>
 
     <div class="search-container">
-        <input type="text" class="search-box" placeholder="🔍 Rechercher un film, série ou animé..." id="searchBox">
+        <input type="text" class="search-box" placeholder="🔍 Rechercher un film, une série, un animé..." id="searchBox">
     </div>
 
     <div class="categories">
-        <button class="category-btn active" onclick="filterContent('all')">
-            <span>🎯</span> Tout
-        </button>
-        <button class="category-btn" onclick="filterContent('movie')">
-            <span>🎬</span> Films
-        </button>
-        <button class="category-btn" onclick="filterContent('series')">
-            <span>📺</span> Séries
-        </button>
-        <button class="category-btn" onclick="filterContent('anime')">
-            <span>🎌</span> Animés
-        </button>
+        <button class="category-btn active" onclick="filterContent('all')">🎯 Tout</button>
+        <button class="category-btn" onclick="filterContent('movie')">🎬 Films</button>
+        <button class="category-btn" onclick="filterContent('series')">📺 Séries</button>
+        <button class="category-btn" onclick="filterContent('anime')">🎌 Animés</button>
+        <button class="category-btn" onclick="filterContent('documentary')">📚 Documentaires</button>
     </div>
 
     <div class="stats" id="stats">
@@ -378,130 +329,129 @@
             <div class="stat-label">Animés</div>
         </div>
         <div class="stat-item">
+            <div class="stat-number" id="documentaryCount">0</div>
+            <div class="stat-label">Documentaires</div>
+        </div>
+        <div class="stat-item">
             <div class="stat-number" id="totalCount">0</div>
             <div class="stat-label">Total</div>
         </div>
     </div>
 
     <div id="loadingIndicator" class="loading">
-        <div class="spinner"></div>
-        <div>Chargement du contenu...</div>
+        🔄 Chargement du contenu...
     </div>
 
     <div id="errorIndicator" class="error" style="display: none;">
-        <div class="error-icon">❌</div>
-        <h3>Erreur de connexion</h3>
-        <p id="errorMessage">Impossible de charger le contenu. Veuillez réessayer.</p>
+        ❌ Erreur de connexion à l'API
     </div>
 
     <div class="content-grid" id="contentGrid">
-        <!-- Contenu chargé dynamiquement -->
+        <!-- Le contenu sera inséré ici via JavaScript -->
     </div>
 
     <script>
-        // Configuration de l'API
-        const API_KEY = '55f7a2cc6ed112b9ed793081e5bbcd2e';
-        const API_BASE_URL = 'https://98330cb9-d0c6-450d-a9ed-6f8c130b81f8-00-17uh62fvqj0wi.janeway.replit.dev';
-        const API_ENDPOINT = `${API_BASE_URL}/api/key/${API_KEY}`;
-        
         let contentData = [];
         let currentFilter = 'all';
         
+        // Clé API intégrée directement
+        const apiKey = '068fd3ff876054e3be9a3bc1763b182d';
+
+        // Configuration de l'API - URL de votre API Replit déployée
+        // REMPLACEZ par votre vraie URL de déploiement une fois obtenue
+        const API_BASE_URL = 'https://98330cb9-d0c6-450d-a9ed-6f8c130b81f8-00-17uh62fvqj0wi.janeway.replit.dev';
+
         // Fonctions utilitaires
         function showLoading(show) {
-            document.getElementById('loadingIndicator').style.display = show ? 'flex' : 'none';
+            document.getElementById('loadingIndicator').style.display = show ? 'block' : 'none';
         }
 
-        function showError(show, message = '') {
-            const errorEl = document.getElementById('errorIndicator');
-            if (show) {
-                errorEl.style.display = 'block';
-                if (message) document.getElementById('errorMessage').textContent = message;
-            } else {
-                errorEl.style.display = 'none';
-            }
+        function showError(show) {
+            document.getElementById('errorIndicator').style.display = show ? 'block' : 'none';
         }
 
-        function updateApiStatus(connected, message = '') {
+        function updateApiStatus(connected) {
             const statusEl = document.getElementById('apiStatus');
-            const iconEl = document.getElementById('apiStatusIcon');
-            const textEl = document.getElementById('apiStatusText');
-            
             if (connected) {
-                iconEl.textContent = '🔐';
-                textEl.textContent = message || 'API Connectée';
-                statusEl.style.background = 'rgba(76, 175, 80, 0.15)';
-                statusEl.style.color = 'var(--success)';
+                statusEl.textContent = `🔑 API Connectée (${apiKey.substring(0, 8)}...)`;
+                statusEl.style.background = 'rgba(76, 175, 80, 0.2)';
+                statusEl.style.color = '#4caf50';
             } else {
-                iconEl.textContent = '⚠️';
-                textEl.textContent = message || 'API Déconnectée';
-                statusEl.style.background = 'rgba(244, 67, 54, 0.15)';
-                statusEl.style.color = 'var(--danger)';
+                statusEl.textContent = '❌ API Déconnectée';
+                statusEl.style.background = 'rgba(244, 67, 54, 0.2)';
+                statusEl.style.color = '#f44336';
             }
         }
 
-        // Chargement du contenu depuis l'API
+        // Chargement du contenu avec la clé API
         async function loadContent() {
             showLoading(true);
             showError(false);
-            updateApiStatus(false, 'Connexion à l\'API...');
 
             try {
-                console.log(`🌐 Tentative de connexion à: ${API_ENDPOINT}`);
-                
-                const response = await fetch(API_ENDPOINT, {
-                    headers: {
-                        'Accept': 'application/json',
-                        'Authorization': `Bearer ${API_KEY}`
-                    }
-                });
+                console.log('🔑 Utilisation de la clé API:', apiKey);
+
+                // Chargement du contenu avec la clé intégrée
+                const response = await fetch(`${API_BASE_URL}/api/key/${apiKey}`);
 
                 if (!response.ok) {
-                    throw new Error(`Erreur ${response.status}: ${response.statusText}`);
+                    throw new Error(`Erreur HTTP: ${response.status}`);
                 }
 
                 const data = await response.json();
                 contentData = data.content || [];
-                
-                console.log(`✅ ${contentData.length} contenus chargés depuis l'API`);
-                updateApiStatus(true, `Connecté - ${contentData.length} contenus`);
+
+                console.log(`📊 ${contentData.length} contenus chargés via l'API`);
+
                 displayContent(contentData);
-                updateStatsFromData();
+                updateApiStatus(true);
 
             } catch (error) {
-                console.error('❌ Erreur lors du chargement:', error);
-                updateApiStatus(false, 'Erreur de connexion');
-                showError(true, error.message);
-                
-                // Mode démo avec contenu factice
-                contentData = getDemoContent();
+                console.error('Erreur lors du chargement:', error);
+                updateApiStatus(false);
+                showError(true);
+
+                // Données de démonstration en cas d'erreur
+                contentData = [
+                    {
+                        id: 1,
+                        title: "Démo - Film d'Action",
+                        category: "movie",
+                        image: "https://via.placeholder.com/250x350?text=Film+Demo",
+                        url: "#demo1",
+                        server_name: "Demo"
+                    },
+                    {
+                        id: 2,
+                        title: "Démo - Série Drama",
+                        category: "series",
+                        image: "https://via.placeholder.com/250x350?text=Serie+Demo",
+                        url: "#demo2",
+                        server_name: "Demo"
+                    }
+                ];
                 displayContent(contentData);
-                updateStatsFromData();
-            } finally {
-                showLoading(false);
             }
+
+            showLoading(false);
         }
 
-        // Données de démonstration
-        function getDemoContent() {
-            return [
-                {
-                    id: 1,
-                    title: "Exemple de Film",
-                    category: "movie",
-                    image: "https://via.placeholder.com/800x450?text=Exemple+Film",
-                    url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-                    server_name: "Demo"
-                },
-                {
-                    id: 2,
-                    title: "Exemple de Série",
-                    category: "series",
-                    image: "https://via.placeholder.com/800x450?text=Exemple+Série",
-                    url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-                    server_name: "Demo"
-                }
-            ];
+        // Chargement des statistiques
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/stats`);
+                const stats = await response.json();
+
+                document.getElementById('movieCount').textContent = stats.movie || 0;
+                document.getElementById('seriesCount').textContent = stats.series || 0;
+                document.getElementById('animeCount').textContent = stats.anime || 0;
+                document.getElementById('documentaryCount').textContent = stats.documentary || 0;
+                document.getElementById('totalCount').textContent = stats.total || 0;
+
+            } catch (error) {
+                console.error('Erreur lors du chargement des stats:', error);
+                updateStatsFromData();
+            }
         }
 
         function updateStatsFromData() {
@@ -509,12 +459,14 @@
                 movie: contentData.filter(item => item.category === 'movie').length,
                 series: contentData.filter(item => item.category === 'series').length,
                 anime: contentData.filter(item => item.category === 'anime').length,
+                documentary: contentData.filter(item => item.category === 'documentary').length,
                 total: contentData.length
             };
 
             document.getElementById('movieCount').textContent = stats.movie;
             document.getElementById('seriesCount').textContent = stats.series;
             document.getElementById('animeCount').textContent = stats.anime;
+            document.getElementById('documentaryCount').textContent = stats.documentary;
             document.getElementById('totalCount').textContent = stats.total;
         }
 
@@ -522,33 +474,25 @@
             const grid = document.getElementById('contentGrid');
 
             if (!content || content.length === 0) {
-                grid.innerHTML = '<div class="no-content">😔 Aucun contenu disponible</div>';
+                grid.innerHTML = '<div class="no-content">😔 Aucun contenu trouvé</div>';
                 return;
             }
 
             grid.innerHTML = '';
 
-            content.forEach((item, index) => {
+            content.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'content-card';
-                card.style.animationDelay = `${index * 0.1}s`;
-                
                 card.innerHTML = `
-                    <div class="video-container">
-                        <iframe src="${item.url}" 
-                                title="${item.title}" 
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                allowfullscreen
-                                loading="lazy">
-                        </iframe>
-                    </div>
-                    <div class="content-info">
-                        <h3 class="content-title">${item.title}</h3>
-                        <div class="content-meta">
-                            <span class="content-category">${getCategoryLabel(item.category)}</span>
-                            ${item.server_name ? `<span class="content-server">${item.server_name}</span>` : ''}
-                        </div>
-                    </div>
+                    <img src="${item.image || 'https://via.placeholder.com/250x350?text=Pas+d\'image'}" 
+                         alt="${item.title}" class="content-image" 
+                         onerror="this.src='https://via.placeholder.com/250x350?text=Image+Indisponible'">
+                    <div class="content-title">${item.title}</div>
+                    <div class="content-category">${getCategoryLabel(item.category)}</div>
+                    ${item.server_name ? `<div class="content-server">${item.server_name}</div>` : ''}
+                    <button class="watch-btn" onclick="watchContent('${item.url}', '${item.title.replace(/'/g, "\\'")}')">
+                        ▶ Regarder
+                    </button>
                 `;
                 grid.appendChild(card);
             });
@@ -558,7 +502,8 @@
             const labels = {
                 'movie': '🎬 Film',
                 'series': '📺 Série',
-                'anime': '🎌 Animé'
+                'anime': '🎌 Animé',
+                'documentary': '📚 Documentaire'
             };
             return labels[category] || category;
         }
@@ -579,6 +524,16 @@
             }
 
             displayContent(filtered);
+        }
+
+        function watchContent(url, title) {
+            if (url.startsWith('#demo')) {
+                alert(`🎬 Démo: ${title}\n\nCeci est un contenu de démonstration.\nL'API est en cours de chargement...`);
+                return;
+            }
+
+            console.log(`🎬 Ouverture de: ${title} - ${url}`);
+            window.open(url, '_blank');
         }
 
         // Recherche en temps réel
@@ -604,17 +559,22 @@
 
         // Initialisation
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Initialisation de StreamVision');
-            console.log(`🔑 Clé API: ${API_KEY}`);
-            console.log(`🌐 Endpoint: ${API_ENDPOINT}`);
+            console.log('🚀 Initialisation de Streameo...');
+            console.log('🔑 Clé API intégrée:', apiKey);
+            
+            // Mise à jour immédiate du statut API
+            updateApiStatus(true);
             
             loadContent();
+            loadStats();
 
             // Actualisation périodique
             setInterval(() => {
-                console.log('🔄 Actualisation automatique du contenu...');
-                loadContent();
-            }, 300000); // Toutes les 5 minutes
+                if (contentData.length < 10) {
+                    console.log('🔄 Rechargement automatique...');
+                    loadContent();
+                }
+            }, 30000); // Toutes les 30 secondes
         });
     </script>
 </body>
