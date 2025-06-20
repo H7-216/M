@@ -393,8 +393,7 @@
         <p id="errorMessage">Impossible de charger le contenu. Veuillez réessayer.</p>
     </div>
 
-    <div class="content-grid" id="contentGrid">
-    </div>
+    <div class="content-grid" id="contentGrid"></div>
 
     <script>
         const DEFAULT_API_CONFIG = {
@@ -416,17 +415,11 @@
             API_KEY = newConfig.API_KEY;
             API_ENDPOINT = `${API_BASE_URL}/api/key/${API_KEY}`;
             localStorage.setItem('streamvision_api_config', JSON.stringify(newConfig));
-            console.log('🔑 Configuration API mise à jour :', newConfig);
         }
 
         async function checkApiConnectivity() {
             try {
-                const response = await fetch(API_ENDPOINT, {
-                    headers: {
-                        'Accept': 'application/json',
-                        'Authorization': `Bearer ${API_KEY}`
-                    }
-                });
+                const response = await fetch(API_ENDPOINT);
                 return response.ok;
             } catch (error) {
                 return false;
@@ -439,12 +432,8 @@
 
         function showError(show, message = '') {
             const errorEl = document.getElementById('errorIndicator');
-            if (show) {
-                errorEl.style.display = 'block';
-                if (message) document.getElementById('errorMessage').textContent = message;
-            } else {
-                errorEl.style.display = 'none';
-            }
+            errorEl.style.display = show ? 'block' : 'none';
+            if (message) document.getElementById('errorMessage').textContent = message;
         }
 
         function updateApiStatus(connected, message = '') {
@@ -471,50 +460,20 @@
             updateApiStatus(false, 'Connexion à l\'API...');
 
             try {
-                console.log(`🌐 Tentative de connexion à: ${API_ENDPOINT}`);
+                const response = await fetch(API_ENDPOINT);
                 
-                const isApiConnected = await checkApiConnectivity();
-                
-                if (!isApiConnected) {
-                    const lastWorkingConfig = JSON.parse(localStorage.getItem('streamvision_last_working_config'));
-                    if (lastWorkingConfig) {
-                        updateApiConfig(lastWorkingConfig);
-                        console.log('🔄 Retour à la dernière configuration fonctionnelle');
-                    }
-                    
-                    throw new Error('Impossible de se connecter à l\'API');
-                }
-
-                const response = await fetch(API_ENDPOINT, {
-                    headers: {
-                        'Accept': 'application/json',
-                        'Authorization': `Bearer ${API_KEY}`
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Erreur ${response.status}: ${response.statusText}`);
-                }
+                if (!response.ok) throw new Error(`Erreur ${response.status}`);
 
                 const data = await response.json();
                 contentData = data.content || [];
                 
-                console.log(`✅ ${contentData.length} contenus chargés depuis l'API`);
                 updateApiStatus(true, `Connecté - ${contentData.length} contenus`);
-                
-                localStorage.setItem('streamvision_last_working_config', JSON.stringify({
-                    API_BASE_URL: API_BASE_URL,
-                    API_KEY: API_KEY
-                }));
-                
                 displayContent(contentData);
                 updateStatsFromData();
 
             } catch (error) {
-                console.error('❌ Erreur lors du chargement:', error);
                 updateApiStatus(false, 'Erreur de connexion');
-                showError(true, error.message);
-                
+                showError(true, 'Serveur indisponible. Mode démo activé.');
                 contentData = getDemoContent();
                 displayContent(contentData);
                 updateStatsFromData();
@@ -527,19 +486,24 @@
             return [
                 {
                     id: 1,
-                    title: "Exemple de Film",
-                    category: "movie",
-                    image: "https://via.placeholder.com/800x450?text=Exemple+Film",
-                    url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-                    server_name: "Demo"
+                    title: "Demon Slayer",
+                    category: "anime",
+                    url: "https://www.youtube.com/embed/VQGCKyvzIM4",
+                    server_name: "Serveur 1"
                 },
                 {
                     id: 2,
-                    title: "Exemple de Série",
+                    title: "Stranger Things",
                     category: "series",
-                    image: "https://via.placeholder.com/800x450?text=Exemple+Série",
-                    url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-                    server_name: "Demo"
+                    url: "https://www.youtube.com/embed/yTX0HxTq9wo",
+                    server_name: "Serveur 2"
+                },
+                {
+                    id: 3,
+                    title: "Avengers: Endgame",
+                    category: "movie",
+                    url: "https://www.youtube.com/embed/TcMBFSGVi1c",
+                    server_name: "Serveur 3"
                 }
             ];
         }
@@ -560,13 +524,12 @@
 
         function displayContent(content) {
             const grid = document.getElementById('contentGrid');
+            grid.innerHTML = '';
 
             if (!content || content.length === 0) {
                 grid.innerHTML = '<div class="no-content">😔 Aucun contenu disponible</div>';
                 return;
             }
-
-            grid.innerHTML = '';
 
             content.forEach((item, index) => {
                 const card = document.createElement('div');
@@ -577,7 +540,6 @@
                     <div class="video-container">
                         <iframe src="${item.url}" 
                                 title="${item.title}" 
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                                 allowfullscreen
                                 loading="lazy">
                         </iframe>
@@ -640,26 +602,8 @@
         });
 
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Initialisation de StreamVision');
-            console.log('🔑 Configuration API:', { API_BASE_URL, API_KEY });
-            
-            const urlParams = new URLSearchParams(window.location.search);
-            const newApiUrl = urlParams.get('api_url');
-            const newApiKey = urlParams.get('api_key');
-            
-            if (newApiUrl && newApiKey) {
-                updateApiConfig({
-                    API_BASE_URL: newApiUrl,
-                    API_KEY: newApiKey
-                });
-            }
-            
             loadContent();
-
-            setInterval(() => {
-                console.log('🔄 Actualisation automatique du contenu...');
-                loadContent();
-            }, 300000);
+            setInterval(loadContent, 300000);
         });
     </script>
 </body>
