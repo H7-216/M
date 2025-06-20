@@ -6,7 +6,6 @@
     <title>🎬 StreamVision - Plateforme de Streaming Premium</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
     <style>
-        /* [Vos styles CSS existants - inchangés] */
         :root {
             --primary: #6a11cb;
             --secondary: #2575fc;
@@ -35,12 +34,308 @@
             line-height: 1.6;
         }
 
-        /* [Tous vos autres styles restent identiques] */
+        .header {
+            background: rgba(15, 12, 41, 0.85);
+            padding: 2rem 1rem;
+            text-align: center;
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--card-border);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .header h1 {
+            font-size: 3.2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, var(--accent), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .api-status {
+            background: rgba(76, 175, 80, 0.15);
+            color: var(--success);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            font-weight: 500;
+        }
+
+        .search-container {
+            margin: 2.5rem auto;
+            max-width: 800px;
+            padding: 0 1.5rem;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 1.1rem 1.8rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-box:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.2);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 242, 254, 0.2);
+        }
+
+        .search-box::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .categories {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem auto;
+            flex-wrap: wrap;
+            padding: 0 1.5rem;
+            max-width: 1000px;
+        }
+
+        .category-btn {
+            padding: 0.8rem 1.8rem;
+            border: none;
+            border-radius: 50px;
+            background: var(--card-bg);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            font-weight: 500;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .category-btn:hover, .category-btn.active {
+            background: rgba(0, 242, 254, 0.2);
+            transform: translateY(-2px);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+
+        .content-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .content-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border-color: var(--accent);
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            background: #000;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .content-info {
+            padding: 1.5rem;
+        }
+
+        .content-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .content-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .content-category {
+            background: rgba(106, 17, 203, 0.25);
+            color: var(--accent);
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: 1px solid rgba(0, 242, 254, 0.3);
+        }
+
+        .content-server {
+            background: rgba(37, 117, 252, 0.2);
+            color: var(--secondary);
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem auto;
+            padding: 0 2rem;
+            max-width: 1000px;
+        }
+
+        .stat-item {
+            padding: 1.5rem;
+            background: var(--card-bg);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--accent);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(244, 67, 54, 0.1);
+            border-radius: 12px;
+            margin: 2rem auto;
+            border: 1px solid rgba(244, 67, 54, 0.3);
+            max-width: 800px;
+        }
+
+        .error-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--danger);
+        }
+
+        .no-content {
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.2rem;
+            opacity: 0.8;
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+                gap: 1.5rem;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .content-card {
+            animation: fadeIn 0.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        .content-card:nth-child(1) { animation-delay: 0.1s; }
+        .content-card:nth-child(2) { animation-delay: 0.2s; }
+        .content-card:nth-child(3) { animation-delay: 0.3s; }
+        .content-card:nth-child(4) { animation-delay: 0.4s; }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- [Votre HTML existant - inchangé] -->
     <header class="header">
         <h1>🎬 StreamVision</h1>
         <p>Votre plateforme de streaming haute qualité</p>
@@ -104,51 +399,15 @@
     </div>
 
     <script>
-        // Configuration initiale avec fallback
-        const DEFAULT_API_CONFIG = {
-            API_BASE_URL: 'https://98330cb9-d0c6-450d-a9ed-6f8c130b81f8-00-17uh62fvqj0wi.janeway.replit.dev',
-            API_KEY: '55f7a2cc6ed112b9ed793081e5bbcd2e'
-        };
-
-        // Récupérer la config depuis localStorage ou utiliser les valeurs par défaut
-        let apiConfig = JSON.parse(localStorage.getItem('streamvision_api_config')) || DEFAULT_API_CONFIG;
-        
-        // Variables globales
-        let API_BASE_URL = apiConfig.API_BASE_URL;
-        let API_KEY = apiConfig.API_KEY;
-        let API_ENDPOINT = `${API_BASE_URL}/api/key/${API_KEY}`;
+        // Configuration de l'API
+        const API_KEY = '55f7a2cc6ed112b9ed793081e5bbcd2e';
+        const API_BASE_URL = 'https://98330cb9-d0c6-450d-a9ed-6f8c130b81f8-00-17uh62fvqj0wi.janeway.replit.dev';
+        const API_ENDPOINT = `${API_BASE_URL}/api/key/${API_KEY}`;
         
         let contentData = [];
         let currentFilter = 'all';
         
-        // Fonction pour mettre à jour la configuration API
-        function updateApiConfig(newConfig) {
-            API_BASE_URL = newConfig.API_BASE_URL;
-            API_KEY = newConfig.API_KEY;
-            API_ENDPOINT = `${API_BASE_URL}/api/key/${API_KEY}`;
-            
-            // Sauvegarder dans localStorage
-            localStorage.setItem('streamvision_api_config', JSON.stringify(newConfig));
-            
-            console.log('🔑 Configuration API mise à jour :', newConfig);
-        }
-
-        // Fonction pour vérifier la connectivité API
-        async function checkApiConnectivity() {
-            try {
-                const response = await fetch(API_ENDPOINT, {
-                    headers: {
-                        'Accept': 'application/json',
-                        'Authorization': `Bearer ${API_KEY}`
-                    }
-                });
-                return response.ok;
-            } catch (error) {
-                return false;
-            }
-        }
-
-        // Fonctions utilitaires (inchangées)
+        // Fonctions utilitaires
         function showLoading(show) {
             document.getElementById('loadingIndicator').style.display = show ? 'flex' : 'none';
         }
@@ -190,20 +449,6 @@
             try {
                 console.log(`🌐 Tentative de connexion à: ${API_ENDPOINT}`);
                 
-                // Vérifier d'abord la connectivité
-                const isApiConnected = await checkApiConnectivity();
-                
-                if (!isApiConnected) {
-                    // Essayer de récupérer la dernière config valide
-                    const lastWorkingConfig = JSON.parse(localStorage.getItem('streamvision_last_working_config'));
-                    if (lastWorkingConfig) {
-                        updateApiConfig(lastWorkingConfig);
-                        console.log('🔄 Retour à la dernière configuration fonctionnelle');
-                    }
-                    
-                    throw new Error('Impossible de se connecter à l\'API');
-                }
-
                 const response = await fetch(API_ENDPOINT, {
                     headers: {
                         'Accept': 'application/json',
@@ -220,13 +465,6 @@
                 
                 console.log(`✅ ${contentData.length} contenus chargés depuis l'API`);
                 updateApiStatus(true, `Connecté - ${contentData.length} contenus`);
-                
-                // Sauvegarder cette config comme fonctionnelle
-                localStorage.setItem('streamvision_last_working_config', JSON.stringify({
-                    API_BASE_URL: API_BASE_URL,
-                    API_KEY: API_KEY
-                }));
-                
                 displayContent(contentData);
                 updateStatsFromData();
 
@@ -244,36 +482,7 @@
             }
         }
 
-        // [Les autres fonctions restent identiques : getDemoContent, updateStatsFromData, 
-        // displayContent, getCategoryLabel, filterContent, etc.]
-
-        // Initialisation
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Initialisation de StreamVision');
-            console.log('🔑 Configuration API:', { API_BASE_URL, API_KEY });
-            
-            // Vérifier si nous avons une nouvelle config dans l'URL (ex: ?api_url=...&api_key=...)
-            const urlParams = new URLSearchParams(window.location.search);
-            const newApiUrl = urlParams.get('api_url');
-            const newApiKey = urlParams.get('api_key');
-            
-            if (newApiUrl && newApiKey) {
-                updateApiConfig({
-                    API_BASE_URL: newApiUrl,
-                    API_KEY: newApiKey
-                });
-            }
-            
-            loadContent();
-
-            // Actualisation périodique
-            setInterval(() => {
-                console.log('🔄 Actualisation automatique du contenu...');
-                loadContent();
-            }, 300000); // Toutes les 5 minutes
-        });
-
-        /* [Toutes vos autres fonctions existantes restent inchangées] */
+        // Données de démonstration
         function getDemoContent() {
             return [
                 {
@@ -391,6 +600,21 @@
 
                 displayContent(filtered);
             }, 300);
+        });
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Initialisation de StreamVision');
+            console.log(`🔑 Clé API: ${API_KEY}`);
+            console.log(`🌐 Endpoint: ${API_ENDPOINT}`);
+            
+            loadContent();
+
+            // Actualisation périodique
+            setInterval(() => {
+                console.log('🔄 Actualisation automatique du contenu...');
+                loadContent();
+            }, 300000); // Toutes les 5 minutes
         });
     </script>
 </body>
