@@ -31814,7 +31814,6 @@ const streamingData = [
       "url": "https://supervideo.cc/e/vqi7xz4i0bw9",
       "year": 2024
     }
-        
 ];
 
 // Exporter les données pour utilisation dans index.html
