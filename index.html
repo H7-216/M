@@ -564,7 +564,7 @@
 
     <div id="errorIndicator" class="error" style="display: none;">
         <h2><i class="fas fa-exclamation-triangle"></i> Erreur de chargement</h2>
-        <p>Nous n'avons pas pu charger le fichier de données.</p>
+        <p id="errorText">Nous n'avons pas pu charger le fichier de données.</p>
         <button class="retry-btn" onclick="loadContent()">
             <i class="fas fa-sync-alt"></i> Réessayer
         </button>
@@ -591,6 +591,7 @@
             apiStatus: document.getElementById('apiStatus'),
             loadingIndicator: document.getElementById('loadingIndicator'),
             errorIndicator: document.getElementById('errorIndicator'),
+            errorText: document.getElementById('errorText'),
             contentGrid: document.getElementById('contentGrid'),
             stats: document.getElementById('stats'),
             playerModal: document.getElementById('playerModal'),
@@ -607,6 +608,8 @@
         let contentData = [];
         let currentFilter = 'all';
         let currentTheme = 'dark';
+        const CHUNK_SIZE = 500;
+        let loadedChunks = 0;
 
         function showLoading(show) {
             dom.loadingIndicator.style.display = show ? 'flex' : 'none';
@@ -619,16 +622,25 @@
         async function loadContent() {
             showLoading(true);
             showError(false);
-
+            
             try {
-                const response = await fetch('streamingData.json');
-                if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-                contentData = await response.json();
-                console.log(`📊 ${contentData.length} contenus chargés`);
-                displayContent(contentData);
-                updateStatsFromData();
+                const response = await fetch(`streamingData.php?chunk=${loadedChunks}`);
+                const { data, total, hasMore } = await response.json();
+                
+                if (loadedChunks === 0) contentData = [];
+                contentData = [...contentData, ...data];
+                loadedChunks++;
+                
+                if (hasMore) {
+                    await loadContent();
+                } else {
+                    displayContent(contentData);
+                    updateStatsFromData();
+                    loadedChunks = 0;
+                }
             } catch (error) {
                 console.error('Erreur:', error);
+                dom.errorText.textContent = `Erreur: ${error.message}`;
                 showError(true);
                 contentData = generateDemoContent();
                 displayContent(contentData);
