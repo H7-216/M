@@ -1,4 +1,4 @@
-[
+const streamingData = [
     {
       "category": "movie",
       "description": "",
@@ -31813,5 +31813,6 @@
       "url": "https://supervideo.cc/e/vqi7xz4i0bw9",
       "year": 2024
     }
-    }
-]
+];
+
+window.streamingData = streamingData;
