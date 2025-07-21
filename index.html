@@ -1020,15 +1020,34 @@
             }
             
             // Charger le script des données
+            const dataFiles = ['data1.js', 'data2.js', 'data3.js', 'data4.js'];
+            let loadedChunks = 0;
+           let combinedData = [];
+
+     function loadAllData() {
+        dataFiles.forEach(file => {
             const script = document.createElement('script');
-            script.src = 'streamingData.js';
-            script.onload = loadContent;
-            script.onerror = function() {
-                console.error('Erreur de chargement de streamingData.js');
-                loadContent(); // Tentative avec données de démo
+            script.src = file;
+            script.onload = () => {
+                loadedChunks++;
+                combinedData = combinedData.concat(window[file.replace('.js', '')]);
+
+                if (loadedChunks === dataFiles.length) {
+                    window.streamingData = combinedData;
+                    loadContent(); // Appelle ta fonction de chargement de contenu
+                }
+            };
+            script.onerror = () => {
+                console.error(`❌ Erreur de chargement du fichier ${file}`);
+                showError(true);
             };
             document.head.appendChild(script);
         });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadAllData();
+    });
 
         // Exposer les fonctions globales
         window.watchContent = watchContent;
