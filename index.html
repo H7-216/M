@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StreamFlix - API Autonome GitHub</title>
+    <title>StreamFlix - Plateforme de Streaming</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -93,26 +93,22 @@
             line-height: 1.6;
         }
 
-        .progress-bar {
-            width: 100%;
-            height: 4px;
-            background: #333;
-            border-radius: 2px;
-            overflow: hidden;
-            margin: 1rem 0;
+        .init-api-btn {
+            background: linear-gradient(135deg, #e50914, #f40612);
+            color: #fff;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s;
         }
 
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #e50914, #f40612);
-            width: 0%;
-            transition: width 0.3s ease;
-            animation: progress 3s ease-in-out;
-        }
-
-        @keyframes progress {
-            0% { width: 0%; }
-            100% { width: 100%; }
+        .init-api-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(229, 9, 20, 0.4);
         }
 
         /* Main App */
@@ -157,7 +153,6 @@
             flex: 1;
             max-width: 400px;
             min-width: 200px;
-            position: relative;
         }
 
         .search-input {
@@ -175,7 +170,6 @@
             outline: none;
             border-color: #e50914;
             box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.2);
-            background: rgba(64, 64, 64, 0.9);
         }
 
         .api-info {
@@ -203,23 +197,6 @@
             50% { opacity: 0.8; transform: scale(1.02); }
         }
 
-        .info-btn {
-            background: rgba(229, 9, 20, 0.2);
-            color: #e50914;
-            padding: 6px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 1px solid rgba(229, 9, 20, 0.3);
-            font-size: 11px;
-            font-weight: 500;
-        }
-
-        .info-btn:hover {
-            background: rgba(229, 9, 20, 0.4);
-            transform: translateY(-1px);
-        }
-
         .content-area {
             margin-top: 90px;
             padding: 40px 0;
@@ -242,7 +219,6 @@
             padding: 15px;
             background: rgba(0, 0, 0, 0.3);
             border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .stat-number {
@@ -255,10 +231,6 @@
         .stat-label {
             color: #b3b3b3;
             font-size: 14px;
-        }
-
-        .filter-section {
-            margin-bottom: 30px;
         }
 
         .filter-tabs {
@@ -284,14 +256,11 @@
             background: linear-gradient(135deg, #e50914, #f40612);
             color: #fff;
             border-color: #e50914;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(229, 9, 20, 0.3);
         }
 
         .filter-tab:hover:not(.active) {
             background: rgba(229, 9, 20, 0.2);
             border-color: rgba(229, 9, 20, 0.5);
-            transform: translateY(-1px);
         }
 
         .content-grid {
@@ -302,14 +271,8 @@
         }
 
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .content-item {
@@ -319,13 +282,11 @@
             cursor: pointer;
             transition: all 0.4s ease;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
         }
 
         .content-item:hover {
             transform: translateY(-10px) scale(1.03);
             box-shadow: 0 20px 50px rgba(229, 9, 20, 0.4);
-            border-color: rgba(229, 9, 20, 0.6);
         }
 
         .content-poster {
@@ -352,20 +313,8 @@
             transform: scale(1.1);
         }
 
-        .content-poster::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, transparent 70%);
-        }
-
         .content-info {
             padding: 18px;
-            position: relative;
-            z-index: 2;
         }
 
         .content-title {
@@ -396,7 +345,6 @@
             border-radius: 15px;
             font-size: 10px;
             font-weight: 600;
-            border: 1px solid rgba(229, 9, 20, 0.3);
         }
 
         .content-quality {
@@ -406,16 +354,8 @@
             border-radius: 12px;
             font-size: 10px;
             font-weight: 600;
-            border: 1px solid rgba(81, 207, 102, 0.3);
         }
 
-        .content-server {
-            font-size: 11px;
-            color: #888;
-            margin-top: 5px;
-        }
-
-        /* Modal */
         .modal {
             position: fixed;
             inset: 0;
@@ -444,7 +384,6 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             transform: scale(0.9);
             transition: transform 0.4s ease;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
         }
 
         .modal.show .modal-content {
@@ -464,7 +403,6 @@
             flex: 1;
             margin-right: 1rem;
             color: #fff;
-            line-height: 1.3;
         }
 
         .close-btn {
@@ -484,21 +422,6 @@
 
         .close-btn:hover {
             background: rgba(229, 9, 20, 0.3);
-            transform: rotate(90deg);
-        }
-
-        .modal-info {
-            margin-bottom: 25px;
-            line-height: 1.8;
-            color: #b3b3b3;
-        }
-
-        .modal-info p {
-            margin-bottom: 10px;
-        }
-
-        .modal-info strong {
-            color: #fff;
         }
 
         .play-btn {
@@ -512,17 +435,11 @@
             font-size: 16px;
             transition: all 0.3s;
             width: 100%;
-            position: relative;
-            overflow: hidden;
         }
 
         .play-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 25px rgba(229, 9, 20, 0.5);
-        }
-
-        .play-btn:active {
-            transform: translateY(0);
         }
 
         .video-container {
@@ -533,7 +450,6 @@
             border-radius: 12px;
             overflow: hidden;
             background: #000;
-            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .video-container iframe {
@@ -562,81 +478,14 @@
             font-size: 1.8rem;
         }
 
-        .no-results p {
-            margin-bottom: 2rem;
-            font-size: 1.1rem;
-        }
-
-        .reset-btn {
-            background: linear-gradient(135deg, #e50914, #f40612);
-            color: #fff;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .reset-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(229, 9, 20, 0.4);
-        }
-
         /* Responsive */
         @media (max-width: 768px) {
-            .logo {
-                font-size: 2.5rem;
-            }
-            
-            .header-content {
-                flex-direction: column;
-                gap: 0.8rem;
-            }
-            
-            .api-info {
-                font-size: 11px;
-                justify-content: center;
-            }
-            
-            .content-grid {
-                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-                gap: 18px;
-            }
-            
-            .content-poster {
-                height: 240px;
-            }
-
-            .modal-content {
-                padding: 20px;
-                margin: 15px;
-            }
-
-            .stats-dashboard {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-                gap: 15px;
-                padding: 15px;
-            }
-
-            .stat-number {
-                font-size: 1.5rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .filter-tabs {
-                justify-content: center;
-            }
-
-            .filter-tab {
-                font-size: 12px;
-                padding: 8px 14px;
-            }
-
-            .content-info {
-                padding: 12px;
-            }
+            .logo { font-size: 2.5rem; }
+            .header-content { flex-direction: column; gap: 0.8rem; }
+            .content-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 18px; }
+            .content-poster { height: 240px; }
+            .modal-content { padding: 20px; margin: 15px; }
+            .stats-dashboard { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; padding: 15px; }
         }
     </style>
 </head>
@@ -645,27 +494,18 @@
     <div id="loadingScreen" class="loading-screen">
         <div class="loading-content">
             <h1 class="logo">StreamFlix</h1>
-            <p class="subtitle">🚀 API Autonome GitHub - Initialisation...</p>
+            <p class="subtitle" id="loadingSubtitle">🚀 Chargement de l'API persistante...</p>
             
-            <div class="loader"></div>
-            <p>Chargement de votre bibliothèque complète...</p>
+            <div class="loader" id="loader"></div>
+            <p id="loadingMessage">Connexion à l'API locale...</p>
             
-            <div class="progress-bar">
-                <div class="progress-fill"></div>
+            <div class="api-status-box" id="apiStatusBox" style="display: none;">
+                <strong>🚫 API Non Initialisée</strong><br><br>
+                L'API persistante n'est pas encore configurée.<br>
+                Cliquez sur le bouton ci-dessous pour l'initialiser.<br><br>
+                <button class="init-api-btn" onclick="initializeAPI()">🔧 Initialiser l'API</button>
+                <button class="init-api-btn" onclick="goToAPI()">📁 Aller à api.html</button>
             </div>
-            
-            <div class="api-status-box">
-                <strong>🔑 API Autonome Persistante</strong><br>
-                streamflix-github-autonomous-api-2025<br><br>
-                ✅ 100% Autonome - Aucun serveur requis<br>
-                🌐 Compatible GitHub Pages<br>
-                💾 7667 éléments intégrés<br>
-                ⚡ Accès instantané et persistant
-            </div>
-            
-            <p style="color: #51cf66; font-size: 14px; margin-top: 1rem;">
-                🎬 Préparation de votre contenu en cours...
-            </p>
         </div>
     </div>
 
@@ -687,8 +527,8 @@
                     
                     <div class="api-info">
                         <span>🔑</span>
-                        <span class="api-badge">GITHUB READY</span>
-                        <button class="info-btn" onclick="showApiDetails()">ℹ️ Détails</button>
+                        <span class="api-badge" id="apiBadge">LOCALE</span>
+                        <button class="init-api-btn" style="padding: 4px 8px; font-size: 11px; margin: 0;" onclick="showApiDetails()">ℹ️</button>
                     </div>
                 </div>
             </div>
@@ -722,8 +562,6 @@
                         <button class="filter-tab" onclick="filterContent('series')">📺 Séries</button>
                         <button class="filter-tab" onclick="filterContent('hd')">🔥 HD</button>
                         <button class="filter-tab" onclick="filterContent('recent')">🆕 2024</button>
-                        <button class="filter-tab" onclick="filterContent('drama')">🎪 Drame</button>
-                        <button class="filter-tab" onclick="filterContent('action')">⚔️ Action</button>
                     </div>
                 </div>
 
@@ -747,122 +585,123 @@
         </div>
     </div>
 
-    <!-- Chargement des données via script externe -->
-    <script src="./StreamingData.js"></script>
-
     <script>
-        // 🎬 STREAMFLIX API AUTONOME GITHUB
-        // Version complètement autonome pour déploiement GitHub
+        // 🎬 STREAMFLIX CLIENT LÉGER
+        // Charge les données depuis localStorage (initialisées par api.html)
         
-        console.log('🚀 StreamFlix API Autonome GitHub v2.0 - Initialisation...');
+        console.log('🚀 StreamFlix Client - Démarrage...');
         
-        // Configuration API
-        const GITHUB_API = {
-            key: 'streamflix-github-autonomous-api-2025',
-            name: 'StreamFlix API GitHub',
-            version: '2.0.0',
-            mode: 'AUTONOMOUS',
-            totalElements: 0,
-            initialized: false
+        const LOCAL_API = {
+            storageKey: 'streamflix_data',
+            version: '2.0'
         };
 
-        // Variables globales
         let streamingData = [];
         let filteredData = [];
         let currentItem = null;
         let currentFilter = 'all';
         let searchQuery = '';
-        let loadingProgress = 0;
 
         // Initialisation
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('📱 Démarrage de l\'application autonome...');
-            initializeGitHubAPI();
+            console.log('📱 Initialisation du client...');
+            loadFromLocalStorage();
         });
 
-        async function initializeGitHubAPI() {
+        async function loadFromLocalStorage() {
             try {
-                updateLoadingProgress(20);
-                console.log('🔄 Chargement des données autonomes...');
+                updateLoadingMessage('🔍 Vérification de l\'API locale...');
                 
-                // Attendre que les données soient disponibles
-                await waitForStreamingData();
-                updateLoadingProgress(60);
+                const storedData = localStorage.getItem(LOCAL_API.storageKey);
+                
+                if (!storedData) {
+                    showAPINotInitialized();
+                    return;
+                }
+
+                const apiData = JSON.parse(storedData);
+                
+                if (apiData.version !== LOCAL_API.version) {
+                    showAPIOutdated();
+                    return;
+                }
+
+                streamingData = apiData.data;
+                updateLoadingMessage(`✅ ${streamingData.length} éléments chargés depuis l'API locale`);
                 
                 // Traitement des données
-                await processData();
-                updateLoadingProgress(80);
+                processData();
                 
                 // Initialisation de l'interface
-                setupInterface();
-                updateLoadingProgress(100);
-                
-                // Affichage de l'application
                 setTimeout(() => {
+                    setupInterface();
                     showMainApp();
                 }, 1000);
-                
-                console.log(`✅ API GitHub initialisée avec ${GITHUB_API.totalElements} éléments`);
+
+                console.log(`✅ Client initialisé avec ${streamingData.length} éléments`);
                 
             } catch (error) {
-                console.error('❌ Erreur d\'initialisation GitHub:', error);
-                showErrorState();
+                console.error('❌ Erreur de chargement:', error);
+                showAPIError();
             }
         }
 
-        async function waitForStreamingData() {
-            return new Promise((resolve) => {
-                const checkData = () => {
-                    if (window.streamingData && Array.isArray(window.streamingData)) {
-                        streamingData = window.streamingData;
-                        console.log(`📊 ${streamingData.length} éléments chargés depuis le fichier`);
-                        resolve();
-                    } else {
-                        setTimeout(checkData, 100);
-                    }
-                };
-                checkData();
-            });
-        }
-
-        async function processData() {
-            // Traitement et optimisation des données pour GitHub
+        function processData() {
+            // Nettoyer et optimiser les données
             streamingData = streamingData.map(item => {
-                // Nettoyer les URLs ShareCloudy
                 if (item.url && item.url.includes('sharecloudy.com')) {
                     item.url = item.url.replace('sharecloudy.com', 'noficloud.com');
                     item.server_name = 'NofiCloud';
                 }
-                
-                // Normalisation des données
-                if (!item.genre) item.genre = item.category === 'movie' ? 'Film' : 'Série';
-                if (!item.quality) item.quality = 'HD';
-                if (!item.year) item.year = 2024;
-                if (!item.language) item.language = 'Français';
-                
                 return item;
             });
-
-            GITHUB_API.totalElements = streamingData.length;
-            GITHUB_API.initialized = true;
-            
-            console.log(`🎬 ${streamingData.length} éléments traités et optimisés`);
         }
 
-        function updateLoadingProgress(progress) {
-            loadingProgress = progress;
-            const progressBar = document.querySelector('.progress-fill');
-            if (progressBar) {
-                progressBar.style.width = progress + '%';
-            }
+        function updateLoadingMessage(message) {
+            document.getElementById('loadingMessage').textContent = message;
+        }
+
+        function showAPINotInitialized() {
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('loadingSubtitle').textContent = '🚫 API Non Initialisée';
+            document.getElementById('apiStatusBox').style.display = 'block';
+        }
+
+        function showAPIOutdated() {
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('loadingSubtitle').textContent = '⚠️ API Obsolète';
+            document.getElementById('apiStatusBox').innerHTML = `
+                <strong>⚠️ Mise à jour requise</strong><br><br>
+                L'API locale nécessite une mise à jour.<br><br>
+                <button class="init-api-btn" onclick="goToAPI()">🔄 Mettre à jour</button>
+            `;
+            document.getElementById('apiStatusBox').style.display = 'block';
+        }
+
+        function showAPIError() {
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('loadingSubtitle').textContent = '❌ Erreur API';
+            document.getElementById('apiStatusBox').innerHTML = `
+                <strong>❌ Erreur de chargement</strong><br><br>
+                Impossible de charger les données de l'API.<br><br>
+                <button class="init-api-btn" onclick="goToAPI()">🔧 Réparer</button>
+            `;
+            document.getElementById('apiStatusBox').style.display = 'block';
+        }
+
+        function initializeAPI() {
+            // Rediriger vers api.html pour initialiser
+            window.location.href = './api.html';
+        }
+
+        function goToAPI() {
+            window.location.href = './api.html';
         }
 
         function setupInterface() {
-            // Configuration des événements
             document.getElementById('searchInput').addEventListener('input', handleSearch);
             document.addEventListener('keydown', handleKeyboardShortcuts);
             
-            // Rendu initial
             filteredData = streamingData;
             renderContent();
             updateStatistics();
@@ -872,7 +711,6 @@
             const loadingScreen = document.getElementById('loadingScreen');
             const mainApp = document.getElementById('mainApp');
             
-            // Animation de transition
             loadingScreen.classList.add('fade-out');
             
             setTimeout(() => {
@@ -883,15 +721,6 @@
                     mainApp.classList.add('show');
                 }, 100);
             }, 800);
-        }
-
-        function showErrorState() {
-            document.querySelector('.loading-content').innerHTML = `
-                <h1 class="logo">StreamFlix</h1>
-                <p style="color: #e50914; font-size: 1.2rem; margin: 2rem 0;">❌ Erreur de chargement</p>
-                <p>Impossible de charger les données streaming</p>
-                <button onclick="location.reload()" class="reset-btn" style="margin-top: 2rem;">🔄 Réessayer</button>
-            `;
         }
 
         function updateStatistics() {
@@ -908,7 +737,6 @@
                 ).length
             };
 
-            // Animation des compteurs
             animateCounter('totalCount', stats.total);
             animateCounter('movieCount', stats.movies);
             animateCounter('seriesCount', stats.series);
@@ -938,13 +766,12 @@
                     <div class="no-results">
                         <h3>Aucun résultat trouvé</h3>
                         <p>Essayez de modifier votre recherche ou vos filtres</p>
-                        <button onclick="resetFilters()" class="reset-btn">🔄 Réinitialiser</button>
+                        <button onclick="resetFilters()" class="init-api-btn">🔄 Réinitialiser</button>
                     </div>
                 `;
                 return;
             }
 
-            // Limitation pour performance (affichage par lots)
             const displayLimit = 50;
             const itemsToShow = filteredData.slice(0, displayLimit);
 
@@ -964,29 +791,23 @@
                         </div>
                         <div class="content-meta" style="margin-top: 8px;">
                             <span style="color: #888;">${escapeHtml(item.year || '2024')}</span>
-                            <span style="color: #888;">${escapeHtml(item.language || 'FR')}</span>
+                            <span style="color: #888;">📡 ${escapeHtml(item.server_name || 'Stream')}</span>
                         </div>
-                        <div class="content-server">📡 ${escapeHtml(item.server_name || 'Streaming')}</div>
                     </div>
                 </div>
             `).join('');
 
-            // Afficher un indicateur si il y a plus de contenu
             if (filteredData.length > displayLimit) {
                 grid.innerHTML += `
-                    <div class="content-item" style="opacity: 0.7; cursor: default; background: rgba(255,255,255,0.05);">
-                        <div class="content-poster" style="background: linear-gradient(135deg, #333, #444);">
+                    <div class="content-item" style="opacity: 0.7; cursor: default;">
+                        <div class="content-poster" style="background: #333;">
                             <div style="text-align: center; color: #b3b3b3;">
-                                <div style="font-size: 2rem; margin-bottom: 10px;">📚</div>
-                                <div style="font-size: 14px;">+${filteredData.length - displayLimit}</div>
-                                <div style="font-size: 12px;">autres éléments</div>
+                                <div style="font-size: 2rem;">📚</div>
+                                <div>+${filteredData.length - displayLimit} autres</div>
                             </div>
                         </div>
                         <div class="content-info">
-                            <div class="content-title">Plus de contenu disponible...</div>
-                            <div class="content-meta">
-                                <span class="content-genre">Affinez votre recherche</span>
-                            </div>
+                            <div class="content-title">Plus de contenu...</div>
                         </div>
                     </div>
                 `;
@@ -1001,7 +822,6 @@
         function filterContent(type) {
             currentFilter = type;
             
-            // Mise à jour des onglets
             document.querySelectorAll('.filter-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
@@ -1013,7 +833,6 @@
         function applyFilters() {
             let filtered = streamingData;
             
-            // Filtres de catégorie
             if (currentFilter !== 'all') {
                 switch (currentFilter) {
                     case 'movie':
@@ -1034,34 +853,19 @@
                     case 'recent':
                         filtered = filtered.filter(item => item.year >= 2024);
                         break;
-                    case 'drama':
-                        filtered = filtered.filter(item => 
-                            item.genre && item.genre.toLowerCase().includes('drama')
-                        );
-                        break;
-                    case 'action':
-                        filtered = filtered.filter(item => 
-                            item.genre && item.genre.toLowerCase().includes('action')
-                        );
-                        break;
                 }
             }
             
-            // Filtre de recherche
             if (searchQuery) {
                 filtered = filtered.filter(item => 
                     (item.title && item.title.toLowerCase().includes(searchQuery)) ||
                     (item.genre && item.genre.toLowerCase().includes(searchQuery)) ||
-                    (item.category && item.category.toLowerCase().includes(searchQuery)) ||
-                    (item.server_name && item.server_name.toLowerCase().includes(searchQuery)) ||
-                    (item.language && item.language.toLowerCase().includes(searchQuery))
+                    (item.category && item.category.toLowerCase().includes(searchQuery))
                 );
             }
             
             filteredData = filtered;
             renderContent();
-            
-            console.log(`🔍 Filtres appliqués: ${filtered.length} résultats`);
         }
 
         function resetFilters() {
@@ -1091,10 +895,6 @@
                 <p><strong>🖥️ Serveur:</strong> ${escapeHtml(currentItem.server_name || 'N/A')}</p>
                 <p><strong>📂 Catégorie:</strong> ${escapeHtml(currentItem.category || 'N/A')}</p>
                 ${currentItem.rating ? `<p><strong>⭐ Note:</strong> ${currentItem.rating}/10</p>` : ''}
-                ${currentItem.description ? `<p><strong>📝 Description:</strong> ${escapeHtml(currentItem.description)}</p>` : ''}
-                <p style="margin-top: 15px; padding: 10px; background: rgba(229, 9, 20, 0.1); border-radius: 8px; color: #e50914; font-size: 12px;">
-                    <strong>🔑 ID:</strong> ${currentItem.id}
-                </p>
             `;
             
             const modal = document.getElementById('videoModal');
@@ -1115,8 +915,8 @@
         }
 
         function playVideo() {
-            if (!currentItem || !currentItem.url || currentItem.url === '#') {
-                alert('🚫 URL de streaming non disponible pour ce contenu.\n\nCe contenu nécessite une source de streaming active.');
+            if (!currentItem || !currentItem.url) {
+                alert('🚫 URL de streaming non disponible pour ce contenu.');
                 return;
             }
             
@@ -1132,57 +932,25 @@
                     ></iframe>
                 </div>
             `;
-            
-            console.log(`▶️ Lecture: ${currentItem.title} (${currentItem.server_name})`);
         }
 
         function showApiDetails() {
-            const stats = {
-                totalElements: streamingData.length,
-                movies: streamingData.filter(item => item.category === 'movie').length,
-                series: streamingData.filter(item => 
-                    item.category === 'series' || 
-                    item.category === 'tv' || 
-                    item.category === 'documentary'
-                ).length,
-                hdContent: streamingData.filter(item => 
-                    item.quality && item.quality.toLowerCase().includes('hd')
-                ).length,
-                servers: [...new Set(streamingData.map(item => item.server_name))].length,
-                years: [...new Set(streamingData.map(item => item.year))].length
-            };
-            
-            alert(`🚀 StreamFlix API Autonome GitHub
+            const apiData = JSON.parse(localStorage.getItem(LOCAL_API.storageKey) || '{}');
+            alert(`🔑 StreamFlix API Locale
 
-🔑 ID: ${GITHUB_API.key}
-📦 Version: ${GITHUB_API.version}
-🎯 Mode: ${GITHUB_API.mode}
-📊 Status: ✅ ACTIF & AUTONOME
+📊 Status: ✅ ACTIVE
+📦 Version: ${apiData.version || 'N/A'}
+📁 Éléments: ${streamingData.length.toLocaleString()}
+💾 Source: localStorage
+🕒 Dernière MAJ: ${apiData.timestamp ? new Date(apiData.timestamp).toLocaleString() : 'N/A'}
 
-📈 Statistiques détaillées:
-• Total éléments: ${stats.totalElements.toLocaleString()}
-• Films: ${stats.movies.toLocaleString()}
-• Séries/Docs: ${stats.series.toLocaleString()} 
-• Qualité HD: ${stats.hdContent.toLocaleString()}
-• Serveurs: ${stats.servers}
-• Années: ${stats.years}
+✨ Fonctionnalités:
+• API persistante locale
+• Données sauvegardées dans le navigateur
+• Fonctionne sans connexion internet
+• Interface responsive optimisée
 
-✨ Fonctionnalités GitHub:
-• 🔧 100% Autonome (zéro serveur)
-• 📱 Compatible GitHub Pages
-• 💾 Données intégrées (${(JSON.stringify(streamingData).length / 1024 / 1024).toFixed(1)}MB)
-• 🔍 Recherche instantanée avancée
-• 🎛️ Filtres intelligents
-• 📱 Interface responsive optimisée
-• ⚡ Performance optimisée
-
-🚀 Prêt pour déploiement GitHub Pages!
-📁 Fichiers requis: streamflix-github-ready.html + StreamingData.js
-
-💡 Instructions de déploiement:
-1. Upload des 2 fichiers sur GitHub
-2. Activer GitHub Pages
-3. Votre StreamFlix est en ligne! 🎉`);
+🔄 Pour mettre à jour: Aller à api.html`);
         }
 
         function handleKeyboardShortcuts(e) {
@@ -1198,11 +966,6 @@
                         document.getElementById('searchInput').focus();
                     }
                     break;
-                case 'Enter':
-                    if (e.target.id === 'searchInput') {
-                        e.target.blur();
-                    }
-                    break;
             }
         }
 
@@ -1211,57 +974,6 @@
             div.textContent = text || '';
             return div.innerHTML;
         }
-
-        // Sauvegarde des préférences utilisateur
-        function saveUserPreferences() {
-            const prefs = {
-                lastFilter: currentFilter,
-                lastSearch: searchQuery,
-                timestamp: Date.now(),
-                version: GITHUB_API.version
-            };
-            localStorage.setItem('streamflix_github_prefs', JSON.stringify(prefs));
-        }
-
-        function loadUserPreferences() {
-            try {
-                const prefs = JSON.parse(localStorage.getItem('streamflix_github_prefs') || '{}');
-                if (prefs.version === GITHUB_API.version && Date.now() - prefs.timestamp < 86400000) {
-                    currentFilter = prefs.lastFilter || 'all';
-                    searchQuery = prefs.lastSearch || '';
-                    document.getElementById('searchInput').value = searchQuery;
-                }
-            } catch (e) {
-                console.log('📝 Nouvelles préférences créées');
-            }
-        }
-
-        // Optimisations de performance
-        let resizeTimeout;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                renderContent();
-            }, 250);
-        });
-
-        // Nettoyage et optimisation
-        window.addEventListener('beforeunload', saveUserPreferences);
-        window.addEventListener('load', loadUserPreferences);
-
-        // Monitoring de l'API
-        setInterval(() => {
-            if (GITHUB_API.initialized) {
-                console.log(`✅ API GitHub active - ${streamingData.length} éléments disponibles`);
-            }
-        }, 60000); // Check toutes les minutes
-
-        // Logs d'initialisation
-        console.log('🎬 StreamFlix API Autonome GitHub v2.0');
-        console.log('🔑 Mode: AUTONOME COMPLET');
-        console.log('🚀 Compatible GitHub Pages');
-        console.log('📊 Données: INTÉGRÉES');
-        console.log('🌐 Déploiement: READY');
     </script>
 </body>
 </html>
