@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StreamFlix - Votre API de Streaming</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>StreamFlix - Votre plateforme de streaming</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -13,1152 +13,568 @@
         }
 
         body {
-            background: #000;
-            color: #fff;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            overflow-x: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            color: #e50914;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .header .subtitle {
+            color: #888;
+            margin-top: 0.5rem;
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 2rem;
         }
 
-        /* Loading Screen */
-        .loading-screen {
-            position: fixed;
-            inset: 0;
-            background: linear-gradient(135deg, #000, #111);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 50;
-            transition: opacity 0.8s ease-out;
-        }
-
-        .loading-screen.fade-out {
-            opacity: 0;
-        }
-
-        .loading-content {
-            text-align: center;
-            max-width: 600px;
-            padding: 0 20px;
-        }
-
-        .logo {
-            font-size: 4rem;
-            font-weight: bold;
-            color: #e50914;
-            margin-bottom: 1rem;
-            text-shadow: 0 0 30px rgba(229, 9, 20, 0.6);
-            animation: glow 2s ease-in-out infinite alternate;
-        }
-
-        @keyframes glow {
-            from { text-shadow: 0 0 20px rgba(229, 9, 20, 0.6); }
-            to { text-shadow: 0 0 40px rgba(229, 9, 20, 0.8); }
-        }
-
-        .subtitle {
-            color: #b3b3b3;
+        .stats-bar {
+            background: rgba(30, 30, 30, 0.8);
+            padding: 1rem 2rem;
+            border-radius: 10px;
             margin-bottom: 2rem;
-            font-size: 1.2rem;
-        }
-
-        .loader {
-            border: 4px solid #333;
-            border-top: 4px solid #e50914;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1.5rem;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .api-status-box {
-            background: linear-gradient(135deg, rgba(229, 9, 20, 0.1), rgba(81, 207, 102, 0.1));
-            border: 1px solid rgba(81, 207, 102, 0.3);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin: 2rem 0;
-            color: #51cf66;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 4px;
-            background: #333;
-            border-radius: 2px;
-            overflow: hidden;
-            margin: 1rem 0;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #e50914, #f40612);
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-
-        /* Main App */
-        .main-app {
-            display: none;
-            opacity: 0;
-            transition: opacity 0.8s ease-in;
-        }
-
-        .main-app.show {
-            opacity: 1;
-        }
-
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(15px);
-            z-index: 40;
-            padding: 15px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .header-content {
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
             flex-wrap: wrap;
             gap: 1rem;
         }
 
-        .header-logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #e50914;
-            text-shadow: 0 0 10px rgba(229, 9, 20, 0.3);
-        }
-
-        .search-container {
-            flex: 1;
-            max-width: 400px;
-            min-width: 200px;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 10px 16px;
-            background: rgba(64, 64, 64, 0.8);
-            border: 1px solid rgba(128, 128, 128, 0.3);
-            border-radius: 8px;
-            color: #fff;
-            font-size: 14px;
-            transition: all 0.3s;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: #e50914;
-            box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.2);
-        }
-
-        .api-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 12px;
-            color: #b3b3b3;
-            flex-wrap: wrap;
-        }
-
-        .api-badge {
-            background: linear-gradient(135deg, rgba(81, 207, 102, 0.2), rgba(81, 207, 102, 0.3));
-            color: #51cf66;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 11px;
-            border: 1px solid rgba(81, 207, 102, 0.3);
-            animation: pulse-success 3s infinite;
-        }
-
-        @keyframes pulse-success {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.02); }
-        }
-
-        .content-area {
-            margin-top: 90px;
-            padding: 40px 0;
-            min-height: calc(100vh - 90px);
-        }
-
-        .stats-dashboard {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 30px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
         .stat-item {
             text-align: center;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
         }
 
         .stat-number {
-            font-size: 2rem;
+            font-size: 1.5rem;
             font-weight: bold;
             color: #e50914;
-            margin-bottom: 5px;
         }
 
         .stat-label {
-            color: #b3b3b3;
-            font-size: 14px;
+            font-size: 0.9rem;
+            color: #888;
         }
 
-        .filter-tabs {
+        .pagination {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 2rem 0;
             flex-wrap: wrap;
         }
 
-        .filter-tab {
-            background: rgba(64, 64, 64, 0.7);
-            color: #b3b3b3;
-            border: 1px solid rgba(128, 128, 128, 0.3);
-            padding: 10px 18px;
-            border-radius: 25px;
+        .page-btn {
+            background: rgba(40, 40, 40, 0.8);
+            border: 2px solid transparent;
+            color: #fff;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s;
-            font-size: 14px;
-            font-weight: 500;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            min-width: 50px;
         }
 
-        .filter-tab.active {
-            background: linear-gradient(135deg, #e50914, #f40612);
-            color: #fff;
+        .page-btn:hover {
+            background: rgba(60, 60, 60, 0.9);
             border-color: #e50914;
         }
 
-        .filter-tab:hover:not(.active) {
-            background: rgba(229, 9, 20, 0.2);
-            border-color: rgba(229, 9, 20, 0.5);
+        .page-btn.active {
+            background: #e50914;
+            border-color: #e50914;
+            font-weight: bold;
         }
 
-        .content-grid {
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .movies-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 25px;
-            animation: fadeInUp 0.8s ease-out;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
         }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .content-item {
-            background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
-            border-radius: 15px;
+        .movie-card {
+            background: rgba(30, 30, 30, 0.9);
+            border-radius: 12px;
             overflow: hidden;
-            cursor: pointer;
-            transition: all 0.4s ease;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
         }
 
-        .content-item:hover {
-            transform: translateY(-10px) scale(1.03);
-            box-shadow: 0 20px 50px rgba(229, 9, 20, 0.4);
+        .movie-card:hover {
+            transform: translateY(-5px);
+            border-color: #e50914;
+            box-shadow: 0 10px 30px rgba(229, 9, 20, 0.3);
         }
 
-        .content-poster {
+        .movie-image {
             width: 100%;
-            height: 300px;
-            background: linear-gradient(135deg, #333, #555);
+            height: 200px;
+            background: linear-gradient(45deg, #333, #555);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #888;
-            font-size: 3rem;
             position: relative;
             overflow: hidden;
         }
 
-        .content-poster img {
+        .movie-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.4s ease;
         }
 
-        .content-item:hover .content-poster img {
-            transform: scale(1.1);
+        .movie-image .placeholder {
+            font-size: 3rem;
+            color: #666;
         }
 
-        .content-info {
-            padding: 18px;
+        .movie-info {
+            padding: 1.5rem;
         }
 
-        .content-title {
-            font-weight: 600;
-            margin-bottom: 10px;
-            font-size: 15px;
-            line-height: 1.4;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            color: #fff;
-        }
-
-        .content-meta {
-            color: #b3b3b3;
-            font-size: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .content-genre {
-            background: linear-gradient(135deg, rgba(229, 9, 20, 0.2), rgba(229, 9, 20, 0.3));
-            color: #e50914;
-            padding: 4px 10px;
-            border-radius: 15px;
-            font-size: 10px;
-            font-weight: 600;
-        }
-
-        .content-quality {
-            background: linear-gradient(135deg, rgba(81, 207, 102, 0.2), rgba(81, 207, 102, 0.3));
-            color: #51cf66;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 10px;
-            font-weight: 600;
-        }
-
-        .modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.95);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 60;
-            backdrop-filter: blur(15px);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-
-        .modal.show {
-            opacity: 1;
-        }
-
-        .modal-content {
-            background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
-            border-radius: 20px;
-            padding: 30px;
-            max-width: 700px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transform: scale(0.9);
-            transition: transform 0.4s ease;
-        }
-
-        .modal.show .modal-content {
-            transform: scale(1);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 25px;
-        }
-
-        .modal-title {
-            font-size: 1.6rem;
+        .movie-title {
+            font-size: 1.1rem;
             font-weight: bold;
-            flex: 1;
-            margin-right: 1rem;
+            margin-bottom: 0.5rem;
             color: #fff;
+            line-height: 1.3;
         }
 
-        .close-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: #fff;
-            font-size: 28px;
-            cursor: pointer;
-            border-radius: 50%;
-            width: 45px;
-            height: 45px;
+        .movie-details {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-        }
-
-        .close-btn:hover {
-            background: rgba(229, 9, 20, 0.3);
-        }
-
-        .play-btn {
-            background: linear-gradient(135deg, #e50914, #f40612);
-            color: #fff;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 16px;
-            transition: all 0.3s;
-            width: 100%;
-        }
-
-        .play-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(229, 9, 20, 0.5);
-        }
-
-        .video-container {
-            margin-top: 25px;
-            position: relative;
-            padding-bottom: 56.25%;
-            height: 0;
-            border-radius: 12px;
-            overflow: hidden;
-            background: #000;
-        }
-
-        .video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .no-results {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 5rem 2rem;
-            color: #b3b3b3;
-        }
-
-        .no-results h3 {
-            color: #fff;
+            flex-wrap: wrap;
+            gap: 0.5rem;
             margin-bottom: 1rem;
-            font-size: 1.8rem;
         }
 
-        .error-state {
+        .movie-tag {
+            background: rgba(229, 9, 20, 0.2);
+            color: #e50914;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            border: 1px solid rgba(229, 9, 20, 0.3);
+        }
+
+        .movie-meta {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .movie-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .watch-btn {
+            background: #e50914;
+            color: white;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .watch-btn:hover {
+            background: #b8070f;
+            transform: scale(1.05);
+        }
+
+        .server-name {
+            background: rgba(60, 60, 60, 0.8);
+            color: #fff;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            border: 1px solid #555;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.2rem;
+            color: #888;
+        }
+
+        .error {
             text-align: center;
             padding: 3rem;
             color: #e50914;
+            font-size: 1.2rem;
         }
 
-        .error-state h3 {
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
+        .search-bar {
+            background: rgba(40, 40, 40, 0.8);
+            border: 2px solid #555;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
         }
 
-        /* Responsive */
+        .search-input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 1rem;
+            flex: 1;
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: #888;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: rgba(60, 60, 60, 0.8);
+            border: 1px solid #555;
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: #e50914;
+            border-color: #e50914;
+        }
+
         @media (max-width: 768px) {
-            .logo { font-size: 2.5rem; }
-            .header-content { flex-direction: column; gap: 0.8rem; }
-            .content-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 18px; }
-            .content-poster { height: 240px; }
-            .modal-content { padding: 20px; margin: 15px; }
-            .stats-dashboard { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; padding: 15px; }
+            .container {
+                padding: 1rem;
+            }
+            
+            .header {
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .stats-bar {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .movies-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .pagination {
+                gap: 0.25rem;
+            }
+            
+            .page-btn {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.9rem;
+                min-width: 40px;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div id="loadingScreen" class="loading-screen">
-        <div class="loading-content">
-            <h1 class="logo">StreamFlix</h1>
-            <p class="subtitle">Connexion à votre API personnalisée</p>
-            
-            <div class="loader"></div>
-            <p id="loadingMessage">Connexion à votre API...</p>
-            
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
+    <div class="header">
+        <h1><i class="fas fa-play"></i> StreamFlix</h1>
+        <div class="subtitle">Votre plateforme de streaming - Catalogue complet</div>
+    </div>
+
+    <div class="container">
+        <!-- Barre de statistiques -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-number" id="totalItems">0</div>
+                <div class="stat-label">Films & Séries</div>
             </div>
-            
-            <div class="api-status-box">
-                <strong>🔑 Votre Clé API Personnalisée</strong><br>
-                ************************************<br><br>
-                ✅ Chargement en local réussi<br>
-                💾 Plus de 100 000 éléments streaming<br>
-                ⚡ URLs transformées automatiquement<br>
-                🌐 Fonctionne parfaitement
+            <div class="stat-item">
+                <div class="stat-number" id="currentPage">1</div>
+                <div class="stat-label">Page Actuelle</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="totalPages">8</div>
+                <div class="stat-label">Pages Total</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="urlsReplaced">2283</div>
+                <div class="stat-label">URLs Mises à Jour</div>
             </div>
         </div>
-    </div>
 
-    <!-- Main Application -->
-    <div id="mainApp" class="main-app">
-        <header class="header">
-            <div class="container">
-                <div class="header-content">
-                    <h1 class="header-logo">StreamFlix</h1>
-                    
-                    <div class="search-container">
-                        <input 
-                            type="text" 
-                            id="searchInput" 
-                            class="search-input" 
-                            placeholder="🔍 Rechercher films, séries, genres..."
-                        >
-                    </div>
-                    
-                    <div class="api-info">
-                        <span>🔑</span>
-                        <span class="api-badge">API ACTIVE</span>
-                        <button class="api-badge" style="cursor: pointer; border: none; padding: 4px 8px; font-size: 11px;" onclick="showApiDetails()">ℹ️</button>
-                    </div>
-                </div>
+        <!-- Barre de recherche et filtres -->
+        <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" class="search-input" placeholder="Rechercher un film, série, genre..." id="searchInput">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">Tout</button>
+                <button class="filter-btn" data-filter="movie">Films</button>
+                <button class="filter-btn" data-filter="series">Séries</button>
+                <button class="filter-btn" data-filter="documentary">Documentaires</button>
             </div>
-        </header>
+        </div>
 
-        <main class="content-area">
-            <div class="container">
-                <div class="stats-dashboard" id="statsDashboard">
-                    <div class="stat-item">
-                        <div class="stat-number" id="totalCount">0</div>
-                        <div class="stat-label">Éléments Total</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" id="movieCount">0</div>
-                        <div class="stat-label">Films</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" id="seriesCount">0</div>
-                        <div class="stat-label">Séries</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" id="hdCount">0</div>
-                        <div class="stat-label">Qualité HD</div>
-                    </div>
-                </div>
+        <!-- Pagination -->
+        <div class="pagination">
+            <button class="page-btn" id="prevBtn" onclick="changePage(currentPage - 1)">
+                <i class="fas fa-chevron-left"></i> Précédent
+            </button>
+            
+            <div id="pageNumbers"></div>
+            
+            <button class="page-btn" id="nextBtn" onclick="changePage(currentPage + 1)">
+                Suivant <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
 
-                <div class="filter-section">
-                    <div class="filter-tabs" id="filterTabs">
-                        <button class="filter-tab active" onclick="filterContent('all')">🎬 Tous</button>
-                        <button class="filter-tab" onclick="filterContent('movie')">🎭 Films</button>
-                        <button class="filter-tab" onclick="filterContent('series')">📺 Séries</button>
-                        <button class="filter-tab" onclick="filterContent('hd')">🔥 HD</button>
-                        <button class="filter-tab" onclick="filterContent('recent')">🆕 2024</button>
-                    </div>
-                </div>
-
-                <div class="content-grid" id="contentGrid">
-                    <!-- Content will be loaded here -->
-                </div>
+        <!-- Grille des films -->
+        <div id="moviesContainer">
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin"></i> Chargement du contenu...
             </div>
-        </main>
-    </div>
+        </div>
 
-    <!-- Video Modal -->
-    <div id="videoModal" class="modal hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title" id="modalTitle"></h2>
-                <button class="close-btn" onclick="closeModal()">&times;</button>
-            </div>
-            <div class="modal-info" id="modalInfo"></div>
-            <button class="play-btn" onclick="playVideo()">▶ Regarder maintenant</button>
-            <div id="videoContainer"></div>
+        <!-- Pagination du bas -->
+        <div class="pagination">
+            <button class="page-btn" onclick="changePage(currentPage - 1)">
+                <i class="fas fa-chevron-left"></i> Précédent
+            </button>
+            
+            <div id="pageNumbers2"></div>
+            
+            <button class="page-btn" onclick="changePage(currentPage + 1)">
+                Suivant <i class="fas fa-chevron-right"></i>
+            </button>
         </div>
     </div>
 
     <script>
-        // 🔑 STREAMFLIX AVEC VOTRE CLE API PERSISTANTE
-        console.log('🚀 StreamFlix - Initialisation avec votre clé API...');
-        
-        // Configuration de votre API personnalisée
-        const USER_API_KEY = 'sk_live_4f7b2c8e9d3a1f6b8c9e2d7a5b6c3e1f';
-        const API_BASE_URL = window.location.origin; // Utilise votre domaine actuel
-        
-        // Données intégrées depuis votre clé API (URLs transformées)
-        function getStreamingDataFromApiKey() {
-            return [
-                {
-                    "id": 1,
-                    "title": "Sous écrous",
-                    "category": "movie",
-                    "description": "Film d'action français captivant",
-                    "genre": "Action",
-                    "image": null,
-                    "language": "Français",
-                    "quality": "HD",
-                    "rating": 7.5,
-                    "serverName": "NofiCloud",
-                    "url": "https://noficloud.com/iframe/tHt61YaPJR",
-                    "year": 2024
-                },
-                {
-                    "id": 2,
-                    "title": "Novocaine",
-                    "category": "movie",
-                    "description": "Thriller psychologique intense",
-                    "genre": "Thriller",
-                    "image": null,
-                    "language": "Français",
-                    "quality": "HD",
-                    "rating": 7.5,
-                    "serverName": "Lecteur6",
-                    "url": "https://lecteur6.com/video/beb22abb9ec56c0cf7ec7d811dd91a56",
-                    "year": 2024
-                },
-                {
-                    "id": 3,
-                    "title": "Les Évadés (1994)",
-                    "category": "movie",
-                    "description": "Un chef-d'œuvre du cinéma dramatique",
-                    "genre": "Drame",
-                    "image": "https://media.themoviedb.org/t/p/original/t30GjttOdb5At1sYy8b3TOwFgWV.jpg",
-                    "language": "Français",
-                    "quality": "HD",
-                    "rating": 9.3,
-                    "serverName": "NofiCloud",
-                    "url": "https://noficloud.com/iframe/KjIA0SVIli",
-                    "year": 1994
-                },
-                {
-                    "id": 4,
-                    "title": "Le Parrain (1972)",
-                    "category": "movie",
-                    "description": "Le film culte de Francis Ford Coppola",
-                    "genre": "Drame",
-                    "image": "https://media.themoviedb.org/t/p/original/hj3vwgFZP0b9HxclXFW5wJL0UtD.jpg",
-                    "language": "Français",
-                    "quality": "HD",
-                    "rating": 9.2,
-                    "serverName": "NofiCloud",
-                    "url": "https://noficloud.com/iframe/illpTjRGtV",
-                    "year": 1972
-                },
-                {
-                    "id": 5,
-                    "title": "Selena Gomez: My Mind & Me",
-                    "category": "movie",
-                    "description": "Documentaire intime sur la star",
-                    "genre": "Documentaire",
-                    "image": "https://french-stream.gratis/uploads/thumb/300x450-0-80/2024-01/1704380229-839267880.jpg",
-                    "language": "Français",
-                    "quality": "HD",
-                    "rating": 7.8,
-                    "serverName": "DropLoad",
-                    "url": "https://dropload.io/e/o8hxqc70xiy1",
-                    "year": 2022
-                },
-                {
-                    "id": 6,
-                    "title": "Le parrain 2",
-                    "category": "movie",
-                    "description": "La suite légendaire du Parrain",
-                    "genre": "Drame",
-                    "image": "https://image.tmdb.org/t/p/w342/chMfGLOf5EMz0o10Duukmb9oj0P.jpg",
-                    "language": "Français",
-                    "quality": "HD",
-                    "rating": 9.0,
-                    "serverName": "Lecteur6",
-                    "url": "https://lecteur6.com/video/08425b881bcde94a383cd258cea331be",
-                    "year": 1974
-                },
-                {
-                    "id": 7,
-                    "title": "La Liste de Schindler",
-                    "category": "movie",
-                    "description": "Chef-d'œuvre historique de Spielberg",
-                    "genre": "Drame",
-                    "image": "https://image.tmdb.org/t/p/w342/9XT4MY53XburznftTsyg9JYc47N.jpg",
-                    "language": "Français",
-                    "quality": "HD",
-                    "rating": 9.0,
-                    "serverName": "Lecteur6",
-                    "url": "https://lecteur6.com/video/4b2944dfea61be814911110c21ddd974",
-                    "year": 1993
-                },
-                {
-                    "id": 8,
-                    "title": "12 Hommes en colère",
-                    "category": "movie",
-                    "description": "Thriller judiciaire captivant",
-                    "genre": "Drame",
-                    "image": "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/fFXrCl7nBFFaQU3IgTlinvk6vTi.jpg",
-                    "language": "Français",
-                    "quality": "HD",
-                    "rating": 9.0,
-                    "serverName": "Lecteur6",
-                    "url": "https://lecteur6.com/video/9b8b50fb590c590ffbf1295ce92258dc",
-                    "year": 1957
-                },
-                {
-                    "id": 9,
-                    "title": "Le Voyage de Chihiro (2001)",
-                    "category": "movie",
-                    "description": "Chef-d'œuvre d'animation de Miyazaki",
-                    "genre": "Animation",
-                    "image": "https://www.themoviedb.org/t/p/original/12TAqK0AUgdcYE9ZYZ9r7ASbH5Q.jpg",
-                    "language": "Français",
-                    "quality": "HD",
-                    "rating": 9.3,
-                    "serverName": "NofiCloud",
-                    "url": "https://noficloud.com/iframe/KptnxWYWbq",
-                    "year": 2001
-                },
-                {
-                    "id": 10,
-                    "title": "The Dark Knight : Le Chevalier noir (2008)",
-                    "category": "movie",
-                    "description": "Batman affronte le Joker",
-                    "genre": "Action",
-                    "image": "https://www.themoviedb.org/t/p/original/pyNXnq8QBWoK3b37RS6C3axwUOy.jpg",
-                    "language": "Français",
-                    "quality": "HD",
-                    "rating": 9.0,
-                    "serverName": "NofiCloud",
-                    "url": "https://noficloud.com/iframe/103D76H7D2",
-                    "year": 2008
-                },
-                {
-                    "id": 11,
-                    "title": "Breaking Bad",
-                    "category": "series",
-                    "description": "Série culte sur Walter White",
-                    "genre": "Drame",
-                    "image": "https://www.themoviedb.org/t/p/original/ggFHVNu6YYI5L9pCfOacjizRGt.jpg",
-                    "language": "Français",
-                    "quality": "HD",
-                    "rating": 9.5,
-                    "serverName": "NofiCloud",
-                    "url": "https://noficloud.com/iframe/BreakingBad_S01E01",
-                    "year": 2008
-                },
-                {
-                    "id": 12,
-                    "title": "Stranger Things",
-                    "category": "series",
-                    "description": "Phénomènes surnaturels à Hawkins",
-                    "genre": "Sci-Fi",
-                    "image": "https://www.themoviedb.org/t/p/original/49WJfeN0moxb9IPfGn8AIqMGskD.jpg",
-                    "language": "Français",
-                    "quality": "HD",
-                    "rating": 8.7,
-                    "serverName": "Lecteur6",
-                    "url": "https://lecteur6.com/video/stranger_things_s01e01",
-                    "year": 2016
-                },
-                {
-                    "id": 13,
-                    "title": "Interstellar",
-                    "category": "movie",
-                    "description": "Épopée spatiale de Christopher Nolan",
-                    "genre": "Sci-Fi",
-                    "image": "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/1pnigkWWy8W032o9TKDneBa3eVK.jpg",
-                    "language": "Français",
-                    "quality": "HD",
-                    "rating": 8.6,
-                    "serverName": "Streaming",
-                    "url": "https://f003.backblazeb2.com/file/streameo2/Interstellar.mp4",
-                    "year": 2014
-                },
-                {
-                    "id": 14,
-                    "title": "Fight Club",
-                    "category": "movie",
-                    "description": "Film culte avec Brad Pitt",
-                    "genre": "Drame",
-                    "image": "https://www.themoviedb.org/t/p/original/iqR0M1ln7Kobjp9liUj2Q7mtQZG.jpg",
-                    "language": "Français",
-                    "quality": "HD",
-                    "rating": 8.8,
-                    "serverName": "Lecteur6",
-                    "url": "https://lecteur6.com/video/84c2d4860a0fc27bcf854c444fb8b400",
-                    "year": 1999
-                },
-                {
-                    "id": 15,
-                    "title": "Your Name",
-                    "category": "movie",
-                    "description": "Animation japonaise émouvante",
-                    "genre": "Animation",
-                    "image": "https://www.themoviedb.org/t/p/original/zyHjvVRgKOt9wgVx4ikp2kGArGF.jpg",
-                    "language": "Français",
-                    "quality": "HD",
-                    "rating": 8.2,
-                    "serverName": "NofiCloud",
-                    "url": "https://noficloud.com/iframe/PiYNXZmZ77",
-                    "year": 2016
-                }
-            ];
-        }
-        
-        let streamingData = [];
-        let filteredData = [];
-        let currentItem = null;
+        let streamingData = {};
+        let currentPage = 1;
+        let totalPages = 8;
         let currentFilter = 'all';
-        let searchQuery = '';
-        let apiStats = {};
+        let searchTerm = '';
+        let allData = [];
 
-        // Initialisation automatique
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('📱 Démarrage avec votre clé API personnalisée');
-            initializeWithApiKey();
-        });
-
-        async function initializeWithApiKey() {
+        // Charger les données de streaming
+        async function loadStreamingData() {
             try {
-                updateProgress(10);
-                updateLoadingMessage('🔑 Validation de votre clé API...');
+                // Charger les 8 parties
+                for (let i = 1; i <= 8; i++) {
+                    try {
+                        const response = await fetch(`output/streamingData_part${i}.js`);
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        const text = await response.text();
+                        
+                        // Extraire les données JSON du fichier JS
+                        const jsonMatch = text.match(/const streamingData\d+ = (\[.*\]);/s);
+                        if (jsonMatch) {
+                            const data = JSON.parse(jsonMatch[1]);
+                            streamingData[i] = data;
+                            allData = allData.concat(data);
+                        }
+                    } catch (error) {
+                        console.warn(`Impossible de charger la partie ${i}:`, error);
+                        streamingData[i] = [];
+                    }
+                }
+
+                // Mettre à jour les statistiques
+                document.getElementById('totalItems').textContent = allData.length.toLocaleString();
                 
-                // Vérifier la connexion API
-                await checkApiConnection();
-                updateProgress(30);
-                
-                updateLoadingMessage('📊 Chargement des statistiques...');
-                
-                // Charger les statistiques
-                await loadApiStats();
-                updateProgress(50);
-                
-                updateLoadingMessage('📁 Chargement de tous les contenus...');
-                
-                // Charger tous les contenus via votre API
-                await loadAllContent();
-                updateProgress(90);
-                
-                updateLoadingMessage('✅ Initialisation terminée !');
-                updateProgress(100);
-                
-                // Initialiser l'interface
-                setTimeout(() => {
-                    setupInterface();
-                    showMainApp();
-                }, 1000);
-                
-                console.log(`✅ ${streamingData.length} éléments chargés via votre API`);
+                // Afficher la première page
+                displayMovies();
+                createPagination();
                 
             } catch (error) {
-                console.error('❌ Erreur lors du chargement de l\'API:', error);
-                showErrorState(error.message);
+                console.error('Erreur lors du chargement des données:', error);
+                document.getElementById('moviesContainer').innerHTML = `
+                    <div class="error">
+                        <i class="fas fa-exclamation-triangle"></i> 
+                        Erreur lors du chargement des données de streaming.<br>
+                        Assurez-vous que les fichiers sont dans le dossier 'output/'.
+                    </div>
+                `;
             }
         }
 
-        async function checkApiConnection() {
-            // Simulation de validation de clé API réussie
-            console.log('✅ Clé API validée en local');
-            return true;
-        }
-
-        async function loadApiStats() {
-            // Statistiques chargées directement depuis vos données
-            const data = getStreamingDataFromApiKey();
-            const movies = data.filter(item => item.category === 'movie').length;
-            const series = data.filter(item => item.category === 'series').length;
+        // Afficher les films
+        function displayMovies() {
+            const container = document.getElementById('moviesContainer');
+            const pageData = streamingData[currentPage] || [];
             
-            apiStats = {
-                movies: movies,
-                series: series,
-                totalItems: data.length,
-                activeKeys: 1
-            };
-            console.log('📊 Statistiques chargées depuis votre clé API');
-        }
-
-        async function loadAllContent() {
-            // Chargement des données directement depuis votre clé API
-            streamingData = getStreamingDataFromApiKey();
-            filteredData = [...streamingData];
+            // Filtrer les données
+            let filteredData = pageData;
             
-            console.log('📁 Contenu chargé depuis votre clé API:', {
-                films: streamingData.filter(item => item.category === 'movie').length,
-                series: streamingData.filter(item => item.category === 'series').length,
-                total: streamingData.length
-            });
-        }
-
-        function updateProgress(percentage) {
-            const progressFill = document.getElementById('progressFill');
-            if (progressFill) {
-                progressFill.style.width = percentage + '%';
-            }
-        }
-
-        function updateLoadingMessage(message) {
-            const loadingMessage = document.getElementById('loadingMessage');
-            if (loadingMessage) {
-                loadingMessage.textContent = message;
-            }
-        }
-
-        function showMainApp() {
-            const loadingScreen = document.getElementById('loadingScreen');
-            const mainApp = document.getElementById('mainApp');
-            
-            loadingScreen.classList.add('fade-out');
-            
-            setTimeout(() => {
-                loadingScreen.style.display = 'none';
-                mainApp.style.display = 'block';
-                
-                setTimeout(() => {
-                    mainApp.classList.add('show');
-                }, 100);
-            }, 800);
-        }
-
-        function showErrorState(errorMessage) {
-            const loadingMessage = document.getElementById('loadingMessage');
-            const progressFill = document.getElementById('progressFill');
-            
-            loadingMessage.innerHTML = `
-                <div class="error-state">
-                    <h3>❌ Erreur de connexion</h3>
-                    <p>${errorMessage}</p>
-                    <button onclick="location.reload()" style="margin-top: 1rem; padding: 10px 20px; background: #e50914; border: none; border-radius: 5px; color: white; cursor: pointer;">
-                        🔄 Réessayer
-                    </button>
-                </div>
-            `;
-            
-            progressFill.style.background = '#e50914';
-            progressFill.style.width = '100%';
-        }
-
-        function setupInterface() {
-            // Mettre à jour les statistiques
-            updateStats();
-            
-            // Afficher le contenu initial
-            displayContent(filteredData);
-            
-            // Configurer la recherche
-            setupSearch();
-            
-            console.log('🎯 Interface initialisée');
-        }
-
-        function updateStats() {
-            const totalElement = document.getElementById('totalCount');
-            const movieElement = document.getElementById('movieCount');
-            const seriesElement = document.getElementById('seriesCount');
-            const hdElement = document.getElementById('hdCount');
-            
-            const totalItems = streamingData.length;
-            const movieCount = streamingData.filter(item => item.category === 'movie').length;
-            const seriesCount = streamingData.filter(item => item.category === 'series').length;
-            const hdCount = streamingData.filter(item => item.quality === 'HD').length;
-            
-            // Animation des chiffres
-            animateNumber(totalElement, totalItems);
-            animateNumber(movieElement, movieCount);
-            animateNumber(seriesElement, seriesCount);
-            animateNumber(hdElement, hdCount);
-        }
-
-        function animateNumber(element, targetNumber) {
-            let current = 0;
-            const increment = Math.ceil(targetNumber / 30);
-            const timer = setInterval(() => {
-                current += increment;
-                if (current >= targetNumber) {
-                    current = targetNumber;
-                    clearInterval(timer);
-                }
-                element.textContent = current.toLocaleString();
-            }, 50);
-        }
-
-        function setupSearch() {
-            const searchInput = document.getElementById('searchInput');
-            let searchTimeout;
-            
-            searchInput.addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    searchQuery = this.value.toLowerCase().trim();
-                    applyFilters();
-                }, 300);
-            });
-        }
-
-        function filterContent(filter) {
-            // Mettre à jour les onglets
-            const tabs = document.querySelectorAll('.filter-tab');
-            tabs.forEach(tab => tab.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            currentFilter = filter;
-            applyFilters();
-        }
-
-        function applyFilters() {
-            let filtered = [...streamingData];
-            
-            // Appliquer le filtre de catégorie
             if (currentFilter !== 'all') {
-                switch (currentFilter) {
-                    case 'movie':
-                        filtered = filtered.filter(item => item.category === 'movie');
-                        break;
-                    case 'series':
-                        filtered = filtered.filter(item => item.category === 'series');
-                        break;
-                    case 'hd':
-                        filtered = filtered.filter(item => item.quality === 'HD');
-                        break;
-                    case 'recent':
-                        filtered = filtered.filter(item => item.year >= 2024);
-                        break;
-                }
+                filteredData = pageData.filter(item => item.category === currentFilter);
             }
             
-            // Appliquer la recherche
-            if (searchQuery) {
-                filtered = filtered.filter(item => 
-                    item.title.toLowerCase().includes(searchQuery) ||
-                    (item.description && item.description.toLowerCase().includes(searchQuery)) ||
-                    item.genre.toLowerCase().includes(searchQuery)
+            if (searchTerm) {
+                filteredData = filteredData.filter(item => 
+                    item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    item.genre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    item.server_name.toLowerCase().includes(searchTerm.toLowerCase())
                 );
             }
-            
-            filteredData = filtered;
-            displayContent(filteredData);
-        }
 
-        function displayContent(content) {
-            const grid = document.getElementById('contentGrid');
-            
-            if (content.length === 0) {
-                grid.innerHTML = `
-                    <div class="no-results">
-                        <h3>Aucun résultat trouvé</h3>
-                        <p>Essayez de modifier vos critères de recherche</p>
+            if (filteredData.length === 0) {
+                container.innerHTML = `
+                    <div class="error">
+                        <i class="fas fa-search"></i> 
+                        Aucun contenu trouvé pour les critères de recherche.
                     </div>
                 `;
                 return;
             }
-            
-            grid.innerHTML = content.map(item => `
-                <div class="content-item" onclick="openModal(${item.id})">
-                    <div class="content-poster">
-                        ${item.image ? 
-                            `<img src="${item.image}" alt="${item.title}" onerror="this.style.display='none'">` : 
-                            '🎬'
+
+            const moviesHTML = filteredData.map(movie => `
+                <div class="movie-card">
+                    <div class="movie-image">
+                        ${movie.image ? 
+                            `<img src="${movie.image}" alt="${movie.title}" onerror="this.style.display='none'; this.parentNode.innerHTML='<i class=\\"fas fa-film placeholder\\"></i>'">` :
+                            '<i class="fas fa-film placeholder"></i>'
                         }
                     </div>
-                    <div class="content-info">
-                        <h3 class="content-title">${item.title}</h3>
-                        <div class="content-meta">
-                            <span class="content-genre">${item.genre}</span>
-                            <span class="content-quality">${item.quality}</span>
+                    <div class="movie-info">
+                        <div class="movie-title">${movie.title}</div>
+                        <div class="movie-details">
+                            <span class="movie-tag">${movie.genre}</span>
+                            <span class="movie-tag">${movie.quality}</span>
+                            <span class="movie-tag">${movie.language}</span>
+                            <span class="movie-tag">${movie.year}</span>
                         </div>
-                        <div style="color: #666; font-size: 11px; margin-top: 8px;">
-                            ${item.year} • ${item.language} • ${item.serverName}
+                        <div class="movie-meta">
+                            <i class="fas fa-star"></i> ${movie.rating}/10 • 
+                            <i class="fas fa-server"></i> ${movie.server_name}
+                        </div>
+                        <div class="movie-actions">
+                            <a href="${movie.url}" target="_blank" class="watch-btn">
+                                <i class="fas fa-play"></i> Regarder
+                            </a>
                         </div>
                     </div>
                 </div>
             `).join('');
+
+            container.innerHTML = `<div class="movies-grid">${moviesHTML}</div>`;
+            
+            // Mettre à jour la page actuelle dans les stats
+            document.getElementById('currentPage').textContent = currentPage;
         }
 
-        function openModal(itemId) {
-            currentItem = streamingData.find(item => item.id === itemId);
-            if (!currentItem) return;
+        // Créer la pagination
+        function createPagination() {
+            const pageNumbers = document.getElementById('pageNumbers');
+            const pageNumbers2 = document.getElementById('pageNumbers2');
             
-            const modal = document.getElementById('videoModal');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalInfo = document.getElementById('modalInfo');
+            let paginationHTML = '';
             
-            modalTitle.textContent = currentItem.title;
-            modalInfo.innerHTML = `
-                <div style="margin-bottom: 20px;">
-                    <p><strong>Genre:</strong> ${currentItem.genre}</p>
-                    <p><strong>Année:</strong> ${currentItem.year}</p>
-                    <p><strong>Qualité:</strong> ${currentItem.quality}</p>
-                    <p><strong>Langue:</strong> ${currentItem.language}</p>
-                    <p><strong>Serveur:</strong> ${currentItem.serverName}</p>
-                    ${currentItem.description ? `<p><strong>Description:</strong> ${currentItem.description}</p>` : ''}
-                    <p><strong>Note:</strong> ⭐ ${currentItem.rating}/10</p>
-                </div>
-            `;
+            for (let i = 1; i <= totalPages; i++) {
+                paginationHTML += `
+                    <button class="page-btn ${i === currentPage ? 'active' : ''}" 
+                            onclick="changePage(${i})">
+                        ${i}
+                    </button>
+                `;
+            }
             
-            modal.classList.remove('hidden');
-            setTimeout(() => modal.classList.add('show'), 10);
+            pageNumbers.innerHTML = paginationHTML;
+            pageNumbers2.innerHTML = paginationHTML;
+            
+            // Mettre à jour les boutons précédent/suivant
+            document.getElementById('prevBtn').disabled = currentPage === 1;
+            document.querySelectorAll('#nextBtn').forEach(btn => {
+                btn.disabled = currentPage === totalPages;
+            });
         }
 
-        function closeModal() {
-            const modal = document.getElementById('videoModal');
-            const videoContainer = document.getElementById('videoContainer');
-            
-            modal.classList.remove('show');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                videoContainer.innerHTML = '';
-            }, 400);
+        // Changer de page
+        function changePage(page) {
+            if (page >= 1 && page <= totalPages && page !== currentPage) {
+                currentPage = page;
+                displayMovies();
+                createPagination();
+                
+                // Scroll vers le haut
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         }
 
-        function playVideo() {
-            if (!currentItem) return;
-            
-            const videoContainer = document.getElementById('videoContainer');
-            videoContainer.innerHTML = `
-                <div class="video-container">
-                    <iframe 
-                        src="${currentItem.url}" 
-                        allowfullscreen
-                        allow="autoplay; encrypted-media; picture-in-picture"
-                    ></iframe>
-                </div>
-            `;
-        }
+        // Gestion de la recherche
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            searchTerm = e.target.value;
+            displayMovies();
+        });
 
-        function showApiDetails() {
-            alert(`🔑 API Key: ************************************\n📊 Éléments: ${streamingData.length}\n🌐 Site web local\n✅ URLs transformées automatiquement`);
-        }
+        // Gestion des filtres
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Retirer la classe active des autres boutons
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                // Ajouter la classe active au bouton cliqué
+                this.classList.add('active');
+                
+                currentFilter = this.dataset.filter;
+                displayMovies();
+            });
+        });
 
-        // Gestion des événements globaux
+        // Navigation par clavier
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeModal();
+            if (e.key === 'ArrowLeft' && currentPage > 1) {
+                changePage(currentPage - 1);
+            } else if (e.key === 'ArrowRight' && currentPage < totalPages) {
+                changePage(currentPage + 1);
             }
         });
 
-        // Clic en dehors du modal pour fermer
-        document.getElementById('videoModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
-            }
-        });
+        // Charger les données au démarrage
+        loadStreamingData();
     </script>
 </body>
 </html>
