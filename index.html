@@ -404,18 +404,21 @@
                 // Charger les 8 parties
                 for (let i = 1; i <= 8; i++) {
                     try {
-                        const response = await fetch(`output/streamingData_part${i}.js`);
+                        const response = await fetch(`streamingData_part${i}.js`);
                         if (!response.ok) {
                             throw new Error(`HTTP error! status: ${response.status}`);
                         }
                         const text = await response.text();
                         
                         // Extraire les données JSON du fichier JS
-                        const jsonMatch = text.match(/const streamingData\d+ = (\[.*\]);/s);
+                        const jsonMatch = text.match(/const streamingData\d+ = (\[[\s\S]*?\]);/);
                         if (jsonMatch) {
                             const data = JSON.parse(jsonMatch[1]);
                             streamingData[i] = data;
                             allData = allData.concat(data);
+                            console.log(`Partie ${i} chargée: ${data.length} éléments`);
+                        } else {
+                            console.error(`Format non reconnu pour la partie ${i}`);
                         }
                     } catch (error) {
                         console.warn(`Impossible de charger la partie ${i}:`, error);
@@ -436,7 +439,7 @@
                     <div class="error">
                         <i class="fas fa-exclamation-triangle"></i> 
                         Erreur lors du chargement des données de streaming.<br>
-                        Assurez-vous que les fichiers sont dans le dossier 'output/'.
+                        Assurez-vous que les fichiers streamingData_part1.js à streamingData_part8.js sont accessibles.
                     </div>
                 `;
             }
